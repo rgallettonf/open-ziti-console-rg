@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 import {authenticationGuard} from "./authentication.guard";
-import {ZacWrapperComponent} from "../../../consoleLib/src/lib/zac-wrapper.component";
+import {ZacWrapperComponent} from "../../../open-ziti-console/src/lib/zac-wrapper.component";
 
 const routes: Routes = [
   {

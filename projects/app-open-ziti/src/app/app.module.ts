@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import {HttpClientModule} from "@angular/common/http";
-import {ConsoleLibModule} from "../../../consoleLib/src/lib/console-lib.module";
+import {OpenZitiConsoleModule} from "../../../open-ziti-console/src/lib/open-ziti-console.module";
 
 @NgModule({
   declarations: [
@@ -16,7 +16,7 @@ import {ConsoleLibModule} from "../../../consoleLib/src/lib/console-lib.module";
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    ConsoleLibModule
+    OpenZitiConsoleModule
   ],
   exports: [
   ],

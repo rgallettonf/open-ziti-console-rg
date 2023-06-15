@@ -22,8 +22,8 @@ import compression from 'compression';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const sessionStore = sessionStoreFactory(session);
-const __assets = '/../consoleLib/src/lib/assets';
-const __html= '/../consoleLib/src/lib/html';
+const __assets = '/../open-ziti-console/src/lib/assets';
+const __html= '/../open-ziti-console/src/lib/html';
 
 const loadModule = async (modulePath) => {
 	try {
@@ -111,7 +111,7 @@ var helmetOptions = {
 	crossOriginEmbedderPolicy: false
 };
 
-app.use("/assets", express.static('../consoleLib/src/lib/assets', {
+app.use("/assets", express.static('../open-ziti-console/src/lib/assets', {
   maxAge: '31536000000'
 }));
 app.use(cors(corsOptions));

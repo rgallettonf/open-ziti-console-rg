@@ -15,4 +15,4 @@ import {SafePipe} from "./safe.pipe";
     ZacWrapperComponent
   ]
 })
-export class ConsoleLibModule { }
+export class OpenZitiConsoleModule { }

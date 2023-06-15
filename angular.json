@@ -30,7 +30,7 @@
               "projects/app-open-ziti/src/assets",
               {
                 "glob": "**/*",
-                "input": "./projects/consoleLib/src/lib/assets/",
+                "input": "./projects/open-ziti-console/src/lib/assets/",
                 "output": "/assets"
               }
 
@@ -230,23 +230,23 @@
         }
       }
     },
-    "consoleLib": {
+    "open-ziti-console": {
       "projectType": "library",
-      "root": "projects/consoleLib",
-      "sourceRoot": "projects/consoleLib/src",
+      "root": "projects/open-ziti-console",
+      "sourceRoot": "projects/open-ziti-console/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/consoleLib/ng-package.json"
+            "project": "projects/open-ziti-console/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/consoleLib/tsconfig.lib.prod.json"
+              "tsConfig": "projects/open-ziti-console/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/consoleLib/tsconfig.lib.json"
+              "tsConfig": "projects/open-ziti-console/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -254,7 +254,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/consoleLib/tsconfig.spec.json",
+            "tsConfig": "projects/open-ziti-console/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
