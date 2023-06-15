@@ -4,20 +4,20 @@ This library was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Code scaffolding
 
-Run `ng generate component component-name --project lib-zac` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project lib-zac`.
-> Note: Don't forget to add `--project lib-zac` or else it will be added to the default project in your `angular.json` file. 
+Run `ng generate component component-name --project open-ziti-console` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project open-ziti-console`.
+> Note: Don't forget to add `--project open-ziti-console` or else it will be added to the default project in your `angular.json` file. 
 
 ## Build
 
-Run `ng build lib-zac` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `ng build open-ziti-console` to build the project. The build artifacts will be stored in the `dist/` directory.
 
 ## Publishing
 
-After building your library with `ng build lib-zac`, go to the dist folder `cd dist/lib-zac` and run `npm publish`.
+After building your library with `ng build open-ziti-console`, go to the dist folder `cd dist/open-ziti-console` and run `npm publish`.
 
 ## Running unit tests
 
-Run `ng test lib-zac` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng test open-ziti-console` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 ## Further help
 
