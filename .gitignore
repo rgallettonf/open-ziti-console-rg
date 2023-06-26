@@ -41,5 +41,5 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-!/projects/ziti/
-!/projects/ziti-console/sessions/
+/projects/ziti/
+/projects/ziti-console/sessions/
