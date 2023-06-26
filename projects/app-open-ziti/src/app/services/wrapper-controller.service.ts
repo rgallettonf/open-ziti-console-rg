@@ -5,7 +5,7 @@ import moment from 'moment';
 
 
 @Injectable({providedIn: 'root'})
-export class ZitiControllerService {
+export class WrapperControllerService {
 
   currentNetwork: any = {};
   _currentZitiControllerSession: any = {};

@@ -30,23 +30,23 @@
               "projects/app-open-ziti/src/assets",
               {
                 "glob": "**/*",
-                "input": "./projects/open-ziti-console/src/lib/assets/",
+                "input": "./node_modules/open-ziti-console/assets/",
                 "output": "/assets"
               }
-
             ],
             "styles": [
               "projects/app-open-ziti/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "preserveSymlinks": true
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "10mb",
+                  "maximumError": "16mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -65,7 +65,7 @@
               "namedChunks": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -106,130 +106,6 @@
         }
       }
     },
-    "zacs": {
-      "projectType": "library",
-      "root": "projects/zacs",
-      "sourceRoot": "projects/zacs/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/zacs/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/zacs/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/zacs/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "tsConfig": "projects/zacs/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ]
-          }
-        }
-      }
-    },
-    "ziti-console": {
-      "projectType": "application",
-      "schematics": {},
-      "root": "projects/ziti-console",
-      "sourceRoot": "projects/ziti-console/src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist/ziti-console",
-            "index": "projects/ziti-console/src/index.html",
-            "main": "projects/ziti-console/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
-            "tsConfig": "projects/ziti-console/tsconfig.app.json",
-            "assets": [
-              "projects/ziti-console/src/favicon.ico",
-              "projects/ziti-console/src/assets"
-            ],
-            "styles": [
-              "projects/ziti-console/src/styles.css"
-            ],
-            "scripts": []
-          },
-          "configurations": {
-            "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ],
-              "outputHashing": "all"
-            },
-            "development": {
-              "buildOptimizer": false,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "production": {
-              "browserTarget": "ziti-console:build:production"
-            },
-            "development": {
-              "browserTarget": "ziti-console:build:development"
-            }
-          },
-          "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "ziti-console:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
-            "tsConfig": "projects/ziti-console/tsconfig.spec.json",
-            "assets": [
-              "projects/ziti-console/src/favicon.ico",
-              "projects/ziti-console/src/assets"
-            ],
-            "styles": [
-              "projects/ziti-console/src/styles.css"
-            ],
-            "scripts": []
-          }
-        }
-      }
-    },
     "open-ziti-console": {
       "projectType": "library",
       "root": "projects/open-ziti-console",
@@ -249,7 +125,7 @@
               "tsConfig": "projects/open-ziti-console/tsconfig.lib.json"
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",

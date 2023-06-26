@@ -1,0 +1,42 @@
+<div id="LoginForm" class="form mini">
+    <div class="title">Ziti Admin Console</div>
+    <div class="subtitle">Welcome, please login to continue</div>
+
+
+    <div id="SelectedEdgeController">{{ selectedEdgeController }}</div>
+    <ng-container *ngIf="edgeCreate">
+        <label for="EdgeName">Edge Controller Name</label>
+        <input id="EdgeName" type="text" max="100" placeholder="enter a name for your controller"
+               [(ngModel)]="edgeName" [ngClass]="{'error': edgeNameError}"/>
+        <label for="EdgeUrl">Url</label>
+        <input id="EdgeUrl" type="text" max="500" placeholder="e.g. http://10.0.0.1:1280"
+               [(ngModel)]="edgeUrl"  [ngClass]="{'error': edgeUrlError}"/>
+        <div id="CreateArea" class="edgecreate buttons">
+            <div id="BackToLogin" *ngIf="backToLogin" class="linkButton" (click)="reset()">Back To Login</div>
+            <div id="CreateButton" class="button" (click)="create()">Set Controller</div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="userLogin">
+        <label for="EdgeControllerList">Edge Controller</label>
+        <select *ngIf="showEdge" class="userlogin edge"
+                id="EdgeControllerList" (change)="edgeChanged()">
+            <option value="">Connect to a new Edge Controller</option>
+            <option *ngFor="let controller of edgeControllerList" [value]="controller.url" [selected]="controller.default">
+                {{ controller.name }} ({{controller.url}})
+            </option>
+        </select>
+        <label for="Username">Username</label>
+        <input id="Username" type="text" max="500" placeholder="enter your login username"
+               autocomplete="on" [(ngModel)]="username"/>
+        <label for="Password">Password</label>
+        <input id="Password" type="password" max="500"
+               placeholder="enter the password for your account"
+               autocomplete="on" [(ngModel)]="password"/>
+
+        <div class="buttons">
+            <div id="LoginButton" class="button" (click)="login()">Login</div>
+        </div>
+    </ng-container>
+
+</div>

@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, Subject, Subscription} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {NavigationEnd, Router} from "@angular/router";
-import {ZitiControllerService} from "./ziti-controller.service";
 import {URLS} from './urls';
 import {Resolver} from "@stoplight/json-ref-resolver";
 import {get, set, isEmpty} from 'lodash';
@@ -74,7 +73,6 @@ export class ZacWrapperService {
 
   constructor(
     private http: HttpClient,
-    private zitiControllerService: ZitiControllerService,
     private router: Router,
   ) {}
 

@@ -25,11 +25,11 @@
       "dom"
     ],
     "paths": {
-      "lib-zac": [
-        "dist/lib-zac"
+      "open-ziti-console": [
+        "dist/open-ziti-console"
       ],
-      "zacs": [
-        "dist/zacs"
+      "app-open-ziti": [
+        "dist/app-open-ziti"
       ]
     }
   },

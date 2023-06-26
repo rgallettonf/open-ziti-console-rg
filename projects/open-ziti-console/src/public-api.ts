@@ -5,3 +5,4 @@
 export * from './lib/open-ziti-console.module';
 export * from './lib/zac-wrapper.component';
 export * from './lib/zac-wrapper.service';
+export * from './lib/services/settings.service';
