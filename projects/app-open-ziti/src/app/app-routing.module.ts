@@ -8,12 +8,17 @@ import {LoginComponent} from "./login/login.component";
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'ziti-dashboard',
     pathMatch: 'full'
   },
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'ziti-login',
+    redirectTo: 'login',
+    pathMatch: 'full'
   },
   {
     path: 'ziti-dashboard',
@@ -118,10 +123,6 @@ const routes: Routes = [
     path: 'ziti-config-types',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
-  },
-  {
-    path: 'ziti-login',
-    component: ZacWrapperComponent,
   },
   {
     path: '**',

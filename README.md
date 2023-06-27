@@ -1,6 +1,6 @@
 ## Running Legacy App (vanilla javascript)
 ```
-cd projects/app-ziti-colsole
+cd projects/ziti-console
 node server.js
 ```
 
@@ -18,7 +18,7 @@ There are two elements to the Angular app -
 generic Angular code it shres with other apps.
 2) A sample angular application in app-open-ziti.
 ```
-cd projects/ziti-console
+cd projects/open-ziti-console
 ng build --watch
 cd ../..
 ng serve openZiti --ssl

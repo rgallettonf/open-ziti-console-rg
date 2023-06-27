@@ -106,6 +106,7 @@ export class SettingsService {
     initVersions(url: string) {
         url = url.split('#').join('').split('?').join('');
         if (url.endsWith('/')) url = url.substr(0, url.length - 1);
+        if(!url.startsWith('https://')) url = 'https://' + url;
         const callUrl = url + "/edge/management/v1/version?rejectUnauthorized=" + this.rejectUnauthorized;
         firstValueFrom(this.httpClient.get(callUrl).pipe(catchError((err: any) => {
             throw "Edge Controller not Online: " + err?.message;
@@ -122,12 +123,12 @@ export class SettingsService {
         }).catch(err => {
             growler.error(err);
         });
-
     }
 
     private controllerSave(name: string, url: string) {
         url = url.split('#').join('').split('?').join('');
         if (url.endsWith('/')) url = url.substr(0, url.length - 1);
+        if(!url.startsWith('https://')) url = 'https://' + url;
         const callUrl = url + "/edge/management/v1/version?rejectUnauthorized=" + this.rejectUnauthorized;
         firstValueFrom(this.httpClient.get(callUrl).pipe(catchError((err: any) => {
             throw "Edge Controller not Online: " + err?.message;
@@ -167,6 +168,5 @@ export class SettingsService {
         }).catch(err => {
             growler.error(err);
         });
-
     }
 }

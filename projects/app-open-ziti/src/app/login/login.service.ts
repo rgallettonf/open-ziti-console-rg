@@ -3,28 +3,26 @@ import {HttpClient} from "@angular/common/http";
 import {SettingsService} from "open-ziti-console";
 import {firstValueFrom} from "rxjs";
 import {catchError} from "rxjs/operators";
+import {Router} from "@angular/router";
 
 @Injectable({
     providedIn: 'root'
 })
 export class LoginService {
 
-    constructor(private httpClient: HttpClient, private settings: SettingsService) {
+    constructor(private httpClient: HttpClient, private settings: SettingsService, private router:Router) {
     }
 
     async login(prefix: string, url: string, username: string, password: string, rejectUnauthorized: boolean) {
         const serviceUrl = url + prefix;
-        const creds = {
-            username: username,
-            password: password
-        };
-        await this.authenticate(serviceUrl, creds, rejectUnauthorized);
-    }
-
-    async authenticate(serviceUrl: string, creds: any, rejectUnauthorized: boolean) {
         return firstValueFrom(this.httpClient.post(serviceUrl + "/authenticate?method=password", {
-                json: creds,
-                rejectUnauthorized: rejectUnauthorized
+                username,
+                password,
+                rejectUnauthorized
+            }, {
+                headers: {
+                    "content-type": "application/json",
+                }
             })
                 .pipe(
                     catchError((err: any) => {
@@ -34,9 +32,10 @@ export class LoginService {
                     })
                 )
         ).then((body: any) => {
-            if(body.error) throw body.error;
+            if (body.error) throw body.error;
             this.settings.user = body.data?.token;
             this.settings.authorization = 100;
+            this.router.navigate(['/']);
         });
     }
 }

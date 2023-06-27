@@ -78,7 +78,7 @@ export class LoginComponent implements OnInit {
         } else {
             this.edgeCreate = false;
             this.userLogin = true;
-            this.settings.initVersions(this.edgeUrl)
+            this.settings.initVersions(this.selectedEdgeController)
         }
     }
 

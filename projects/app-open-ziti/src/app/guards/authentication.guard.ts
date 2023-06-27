@@ -1,10 +1,12 @@
 import {CanActivateFn, Router} from '@angular/router';
 import {inject} from "@angular/core";
+import {SettingsService} from "open-ziti-console";
 
 export const authenticationGuard: CanActivateFn = (route, state) => {
-  let isAuthorized = false;
+  const settings = inject(SettingsService);
+  const isAuthorized = !!settings.user;
   if (!isAuthorized) {
-    inject(Router).navigate(['/ziti-login']);
+    inject(Router).navigate(['login']);
   }
 
   return isAuthorized;

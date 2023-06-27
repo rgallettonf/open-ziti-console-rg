@@ -32,6 +32,11 @@
                 "glob": "**/*",
                 "input": "./node_modules/open-ziti-console/assets/",
                 "output": "/assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "./node_modules/open-ziti-console/html/",
+                "output": "/assets/pages"
               }
             ],
             "styles": [
