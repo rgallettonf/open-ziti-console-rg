@@ -42,6 +42,7 @@ export class SettingsService {
     apiVersions: any = {};
     user = '';
     authorization = -1;
+    controllerBaseUrl = '';
 
     constructor(private httpClient: HttpClient) {
 
@@ -107,6 +108,7 @@ export class SettingsService {
         url = url.split('#').join('').split('?').join('');
         if (url.endsWith('/')) url = url.substr(0, url.length - 1);
         if(!url.startsWith('https://')) url = 'https://' + url;
+        this.controllerBaseUrl = url;
         const callUrl = url + "/edge/management/v1/version?rejectUnauthorized=" + this.rejectUnauthorized;
         firstValueFrom(this.httpClient.get(callUrl).pipe(catchError((err: any) => {
             throw "Edge Controller not Online: " + err?.message;
