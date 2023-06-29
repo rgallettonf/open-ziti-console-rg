@@ -12,8 +12,8 @@ const {growler, context, user} = window;
 })
 export class LoginComponent implements OnInit {
     edgeControllerList: any[] = [];
-    username = '';
-    password = '';
+    username = 'ZTUSER8F2697013DCF296909FE3127EA1056D73A10D660';
+    password = 'ZTPASS11581A57398E75D18DB3C4556577210965332DEC';
     edgeName: string = '';
     edgeUrl: string = '';
     edgeCreate = false;
@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
 
     login() {
         context.set("serviceUrl", this.selectedEdgeController);
-        const prefix = this.settings.apiVersions["edge-management"].v1.path;
+        const prefix = this.settings.apiVersions["edge-management"]?.v1?.path || '';
         this.svc.login(
             prefix,
             this.selectedEdgeController,
@@ -95,7 +95,7 @@ export class LoginComponent implements OnInit {
             this.edgeCreate = true;
             this.userLogin = false;
         }
-        var lastUrl = context.get("serviceUrl");
+        var lastUrl = context?.get("serviceUrl");
         if (lastUrl && lastUrl.trim().length > 0) this.selectedEdgeController = lastUrl.trim();
     }
 }

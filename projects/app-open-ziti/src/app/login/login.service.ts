@@ -35,6 +35,9 @@ export class LoginService {
             if (body.error) throw body.error;
             this.settings.user = body.data?.token;
             this.settings.authorization = 100;
+            this.settings.controllerBaseUrl = url;
+            this.settings.edgeSessionToken = body.data.token;
+            this.settings.settingsChange.next(this.settings);
             this.router.navigate(['/']);
         });
     }

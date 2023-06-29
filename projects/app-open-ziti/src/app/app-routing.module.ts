@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 import {authenticationGuard} from "./guards/authentication.guard";
 import {ZacWrapperComponent} from "open-ziti-console";
+import {ZitiIdentitiesComponent} from "open-ziti-console";
 import {LoginComponent} from "./login/login.component";
 
 const routes: Routes = [
@@ -27,7 +28,7 @@ const routes: Routes = [
   },
   {
     path: 'ziti-identities',
-    component: ZacWrapperComponent,
+    component: ZitiIdentitiesComponent,
     canActivate: [authenticationGuard],
   },
   {

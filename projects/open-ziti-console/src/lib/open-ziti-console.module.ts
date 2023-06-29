@@ -4,20 +4,30 @@ import {SafePipe} from "./safe.pipe";
 import {HttpClientModule} from "@angular/common/http";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
+import { SideNavigatorComponent } from './side-navigator/side-navigator.component';
+import {RouterModule} from "@angular/router";
+import { ZitiIdentitiesComponent } from './ziti-identities/ziti-identities.component';
+import {AgGridModule} from "ag-grid-angular";
 
 
 @NgModule({
     declarations: [
         ZacWrapperComponent,
-        SafePipe
+        SafePipe,
+        SideNavigatorComponent,
+        ZitiIdentitiesComponent
     ],
     imports: [
         CommonModule,
         FormsModule,
-        HttpClientModule
+        HttpClientModule,
+        RouterModule,
+        AgGridModule,
     ],
     exports: [
-        ZacWrapperComponent
+        ZacWrapperComponent,
+        SideNavigatorComponent,
+        ZitiIdentitiesComponent
     ]
 })
 export class OpenZitiConsoleModule {

@@ -6,6 +6,7 @@ import {URLS} from './urls';
 import {Resolver} from "@stoplight/json-ref-resolver";
 import {get, set, isEmpty} from 'lodash';
 import $ from 'jquery';
+import {SettingsService} from "./services/settings.service";
 
 export const COMPONENTS: any = {
   add:      `<div class="action icon-plus" data-action="add"></div>`,
@@ -74,6 +75,7 @@ export class ZacWrapperService {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private settings: SettingsService,
   ) {}
 
   initZac() {
@@ -92,11 +94,6 @@ export class ZacWrapperService {
         case '':
           this.page = 'index';
           route = URLS.ZITI_DASHBOARD;
-          break;
-        case '/identities':
-        case 'identities':
-          this.page = 'identities';
-          route = URLS.ZITI_IDENTITIES;
           break;
         case '/jwt-signers':
         case 'jwt-signers':
@@ -304,7 +301,7 @@ export class ZacWrapperService {
         this.saveZitiEntity(params, returnTo);
         break;
       case 'call':
-        this.callZitiEdge(`https://${this.zitiControllerDomain}/edge/management/v1/${params.url}`, {}).then((result) => {
+        this.callZitiEdge(`${this.settings.controllerBaseUrl}/edge/management/v1/${params.url}`, {}).then((result) => {
           returnTo(result);
         });
         break;
@@ -357,7 +354,7 @@ export class ZacWrapperService {
   }
 
   getZitiEntities(type: string, paging: any) {
-    const serviceUrl = `https://${this.zitiControllerDomain}/edge/management/v1`;
+    const serviceUrl = `${this.settings.controllerBaseUrl}/edge/management/v1`;
     let urlFilter = "";
     let toSearchOn = "name";
     let noSearch = false;
@@ -381,7 +378,7 @@ export class ZacWrapperService {
   }
 
   getZitiEntity(params: any) {
-    const serviceUrl = `https://${this.zitiControllerDomain}/edge/management/v1`;
+    const serviceUrl = `${this.settings.controllerBaseUrl}/edge/management/v1`;
     const url = params.url.split("./").join("");
     const id = params.id;
     const type = params.type;
@@ -397,7 +394,7 @@ export class ZacWrapperService {
   }
 
   saveZitiEntity(params: any, returnTo: any) {
-    const serviceUrl = `https://${this.zitiControllerDomain}/edge/management/v1`;
+    const serviceUrl = `${this.settings.controllerBaseUrl}/edge/management/v1`;
     const saveParams = params.save;
     const additional = params.additional;
     const removal = params.removal;
@@ -497,7 +494,7 @@ export class ZacWrapperService {
     const options: any = {
       headers: {
         accept: 'application/json',
-        'zt-session': this.zitiSessionId
+        'zt-session': this.settings.edgeSessionToken
       },
       params: {},
       responseType: 'json' as const,

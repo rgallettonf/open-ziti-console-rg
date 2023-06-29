@@ -150,12 +150,13 @@
   <div class="hr"></div>
   <div id="NotificationsList"></div>
 </div>
-<aside class="unauth{{auth}}">
+<aside class="unauth{{auth}}" *ngIf="!loggedIn">
   <div class="overlay"></div>
   <div class="icon"></div>
   <div class="title" data-i18n="Info"></div>
   <div class="title" id="LoginVersion">{{loginVersion}}</div>
 </aside>
+<app-side-navigator *ngIf="loggedIn"></app-side-navigator>
 <main>
 
   <div id="NotificationTemplate" class="growler row template">

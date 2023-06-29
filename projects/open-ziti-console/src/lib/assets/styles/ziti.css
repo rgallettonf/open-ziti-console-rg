@@ -21,6 +21,7 @@
     --transition: 0.5s;
     --offWhite: #FCFCFC;
     --dark: #28292B;
+    --groupText: #78859f;
 }
 
 ::placeholder {

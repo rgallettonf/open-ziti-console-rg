@@ -3,7 +3,7 @@
   "version": "0.0.3",
   "repository": {
     "type": "git",
-    "url":  "https://github.com/edthompson-nf/open-ziti-console"
+    "url": "https://github.com/edthompson-nf/open-ziti-console"
   },
   "author": {
     "name": "Ed Thompson",
@@ -12,7 +12,9 @@
   "license": "Apache-2.0",
   "peerDependencies": {
     "@angular/common": "^16.0.0",
-    "@angular/core": "^16.0.0"
+    "@angular/core": "^16.0.0",
+    "ag-grid-angular": "^30.0.2",
+    "ag-grid-community": "^30.0.2"
   },
   "private": false,
   "dependencies": {

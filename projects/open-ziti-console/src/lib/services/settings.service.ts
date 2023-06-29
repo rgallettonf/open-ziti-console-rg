@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, firstValueFrom} from "rxjs";
+import {BehaviorSubject, firstValueFrom, ReplaySubject} from "rxjs";
 import {catchError} from "rxjs/operators";
 
 import {HttpClient} from "@angular/common/http";
@@ -43,6 +43,7 @@ export class SettingsService {
     user = '';
     authorization = -1;
     controllerBaseUrl = '';
+    edgeSessionToken = '';
 
     constructor(private httpClient: HttpClient) {
 

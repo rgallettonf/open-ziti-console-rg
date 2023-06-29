@@ -1,0 +1,31 @@
+<div class="ziti-page-container">
+    <div class="header">
+        <div class="title">Manage <span data-bind="pageTitle">Identities</span></div>
+        <div class="bread">Ziti Network <span class="secondary">/</span> Manage <span data-bind="pageTitle"></span></div>
+        <div class="line"></div>
+        <div class="tabs">
+            <div class="tab" data-go="/identities" data-i18n="Identities"></div>
+            <div class="tab" data-go="/recipes" data-i18n="Recipes"></div>
+            <div class="tab" data-go="/terminators" data-i18n="Terminators"></div>
+            <div class="tab" data-go="/posture-checks" data-i18n="PostureChecks"></div>
+        </div>
+    </div>
+    <div class="action icon-plus" data-action="add"></div>
+    <div class="filters">
+        <input id="SearchFilter" data-defined="search" type="text" class="search" placeholder="Type to Filter" />
+        <div class="clear icon-clear" data-defined="clear"></div>
+        <div class="searchButton icon-search"></div>
+        <div class="counters"><span id="Start">-</span>-<span id="End">-</span> of <span id="Total">-</span></div>
+        <div class="navigate prev icon-prev disabled"></div>
+        <div class="navigate next icon-next disabled"></div>
+    </div>
+    <div class="nodata" data-defined="empty">No <span data-bind="pageTitle"></span> Defined, Click the plus to add A <span data-bind="singular"></span>.</div>
+    <div class="nf-ag-grid" id="ItemTable">
+        <ag-grid-angular
+                style="width: 100%; height: 100%"
+                class="ag-theme-alpine"
+                [rowData]="rowData"
+                [columnDefs]="columnDefs">
+        </ag-grid-angular>
+    </div>
+</div>
