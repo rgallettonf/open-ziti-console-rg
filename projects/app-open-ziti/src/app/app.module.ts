@@ -6,10 +6,10 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import {HttpClientModule} from "@angular/common/http";
 import { LoginComponent } from './login/login.component';
 import {FormsModule} from "@angular/forms";
-import {RouterModule} from "@angular/router";
-import {OpenZitiConsoleModule} from "open-ziti-console";
+import {OpenZitiConsoleModule, ZITI_DOMAIN_CONTROLLER} from "open-ziti-console";
 import {SettingsService} from "open-ziti-console";
 import {AppRoutingModule} from "./app-routing.module";
+import {SimpleZitiDomainControllerServic} from "./services/simple-ziti-domain-controller.service";
 
 @NgModule({
   declarations: [
@@ -26,7 +26,9 @@ import {AppRoutingModule} from "./app-routing.module";
     ],
   exports: [
   ],
-  providers: [SettingsService],
+  providers: [SettingsService,
+      {provide: ZITI_DOMAIN_CONTROLLER, useClass: SimpleZitiDomainControllerServic}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

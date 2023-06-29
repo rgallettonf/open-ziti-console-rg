@@ -40,12 +40,10 @@ export class SettingsService {
     port = DEFAULTS.port;
     portTLS = DEFAULTS.portTLS;
     apiVersions: any = {};
-    user = '';
-    authorization = -1;
-    controllerBaseUrl = '';
+    id= 0;
 
     constructor(private httpClient: HttpClient) {
-
+        this.id = Math.random();
     }
 
     init() {
@@ -68,15 +66,17 @@ export class SettingsService {
             this.settings = JSON.parse(tmp);
         } else {
             this.settings = {...DEFAULTS};
+            localStorage.setItem('ziti.settings', JSON.stringify(this.settings));
         }
         context.set(this.name, this.settings);
-        this.settingsChange.next(this.settings ?? {})
+        this.settingsChange.next(this.settings)
     }
 
     set(data: any) {
-        localStorage.setItem('ziti.settings', data);
+        this.settings = data;
+        localStorage.setItem('ziti.settings', JSON.stringify({...data, sessionId: ''}));
         context.set(this.name, this.settings);
-        this.settingsChange.next(this.settings ?? {});
+        this.settingsChange.next(this.settings);
     }
 
     version() {
@@ -104,13 +104,12 @@ export class SettingsService {
         }
     }
 
-    initVersions(url: string) {
+    async initVersions(url: string) {
         url = url.split('#').join('').split('?').join('');
         if (url.endsWith('/')) url = url.substr(0, url.length - 1);
         if(!url.startsWith('https://')) url = 'https://' + url;
-        this.controllerBaseUrl = url;
         const callUrl = url + "/edge/management/v1/version?rejectUnauthorized=" + this.rejectUnauthorized;
-        firstValueFrom(this.httpClient.get(callUrl).pipe(catchError((err: any) => {
+        await firstValueFrom(this.httpClient.get(callUrl).pipe(catchError((err: any) => {
             throw "Edge Controller not Online: " + err?.message;
         }))).then((body: any) => {
             try {
@@ -123,7 +122,7 @@ export class SettingsService {
                 growler.error("Invalid Edge Controller: " + body);
             }
         }).catch(err => {
-            growler.error(err);
+            growler.error(err?.message);
         });
     }
 
@@ -165,7 +164,7 @@ export class SettingsService {
                     }
                 }
             } catch (e) {
-                growler.error("Invalid Edge Controller: " + body);
+                growler.error("Invalid Edge Controller: " + e);
             }
         }).catch(err => {
             growler.error(err);

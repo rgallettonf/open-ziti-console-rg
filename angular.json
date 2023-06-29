@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "openZiti": {
+    "open-ziti": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -76,10 +76,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "openZiti:build:production"
+              "browserTarget": "open-ziti:build:production"
             },
             "development": {
-              "browserTarget": "openZiti:build:development"
+              "browserTarget": "open-ziti:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -87,7 +87,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "openZiti:build"
+            "browserTarget": "open-ziti:build"
           }
         },
         "test": {
@@ -111,23 +111,23 @@
         }
       }
     },
-    "open-ziti-console": {
+    "open-ziti-console-lib": {
       "projectType": "library",
-      "root": "projects/open-ziti-console",
-      "sourceRoot": "projects/open-ziti-console/src",
+      "root": "projects/open-ziti-console-lib",
+      "sourceRoot": "projects/open-ziti-console-lib/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/open-ziti-console/ng-package.json"
+            "project": "projects/open-ziti-console-lib/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/open-ziti-console/tsconfig.lib.prod.json"
+              "tsConfig": "projects/open-ziti-console-lib/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/open-ziti-console/tsconfig.lib.json"
+              "tsConfig": "projects/open-ziti-console-lib/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "development"
@@ -135,7 +135,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/open-ziti-console/tsconfig.spec.json",
+            "tsConfig": "projects/open-ziti-console-lib/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
