@@ -59,7 +59,8 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "sourceMap": true
             },
             "development": {
               "buildOptimizer": false,
@@ -70,7 +71,7 @@
               "namedChunks": true
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -82,7 +83,7 @@
               "browserTarget": "open-ziti:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "production"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
