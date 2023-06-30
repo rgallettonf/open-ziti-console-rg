@@ -82,14 +82,14 @@ export class ZacWrapperService {
         this.initRouteListener();
     }
 
-    initSubscriptions() {
+    private initSubscriptions() {
         this.zitiDomainController.zitiSettings.subscribe(results => {
             this.zitiControllerDomain  = results.zitiDomain;
             this.zitiSessionId = results.zitiSessionId;
         })
     }
 
-    initZacListeners() {
+    private initZacListeners() {
         set(window, 'header.goto', (event: any) => {
             const url = $(event.currentTarget).data("go");
             let route = '';
@@ -192,7 +192,7 @@ export class ZacWrapperService {
         });
     }
 
-    initRouteListener() {
+    private initRouteListener() {
         this.router.events.subscribe((event) => {
             if ((event as any)['routerEvent'] instanceof NavigationEnd) {
                 const page = (event as any)['routerEvent']['url'].split(';')[0].split('?')[0];

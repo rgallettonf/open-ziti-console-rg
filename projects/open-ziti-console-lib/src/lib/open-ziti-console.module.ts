@@ -4,7 +4,7 @@ import {SafePipe} from "./safe.pipe";
 import {HttpClientModule} from "@angular/common/http";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-
+import {ZacRoutingModule} from "./zac-routing.module";
 
 @NgModule({
     declarations: [
@@ -14,7 +14,8 @@ import {FormsModule} from "@angular/forms";
     imports: [
         CommonModule,
         FormsModule,
-        HttpClientModule
+        HttpClientModule,
+        ZacRoutingModule
     ],
     exports: [
         ZacWrapperComponent
