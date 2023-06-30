@@ -1,19 +1,20 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LoginService} from "./login.service";
 import {SettingsService} from "open-ziti-console";
+import {Subscription} from "rxjs";
 
 // @ts-ignore
-const {growler, context, user} = window;
+const {growler, context} = window;
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
     edgeControllerList: any[] = [];
-    username = 'ZTUSER8F2697013DCF296909FE3127EA1056D73A10D660';
-    password = 'ZTPASS11581A57398E75D18DB3C4556577210965332DEC';
+    username = '';
+    password = '';
     edgeName: string = '';
     edgeUrl: string = '';
     edgeCreate = false;
@@ -23,32 +24,38 @@ export class LoginComponent implements OnInit {
     edgeUrlError = false;
     backToLogin = false;
     showEdge = false;
+    private subscription = new Subscription();
 
-    constructor(private svc: LoginService, private settings: SettingsService) { }
+    constructor(private svc: LoginService, private settingsService: SettingsService) { }
 
     ngOnInit() {
-        this.settings.settingsChange.subscribe((results: any) => {
+        this.subscription.add(
+        this.settingsService.settingsChange.subscribe((results: any) => {
             if (results) this.settingsReturned(results);
-        });
+        }));
         this.edgeChanged();
     }
 
-    login() {
-        context.set("serviceUrl", this.selectedEdgeController);
-        const prefix = this.settings.apiVersions["edge-management"]?.v1?.path || '';
-        this.svc.login(
-            prefix,
-            this.selectedEdgeController,
-            this.username.trim(),
-            this.password,
-            this.settings.rejectUnauthorized
-        );
+    async login() {
+        if(!!this.selectedEdgeController) {
+            context.set("serviceUrl", this.selectedEdgeController);
+            await this.settingsService.initVersions(this.selectedEdgeController);
+            const prefix = this.settingsService.apiVersions["edge-management"].v1.path;
+            this.svc.login(
+                prefix,
+                this.selectedEdgeController,
+                this.username.trim(),
+                this.password,
+                this.settingsService.rejectUnauthorized
+            );
+        }
     }
 
     create() {
         if (this.isValid()) {
-            this.settings.addContoller(this.edgeName, this.edgeUrl);
+            this.settingsService.addContoller(this.edgeName, this.edgeUrl);
             context.set("serviceUrl", this.edgeUrl);
+            this.settingsService.set({...this.settingsService.settings, sessionId: ''});
         } else growler.form();
     }
 
@@ -78,7 +85,7 @@ export class LoginComponent implements OnInit {
         } else {
             this.edgeCreate = false;
             this.userLogin = true;
-            this.settings.initVersions(this.selectedEdgeController)
+            this.settingsService.initVersions(this.selectedEdgeController)
         }
     }
 
@@ -95,7 +102,11 @@ export class LoginComponent implements OnInit {
             this.edgeCreate = true;
             this.userLogin = false;
         }
-        var lastUrl = context?.get("serviceUrl");
+        const lastUrl = context.get("serviceUrl");
         if (lastUrl && lastUrl.trim().length > 0) this.selectedEdgeController = lastUrl.trim();
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 }

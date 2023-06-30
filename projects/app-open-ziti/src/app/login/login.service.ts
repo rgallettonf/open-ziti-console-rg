@@ -9,11 +9,13 @@ import {Router} from "@angular/router";
     providedIn: 'root'
 })
 export class LoginService {
+    private domain = '';
 
-    constructor(private httpClient: HttpClient, private settings: SettingsService, private router:Router) {
+    constructor(private httpClient: HttpClient, private settingsService: SettingsService, private router: Router) {
     }
 
     async login(prefix: string, url: string, username: string, password: string, rejectUnauthorized: boolean) {
+        this.domain = url;
         const serviceUrl = url + prefix;
         return firstValueFrom(this.httpClient.post(serviceUrl + "/authenticate?method=password", {
                 username,
@@ -33,11 +35,16 @@ export class LoginService {
                 )
         ).then((body: any) => {
             if (body.error) throw body.error;
-            this.settings.user = body.data?.token;
-            this.settings.authorization = 100;
-            this.settings.controllerBaseUrl = url;
-            this.settings.edgeSessionToken = body.data.token;
-            this.settings.settingsChange.next(this.settings);
+            const settings = {
+                ...this.settingsService.settings, ...{
+                    sessionId: body.data?.token,
+                    controllerDomain: this.domain,
+                    authorization: 100,
+                    expiresAt: body.data.expiresAt
+
+                }
+            }
+            this.settingsService.set(settings);
             this.router.navigate(['/']);
         });
     }

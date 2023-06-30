@@ -4,16 +4,16 @@ This library was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Code scaffolding
 
-Run `ng generate component component-name --project open-ziti-console` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project open-ziti-console`.
+Run `ng generate component component-name --project open-ziti-console-lib` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project open-ziti-console`.
 > Note: Don't forget to add `--project open-ziti-console` or else it will be added to the default project in your `angular.json` file. 
 
 ## Build
 
-Run `ng build open-ziti-console` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `ng build open-ziti-console-lib` to build the project. The build artifacts will be stored in the `dist/` directory.
 
 ## Publishing
 
-After building your library with `ng build open-ziti-console`, go to the dist folder `cd dist/open-ziti-console` and run `npm publish`.
+After building your library with `ng build open-ziti-console-lib`, go to the dist folder `cd dist/open-ziti-console-lib` and run `npm publish`.
 
 ## Running unit tests
 

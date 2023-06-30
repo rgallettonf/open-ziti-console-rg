@@ -18,15 +18,15 @@ export class AppComponent implements OnInit {
     type = '';
     loginVersion: any;
 
-    constructor(private settings: SettingsService) {
+    constructor(private settingsService: SettingsService) {
 
     }
 
     ngOnInit() {
-        this.settings.settingsChange.subscribe(results => {
+        this.settingsService.init();
+        this.settingsService.settingsChange.subscribe(results => {
             this.loginVersion = results.version;
             this.loggedIn = !isEmpty(this.settings.controllerBaseUrl) && !isEmpty(this.settings.edgeSessionToken);
         });
-        this.settings.init();
     }
 }

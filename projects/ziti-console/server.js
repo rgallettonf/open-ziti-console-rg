@@ -22,8 +22,8 @@ import compression from 'compression';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const sessionStore = sessionStoreFactory(session);
-const __assets = '/../open-ziti-console/src/lib/assets';
-const __html= '/../open-ziti-console/src/lib/html';
+const __assets = '/../open-ziti-console-lib/src/lib/assets';
+const __html= '/../open-ziti-console-lib/src/lib/html';
 
 const loadModule = async (modulePath) => {
 	try {
@@ -111,7 +111,7 @@ var helmetOptions = {
 	crossOriginEmbedderPolicy: false
 };
 
-app.use("/assets", express.static('../open-ziti-console/src/lib/assets', {
+app.use("/assets", express.static('../open-ziti-console-lib/src/lib/assets', {
   maxAge: '31536000000'
 }));
 app.use(cors(corsOptions));
@@ -250,7 +250,7 @@ for (var i=0; i<pages.length; i++) {
 			}
 		}
 		if (page.access=="") {
-			if (page.url=="/login") request.session.user = null;
+			if (page.url=="/login") request.session.zitiSessionId = null;
 			var headerNow = header.split("{{title}}").join(page.title);
 			headerNow = headerNow.split("{{auth}}").join("");
 			fs.readFile(__dirname+__html+page.page, 'utf8', function(err, data) {
@@ -287,7 +287,7 @@ app.get("/sso", (request, response) => {
 	GetPath().then((prefix) => {
 		serviceUrl = baseUrl+prefix;
 		request.session.serviceUrl = serviceUrl;
-		request.session.user = session
+		request.session.zitiSessionId = session
 		request.session.authorization = 100;
 		console.log(baseUrl, request.session.user);
 		response.redirect("/");
