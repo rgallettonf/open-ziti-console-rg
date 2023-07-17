@@ -132,22 +132,25 @@
                 </div>
             </div>
 
-            <div class="sectionTitle" data-i18n="CertDefined"></div>
-            <label for="Pem"><span data-i18n="PEM"></span> <span id="SelectFile" class="note" data-i18n="SelectFile"></span><input id="PemFile" type="file" accept=".pem"/></label>
-            <textarea id="Pem" data-bind="data.certPem" spellcheck="false" style="height: 300px; font-size: 12px;" data-i18n="PastePEM"></textarea>
-            <label for="Kid" data-i18n="Kid"></label>
-            <input id="Kid" data-bind="data.kid" type="text" maxlength="500" data-i18n="EnterKid" />
+            <div class="configBox" style="margin-top: 20px;">
+                <div class="sectionTitle" data-i18n="CertDefined"></div>
+                <label for="Pem"><span data-i18n="PEM"></span> <span id="SelectFile" class="note" data-i18n="SelectFile"></span><input id="PemFile" type="file" accept=".pem"/></label>
+                <textarea id="Pem" data-bind="data.certPem" spellcheck="false" style="height: 300px; font-size: 12px;" data-i18n="PastePEM"></textarea>
+                <label for="Kid" data-i18n="Kid"></label>
+                <input id="Kid" data-bind="data.kid" type="text" maxlength="500" data-i18n="EnterKid" />
+            </div>
 
-            <div class="sectionTitle" data-i18n="JWKSDefined"></div>
-            <label for="JWKSEndpoint" data-i18n="JWKSEndpoint"></label>
-            <input id="JWKSEndpoint" data-bind="data.jwksEndpoint" type="text" maxlength="500" data-i18n="EnterUrl" />
-            
+            <div class="configBox" style="margin-top: 20px;">
+                <div class="sectionTitle" data-i18n="JWKSDefined"></div>
+                <label for="JWKSEndpoint" data-i18n="JWKSEndpoint"></label>
+                <input id="JWKSEndpoint" data-bind="data.jwksEndpoint" type="text" maxlength="500" data-i18n="EnterUrl" />
+            </div>
 
             <!-- Need To Finish these -->
 
             <div id="TagArea" data-tagarea="policies"></div>
             <div id="TagExtended"></div>
-
+            {{html.api}}
             {{html.save}}
         </div>
 	</div>
@@ -156,10 +159,13 @@
     <script language="javascript" type="text/javascript">
         page = {
             filterObject: null,
+            apiParams: null,
             init: function() {
                 page.filterObject = new Data("external-jwt-signers");
                 page.filterObject.init(true, true);
                 page.events();
+
+                page.apiParams = CodeMirror.fromTextArea(document.getElementById("ApiParams"), { mode: "application/json", lineNumbers: true, extraKeys: {"Ctrl-Space": "autocomplete"}, readOnly: true });
             }, 
             events: function() {
                 $("#PemFile").change(page.loadFile);
@@ -178,10 +184,23 @@
                 $(".toggle").removeClass("on");
                 if (detail.enabled) $("#Enabled").addClass("on");
                 if (detail.useExternalId) $("#UseExternal").addClass("on");
+                page.params();
                 modal.show("AddModal");
             },
             save: function() {
                 if (page.validate()) {
+                    var obj = page.params();
+                    for (let prop in obj) {
+                        if (obj[prop]=='') delete obj[prop];
+                    }
+                    page.filterObject.save(obj);
+                } else growler.form();
+            },
+            formReset: function() {
+                page.params();
+            },
+            params: function() {
+                try {  
                     var obj = {
                         name: $("#Name").val().trim(),
                         audience: $("#Audience").val().trim(),
@@ -194,11 +213,18 @@
                         jwksEndpoint: $("#JWKSEndpoint").val().trim(),
                         tags: tags.val()
                     };
-                    for (let prop in obj) {
-                        if (obj[prop]=='') delete obj[prop];
-                    }
-                    page.filterObject.save(obj);
-                } else growler.form();
+
+                    var url = settings.versionData.baseUrl+settings.versionData.serviceUrl+"/"+page.filterObject.name;
+                    if (page.filterObject.isEditing()) url += "/"+page.filterObject.editId;
+                    $("#ApiUrl").val(url);  
+                    page.apiParams.setValue(JSON.stringify(obj));
+                    page.apiParams.autoFormatRange({line:0, ch:0}, {line:page.apiParams.lineCount()});
+                    page.apiParams.scrollTo(null, 0);
+
+                    return obj
+                } catch (e) {
+                    console.log(e);
+                }
             },
             validate: function() {
                 $(".errors").removeClass("errors");

@@ -5,8 +5,9 @@ import {catchError} from "rxjs/operators";
 import {HttpClient} from "@angular/common/http";
 
 // @ts-ignore
-const {service, growler, context, page} = window;
+const {service, growler, context, page, settings} = window;
 const DEFAULTS = {
+    "session":{},
     "edgeControllers": [],
     "editable": true,
     "update": false,
@@ -68,13 +69,14 @@ export class SettingsService {
             this.settings = {...DEFAULTS};
             localStorage.setItem('ziti.settings', JSON.stringify(this.settings));
         }
+        settings.data = this.settings;
         context.set(this.name, this.settings);
         this.settingsChange.next(this.settings)
     }
 
     set(data: any) {
         this.settings = data;
-        localStorage.setItem('ziti.settings', JSON.stringify({...data, sessionId: ''}));
+        localStorage.setItem('ziti.settings', JSON.stringify(data));
         context.set(this.name, this.settings);
         this.settingsChange.next(this.settings);
     }
@@ -140,17 +142,20 @@ export class SettingsService {
                 } else {
                     if (body.data.apiVersions.edge.v1 != null) {
                         let found = false;
-                        for (let i = 0; i < this.settings.edgeControllers.length; i++) {
-                            if (this.settings.edgeControllers[i].url == url) {
-                                found = true;
-                                this.settings.edgeControllers[i].name = name;
-                                this.settings.edgeControllers[i].url = url;
-                                break;
+                        if( this.settings.edgeControllers?.length > 0) {
+                            for (let i = 0; i < this.settings.edgeControllers.length; i++) {
+                                if (this.settings.edgeControllers[i].url == url) {
+                                    found = true;
+                                    this.settings.edgeControllers[i].name = name;
+                                    this.settings.edgeControllers[i].url = url;
+                                    break;
+                                }
                             }
                         }
                         if (!found) {
                             let isDefault = false;
-                            if (this.settings.edgeControllers.length == 0) isDefault = true;
+                            if(!this.settings.edgeControllers) this.settings.edgeControllers = [];
+                            if (this.settings.edgeControllers?.length === 0) isDefault = true;
                             this.settings.edgeControllers[this.settings.edgeControllers.length] = {
                                 name: name,
                                 url: url,

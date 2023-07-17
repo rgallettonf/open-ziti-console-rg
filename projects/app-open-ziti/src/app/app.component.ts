@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {SettingsService} from "open-ziti-console";
+import {SettingsService} from "open-ziti-console-lib";
 
 @Component({
     selector: 'app-root',

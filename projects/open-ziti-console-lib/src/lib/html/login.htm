@@ -11,7 +11,7 @@
 				}, 
 				events: function() {
 					$("#LoginButton").click(page.login);
-					$("#CreateButton").click(page.create);
+					$("#SetControllerButton").click(page.create);
 					$("#BackToLogin").click(page.back);
 					$("#EdgeControllerList").change(page.edgeChanged);
 					context.addListener(user.name,page.loggedIn);
@@ -110,11 +110,11 @@
 
 			<label for="EdgeControllerList" class="userlogin">Edge Controller</label>
 			<select id="EdgeControllerList" class="userlogin edge" style="display: none;"></select>
-			<div id="SelectedEdgeController" class="defined" style="display: none;">{{select}}</div>
+			<div id="SelectedEdgeController" class="defined" style="display: none;"></div>
 			<label for="EdgeName" class="edgecreate">Edge Controller Name</label>
-			<input id="EdgeName" type="text" max="100" placeholder="enter a name for your controller" data-enter="LoginButton" class="edgecreate" />
+			<input id="EdgeName" type="text" max="100" placeholder="enter a name for your controller" data-enter="SetControllerButton" class="edgecreate" />
 			<label for="EdgeUrl" class="edgecreate">Url</label>
-			<input id="EdgeUrl" type="text" max="500" placeholder="e.g. http://10.0.0.1:1280" data-enter="LoginButton" class="edgecreate" />
+			<input id="EdgeUrl" type="text" max="500" placeholder="e.g. http://10.0.0.1:1280" data-enter="SetControllerButton" class="edgecreate" />
 
 			<label for="Username" class="userlogin">Username</label> 
 			<input id="Username" class="userlogin" type="text" max="500" placeholder="enter your login username" data-enter="LoginButton" autocomplete="on" />
@@ -126,6 +126,6 @@
 			</div>
 			<div id="CreateArea" class="edgecreate buttons">
 				<div id="BackToLogin" class="linkButton">Back To Login</div>
-				<div id="CreateButton" class="button ">Set Controller</div>
+				<div id="SetControllerButton" class="button ">Set Controller</div>
 			</div>
 		</div>

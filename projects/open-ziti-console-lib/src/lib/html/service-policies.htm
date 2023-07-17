@@ -17,7 +17,7 @@
     </div>
     <div class="area data" data-defined="table">
         <div class="table">
-            <div class="head grid policies">
+            <div class="head grid columns">
                 <div class="col">
                     <div class="selector all"></div>
                 </div>
@@ -39,7 +39,7 @@
 
 
     <!-- Template HTML will be used to display rows of data -->
-    <div id="RowTemplate" class="row grid policies template" data-defined="template">
+    <div id="RowTemplate" class="row grid columns template" data-defined="template">
         <div class="col notitle">
             <div class="selector" data-id="{{id}}"></div>
         </div>
@@ -90,43 +90,48 @@
             </select>
             <div id="TagArea" data-tagarea="policies"></div>
             <div id="TagExtended"></div>
-            <div class="buttons">
-                <div class="linkButton closer">Oops, No get me out of here</div>
-                <div id="SaveButton" class="button" data-defined="save">Save</div>
-            </div>
+            {{html.api}}
+            {{html.save}}
         </div>
 	</div>
-    
+
+    <style>
+        .columns {
+	        grid-template-columns: 50px minmax(150px, auto) 25% 25% 10% 100px 100px 50px;
+        }
+    </style>
     
     <script language="javascript" type="text/javascript">
         page = {
-            binding: {
-                pageTitle: "Service Policies",
-                singular: "Service Policy"
-            },
             filterObject: null,
             serviceRoles: null,
             identityRoles: null,
             pcRoles: null,
+            apiParams: null,
             init: function() {
 
                 page.identityRoles = new MultiSelect("IDRoles", 10, true);
+                page.identityRoles.appendHash = true;
                 page.identityRoles.addSource(new SelectSource("identities", "@", "name", "role")); 
                 page.identityRoles.addSource(new SelectSource("identity-role-attributes", "#", "id")); 
                 page.identityRoles.init();
 
                 page.serviceRoles = new MultiSelect("Roles",  10, true);
+                page.serviceRoles.appendHash = true;
                 page.serviceRoles.addSource(new SelectSource("services", "@", "name", "role")); 
                 page.serviceRoles.addSource(new SelectSource("service-role-attributes", "#", "id")); 
                 page.serviceRoles.init();
 
                 page.pcRoles = new MultiSelect("PCRoles",  10, true);
+                page.pcRoles.appendHash = true;
                 page.pcRoles.addSource(new SelectSource("posture-checks", "@")); 
                 page.pcRoles.appendHash = true;
                 page.pcRoles.init();
 
                 page.filterObject = new Data("service-policies");
                 page.filterObject.init(true, true);
+
+                page.apiParams = CodeMirror.fromTextArea(document.getElementById("ApiParams"), { mode: "application/json", lineNumbers: true, extraKeys: {"Ctrl-Space": "autocomplete"}, readOnly: true });
             }, 
             gridAction: function(e) {
                 var action = $(e.currentTarget).data("action");
@@ -139,10 +144,20 @@
                 page.serviceRoles.val(detail.serviceRolesDisplay);
                 page.identityRoles.val(detail.identityRolesDisplay);
                 page.pcRoles.val(detail.postureCheckRolesDisplay);
+                page.params();
                 modal.show("AddModal");
             },
             save: function() {
                 if (page.validate()) {
+                    var obj = page.params();
+                    page.filterObject.save(obj);
+                } else growler.form();
+            },
+            formReset: function() {
+                page.params();
+            },
+            params: function() {
+                try {  
                     var obj = {
                         name: $("#Name").val(),
                         type: $("#Type").val(),
@@ -152,8 +167,18 @@
                         semantic: $("#Semantics").val(),
                         tags: tags.val()
                     };
-                    page.filterObject.save(obj);
-                } else growler.form();
+
+                    var url = settings.versionData.baseUrl+settings.versionData.serviceUrl+"/"+page.filterObject.name;
+                    if (page.filterObject.isEditing()) url += "/"+page.filterObject.editId;
+                    $("#ApiUrl").val(url);  
+                    page.apiParams.setValue(JSON.stringify(obj));
+                    page.apiParams.autoFormatRange({line:0, ch:0}, {line:page.apiParams.lineCount()});
+                    page.apiParams.scrollTo(null, 0);
+
+                    return obj
+                } catch (e) {
+                    console.log(e);
+                }
             },
             validate: function() {
                 $(".errors").removeClass("errors");

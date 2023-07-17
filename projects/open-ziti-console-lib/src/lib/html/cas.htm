@@ -121,10 +121,13 @@
             <label for="Name" data-i18n="Name"></label>
             <input id="Name" data-bind="data.name" type="text" maxlength="500" data-i18n="EnterName" />
 
+            <label for="IdentityNameFormat" data-i18n="IdentityNameFormat"></label>
+            <input id="IdentityNameFormat" data-bind="data.identityNameFormat" type="text" maxlength="500" data-i18n="EnterIdentityNameFormat" />
+
             <label for="IDRoles" data-i18n="IdentityRoles"></label>
             <div id="IDRoles"></div>
 
-            <div class="three">
+            <div class="four">
                 <div>
                     <label data-i18n="IsAuto"></label>
                     <div id="IsAutoEnrollmentEnabled" class="toggle">
@@ -146,12 +149,64 @@
                         <div class="label"></div>
                     </div>
                 </div>
+                <div>
+                    <label data-i18n="ExternalId"></label>
+                    <div id="IsExternalId" class="toggle">
+                        <div class="switch"></div>
+                        <div class="label"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ExternalIdArea" class="configBox" style="display: none; margin-top: 20px;">
+                <div class="three">
+                    <div>
+                        <label for="Location" data-i18n="Location"></label>
+                        <select id="Location">
+                            <option value="" data-i18n="SelectOption"></option>
+                            <option value="COMMON_NAME">COMMON_NAME</option>
+                            <option value="SAN_URI">SAN_URI</option>
+                            <option value="SAN_EMAIL">SAN_EMAIL</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="Matcher" data-i18n="Matcher"></label>
+                        <select id="Matcher">
+                            <option value="" data-i18n="SelectOption"></option>
+                            <option value="ALL">ALL</option>
+                            <option value="PREFIX">PREFIX</option>
+                            <option value="SUFFIX">SUFFIX</option>
+                            <option value="SCHEME">SCHEME</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="Parser" data-i18n="Parser"></label>
+                        <select id="Parser">
+                            <option value="" data-i18n="SelectOption"></option>
+                            <option value="NONE">NONE</option>
+                            <option value="SPLIT">SPLIT</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="Index" data-i18n="Index"></label>
+                        <input id="Index" data-bind="data.externalIdClaims.index" type="number" />
+                    </div>
+                    <div>
+                        <label for="MatcherCriteria" data-i18n="MatcherCriteria"></label>
+                        <input id="MatcherCriteria" data-bind="data.externalIdClaims.matcherCriteria" type="text" />
+                    </div>
+                    <div>
+                        <label for="ParserCriteria" data-i18n="ParserCriteria"></label>
+                        <input id="ParserCriteria" data-bind="data.externalIdClaims.parserCriteria" type="text" />
+                    </div>
+                </div>
             </div>
 
             <label for="Pem"><span data-i18n="PEM"></span> <span id="SelectFile" class="note" data-i18n="SelectFile"></span><input id="PemFile" type="file" accept=".pem"/></label>
             <textarea id="Pem" data-bind="data.certPem" style="height: 300px; font-size: 12px;" data-i18n="PastePEM"></textarea>
             
             <div id="TagArea"></div>
+            {{html.api}}
             {{html.save}}
         </div>
     </div>
@@ -191,7 +246,8 @@
     <script language="javascript" type="text/javascript">
         page = {
             filterObject: null,
-            identityRoles: null,
+            roles: null,
+            apiParams: null,
             init: function() {
                 this.events();
 
@@ -202,6 +258,8 @@
 
                 page.filterObject = new Data("cas");
                 page.filterObject.init(true, true);
+
+                page.apiParams = CodeMirror.fromTextArea(document.getElementById("ApiParams"), { mode: "application/json", lineNumbers: true, extraKeys: {"Ctrl-Space": "autocomplete"}, readOnly: true });
             }, 
             events: function() {
                 $("#PemFile").change(page.loadFile);
@@ -210,6 +268,14 @@
                 $("#SelectCertificateFile").click(function() { $("#CertificateFile").click(); });
                 $("#VerifyButton").click(page.verify); 
                 $("#VerificationCode").click(page.copy);
+                $("#IsExternalId").click(page.externalToggled);
+            },
+            externalToggled: function() {
+                if ($("#IsExternalId").hasClass("on")) {
+                    $("#ExternalIdArea").show();
+                } else {
+                    $("#ExternalIdArea").hide();
+                }
             },
             copy: function() {
                 document.querySelector("#VerificationCode").select();
@@ -288,22 +354,65 @@
                 if (detail.isAutoCaEnrollmentEnabled) $("#IsAutoEnrollmentEnabled").addClass("on");
                 if (detail.isOttCaEnrollmentEnabled) $("#IsOTTEnrollmentEnabled").addClass("on");
                 if (detail.isAuthEnabled) $("#IsAuthEnabled").addClass("on");
-                if (detail.identityRoles) page.identityRoles.val(detail.identityRoles); 
+                if (detail.roles) page.roles.val(detail.roles); 
+                if (detail.externalIdClaims!=null) {
+                    $("#IsExternalId").addClass("on");
+                    $("#ExternalIdArea").show();
+                    if (detail.externalIdClaims.location != null) $("#Location").val(detail.externalIdClaims.location);
+                    if (detail.externalIdClaims.matcher != null) $("#Matcher").val(detail.externalIdClaims.matcher);
+                    if (detail.externalIdClaims.parser != null) $("#Parser").val(detail.externalIdClaims.parser);
+                    if (detail.externalIdClaims.index != null) $("#Index").val(detail.externalIdClaims.index);
+                    if (detail.externalIdClaims.matcherCriteria != null) $("#MatcherCriteria").val(detail.externalIdClaims.matcherCriteria);
+                    if (detail.externalIdClaims.parserCriteria != null) $("#ParserCriteria").val(detail.externalIdClaims.parserCriteria);
+                }
+                page.params();
                 modal.show("AddModal");
+            },
+            formReset: function() {
+                page.params();
             },
             save: function() {
                 if (page.validate()) {
+                    var obj = page.params();
+
+                    page.filterObject.save(obj);
+                } else growler.form();
+            },
+            params: function() {
+                try {  
                     var obj = {
                         name: $("#Name").val(),
                         isAutoCaEnrollmentEnabled: $("#IsAutoEnrollmentEnabled").hasClass("on"),
                         isOttCaEnrollmentEnabled: $("#IsOTTEnrollmentEnabled").hasClass("on"),
-                        identityRoles: page.identityRoles.val(),
+                        identityRoles: page.roles.val(),
+                        identityNameFormat: $("#IdentityNameFormat").val(),
                         isAuthEnabled: $("#IsAuthEnabled").hasClass("on"),
                         tags: tags.val()
                     };
-                    if (page.filterObject.editId=="") obj.certPem = $("#Pem").val();
-                    page.filterObject.save(obj);
-                } else growler.form();
+
+                    if ($("#IsExternalId").hasClass("on")) {
+                        obj.externalIdClaims = {
+                            location: $("#Location").val(),
+                            matcher: $("#Matcher").val(),
+                            parser: $("#Parser").val(),
+                            index: $("#Index").val(),
+                            matcherCriteria: $("#MatcherCriteria").val(),
+                            parserCriteria: $("#ParserCriteria").val(),
+                        }
+                    }
+                    if (page.filterObject.isEditing()) url += "/"+page.filterObject.editId;
+
+                    var url = settings.versionData.baseUrl+settings.versionData.serviceUrl+"/"+page.filterObject.name;
+                    if (page.filterObject.isEditing()) url += "/"+page.editId;
+                    $("#ApiUrl").val(url);  
+                    page.apiParams.setValue(JSON.stringify(obj));
+                    page.apiParams.autoFormatRange({line:0, ch:0}, {line:page.apiParams.lineCount()});
+                    page.apiParams.scrollTo(null, 0);
+
+                    return obj
+                } catch (e) {
+                    console.log(e);
+                }
             },
             validate: function() {
                 $(".errors").removeClass("errors");
@@ -313,6 +422,7 @@
             },
             reset: function() {
                 app.isDirty = false;
+                $("#IsExternalId").removeClass("on");
                 $("#SelectFile").show();
                 $("#Pem").attr("readonly",false);
             },

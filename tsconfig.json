@@ -25,7 +25,7 @@
       "dom"
     ],
     "paths": {
-      "open-ziti-console": [
+      "open-ziti-console-lib": [
         "dist/open-ziti-console"
       ],
       "app-open-ziti": [

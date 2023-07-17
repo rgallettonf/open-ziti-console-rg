@@ -36,17 +36,17 @@
 		<link href="/assets/styles/spectrum.css" rel="stylesheet" type="text/css"/>
 		<link href="/assets/scripts/components/leaflet/leaflet.css" rel="stylesheet" type="text/css"/>
 		<link href="/assets/styles/chart.min.css" rel="stylesheet" type="text/css"/>
+		<link href="/assets/styles/datetimepicker.css" rel="stylesheet" type="text/css"/>
 		<link href="/assets/scripts/components/column.css" rel="stylesheet" type="text/css"/>
-		<link href="/assets/scripts/components/codemirror/codemirror.css" rel="stylesheet" type="text/css"/>
-
+		<link href="/assets/scripts/components/codemirror/codemirror.css" rel="stylesheet" type="text/css"/>	
+	
 		<!-- 3rd Party Includes -->
 		<script src="/assets/scripts/jquery-3.6.3.min.js"></script>
 		<script src="/assets/scripts/components/moment.js"></script>
 		<script src="/assets/scripts/components/timezone.js"></script>
 		<script src="/assets/scripts/components/spectrum.js"></script>
-		<script crossorigin="anonymous" src="/assets/scripts/components/leaflet/leaflet.js"></script>
-		<script async crossorigin="anonymous" src="//www.googletagmanager.com/gtag/js?id=UA-91801335-7"></script>
-
+		<script crossorigin="anonymous" src="/assets/scripts/components/leaflet/leaflet.js"></script>	
+	
 		<!-- NetFoundry Components -->
 		<script src="/assets/scripts/components/column.js"></script>
 		<script src="/assets/scripts/forms/schema.js"></script>
@@ -73,6 +73,8 @@
 		<script src="/assets/scripts/dragging.js"></script>
 		<script src="/assets/scripts/components/resources.js"></script>
 		<script src="/assets/scripts/components/uploader.js"></script>
+		<script src="/assets/scripts/commands.js"></script>
+		<script src="/assets/scripts/jquery.datetimepicker.js"></script>
 		<!-- Application Objects -->
 		<script src="/assets/scripts/model/data.js"></script>
 		<script src="/assets/scripts/components/selector.js"></script>
@@ -91,14 +93,14 @@
 		<!-- Application -->
 		<script src="/assets/scripts/header.js"></script>
 		<script src="/assets/scripts/ziti.js"></script>
-
+	
+		<style>
+	{{html.style}}
+		</style>
 		<script type="text/javascript">
+			let canStyle = {{html.canStyle}};
 			window.dataLayer = window.dataLayer || [];
-			function gtag(){dataLayer.push(arguments);}
-			gtag('js', new Date());
-
-			gtag('config', 'UA-91801335-7');
-
+	
 			if (localStorage.getItem("mode")!=null&&localStorage.getItem("mode")=="dark") {
 				var link = document.createElement( "link" );
 				link.href = "/assets/styles/dark.css";
@@ -107,11 +109,13 @@
 				link.media = "screen";
 				document.getElementsByTagName("head")[0].appendChild(link);
 			}
-			if (localStorage.getItem("primaryColor")!=null) {
-				document.documentElement.style.setProperty("--primary", localStorage.getItem("primaryColor"));
-			}
-			if (localStorage.getItem("secondaryColor")!=null) {
-				document.documentElement.style.setProperty("--secondary", localStorage.getItem("secondaryColor"));
+			if (canStyle) {
+				if (localStorage.getItem("primaryColor")!=null) {
+					document.documentElement.style.setProperty("--primary", localStorage.getItem("primaryColor"));
+				}
+				if (localStorage.getItem("secondaryColor")!=null) {
+					document.documentElement.style.setProperty("--secondary", localStorage.getItem("secondaryColor"));
+				}
 			}
 			var mode = localStorage.getItem("Transitions");
 			if (mode=="off") {
@@ -119,7 +123,10 @@
 			} else {
 				document.documentElement.style.setProperty("--transition", "0.5s");
 			}
-		</script>
+			$(document).ready((e) => {
+				if (canStyle) $(".personal").show();
+			});
+		</script>	
 	</head>
 	<body>
 		<header class="auth{{auth}}">
@@ -128,14 +135,12 @@
 					<div class="circle"></div>
 					<div class="icon icon-globe"></div>
 					<div id="NetworkHover" class="hover" data-i18n="NetworkSettings"></div>
-			  </div>
-			  <!--x
+			  </div> 
 			  <div id="AddButton" class="clickable" data-hover="AddHover">
 					<div class="circle"></div>
 					<div class="icon"></div>
 					<div id="AddHover" class="hover">Add New</div>
 			  </div>
-			  //-->
 			  <a href="/attributes">
 			  <div id="AttributesButton" class="clickable" data-hover="AttributeHover">
 				<div class="circle"></div>
@@ -182,6 +187,7 @@
 		<nav class="auth{{auth}}">
 			<div class="title" data-i18n="AppName"></div>
 			<div id="Version" class="version"></div>
+			<div id="CustomLogo"></div>
 			<div id="AreaNavigation" class="navArea">
 				<div class="navList">
 					<a href="/">
@@ -273,7 +279,7 @@
 			</div>
 			<div class="hr"></div>
 			<div id="NotificationsList"></div>
-	  	</div>
+	  	</div>	  
 		<aside class="unauth{{auth}}">
 			<div class="overlay"></div>
 			<div class="icon"></div>
@@ -281,7 +287,7 @@
 			<div class="title" id="LoginVersion"></div>
 		</aside>
 		<main>
-
+			
 		<div id="NotificationTemplate" class="growler row template">
 			<div class="title">{{level}}</div>
 			<div class="subtitle">{{subtitle}}</div>

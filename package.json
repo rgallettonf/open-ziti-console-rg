@@ -19,12 +19,15 @@
     "@angular/platform-browser-dynamic": "^16.0.0",
     "@angular/router": "^16.0.0",
     "@stoplight/json-ref-resolver": "^3.1.5",
+    "jexl": "^2.3.0",
     "jquery": "^3.7.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
-    "open-ziti-console": "file:dist/open-ziti-console-lib",
+    "ngx-schema-form": "^2.10.0",
+    "open-ziti-console-lib": "file:dist/open-ziti-console-lib",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "z-schema": "^6.0.1",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {

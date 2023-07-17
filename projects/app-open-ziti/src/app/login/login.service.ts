@@ -1,9 +1,11 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {SettingsService} from "open-ziti-console";
+import {SettingsService} from "open-ziti-console-lib";
 import {firstValueFrom} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {Router} from "@angular/router";
+import moment from "moment";
+import {debounce, delay, isEmpty} from "lodash";
 
 @Injectable({
     providedIn: 'root'
@@ -36,16 +38,25 @@ export class LoginService {
         ).then((body: any) => {
             if (body.error) throw body.error;
             const settings = {
-                ...this.settingsService.settings, ...{
-                    sessionId: body.data?.token,
+                ...this.settingsService.settings, session: {
+                    id: body.data?.token,
                     controllerDomain: this.domain,
                     authorization: 100,
                     expiresAt: body.data.expiresAt
-
                 }
             }
             this.settingsService.set(settings);
+            const tokenExpirationDate = moment(settings.session.expiresAt);
+            const expTime = tokenExpirationDate.diff(moment());
+            let buffer = expTime - (1000 * 30);
+            if (buffer < 10000) {
+                buffer = 10000;
+            }
+            delay(() => {
+                this.loginDebounced(prefix, url, username, password, rejectUnauthorized);
+            }, buffer);
             this.router.navigate(['/']);
         });
     }
+    loginDebounced = debounce(this.login.bind(this), 10000, {leading: true});
 }

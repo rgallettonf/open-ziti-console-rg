@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 import {authenticationGuard} from "./guards/authentication.guard";
-import {ZacWrapperComponent} from "open-ziti-console";
+import {ZacWrapperComponent, ConfigurationComponent} from "open-ziti-console-lib";
 import {LoginComponent} from "./login/login.component";
 
 const routes: Routes = [
@@ -46,81 +46,81 @@ const routes: Routes = [
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-transit-routers',
+    path: 'transit-routers',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-configs',
+    path: 'configs',
+    component: ConfigurationComponent,
+    canActivate: [authenticationGuard],
+  },
+  {
+    path: 'recipes',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-recipes',
+    path: 'terminators',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-terminators',
+    path: 'service-policies',
+    component: ZacWrapperComponent,
+  },
+  {
+    path: 'router-policies',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-service-policies',
-    component: ZacWrapperComponent,
-  },
-  {
-    path: 'ziti-router-policies',
+    path: 'service-router-policies',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-service-router-policies',
+    path: 'auth-policies',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-auth-policies',
+    path: 'posture-checks',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-posture-checks',
+    path: 'certificate-authorities',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-certificate-authorities',
+    path: 'organization',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-organization',
+    path: 'profile',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-profile',
+    path: 'servers',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-servers',
+    path: 'sessions',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-sessions',
+    path: 'settings',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-settings',
-    component: ZacWrapperComponent,
-    canActivate: [authenticationGuard],
-  },
-  {
-    path: 'ziti-config-types',
+    path: 'config-types',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
