@@ -286,7 +286,7 @@ export class ZacWrapperService {
                 this.saveZitiEntity(params, returnTo);
                 break;
             case 'call':
-                this.callZitiEdge(`https://${this.zitiControllerDomain}/edge/management/v1/${params.url}`, {}).then((result) => {
+                this.callZitiEdge(`${this.zitiControllerDomain}/edge/management/v1/${params.url}`, {}).then((result) => {
                     returnTo(result);
                 });
                 break;
@@ -339,7 +339,7 @@ export class ZacWrapperService {
     }
 
     getZitiEntities(type: string, paging: any) {
-        const serviceUrl = `https://${this.zitiControllerDomain}/edge/management/v1`;
+        const serviceUrl = `${this.zitiControllerDomain}/edge/management/v1`;
         let urlFilter = "";
         let toSearchOn = "name";
         let noSearch = false;
@@ -363,7 +363,7 @@ export class ZacWrapperService {
     }
 
     getZitiEntity(params: any) {
-        const serviceUrl = `https://${this.zitiControllerDomain}/edge/management/v1`;
+        const serviceUrl = `${this.zitiControllerDomain}/edge/management/v1`;
         const url = params.url.split("./").join("");
         const id = params.id;
         const type = params.type;
@@ -379,7 +379,7 @@ export class ZacWrapperService {
     }
 
     saveZitiEntity(params: any, returnTo: any) {
-        const serviceUrl = `https://${this.zitiControllerDomain}/edge/management/v1`;
+        const serviceUrl = `${this.zitiControllerDomain}/edge/management/v1`;
         const saveParams = params.save;
         const additional = params.additional;
         const removal = params.removal;

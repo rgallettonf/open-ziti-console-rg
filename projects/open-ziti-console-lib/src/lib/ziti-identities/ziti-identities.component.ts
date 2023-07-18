@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import { ColDef } from 'ag-grid-community';
-import {ZacWrapperService} from "../zac-wrapper.service";
 import {SettingsService} from "../services/settings.service";
-import {HttpClient} from "@angular/common/http";
+import {ZitiIdentitiesService} from "./ziti-identities.service";
+import {TableHeaderDefaultComponent} from "../data-table/table-header-default/table-header-default.component";
 
 @Component({
   selector: 'lib-ziti-identities',
@@ -10,36 +10,46 @@ import {HttpClient} from "@angular/common/http";
   styleUrls: ['./ziti-identities.component.scss']
 })
 export class ZitiIdentitiesComponent implements OnInit {
-  columnDefs: ColDef[] = [
-    { field: 'name' },
-    { field: 'type.name', headerName: 'Type' },
-    { field: 'isAdmin' },
-    { field: 'createdAt' },
-    { field: 'token' },
-    { field: 'mfa', headerName: 'Type' }
-  ];
+
+  columnDefs: any = [];
+  columnFilters: any = {
+    name: '',
+  }
 
   rowData = [];
 
-  constructor(private wrapperService: ZacWrapperService, private settings: SettingsService, private http: HttpClient) {}
+  constructor(
+    private settings: SettingsService,
+    private svc: ZitiIdentitiesService
+  ) {
+    this.initTableColumns();
+  }
 
   ngOnInit() {
-    const serviceUrl = `${this.settings.controllerBaseUrl}/edge/management/v1/identities`;
-    const options = this.getHttpOptions();
-    this.http.get(serviceUrl, options).toPromise().then((data: any) => {
+    this.svc.getZitiIdentities().then((data: any) => {
       this.rowData = data.data;
     });
   }
 
-  getHttpOptions(useZitiCreds = false) {
-    const options: any = {
-      headers: {
-        accept: 'application/json',
-        'zt-session': this.settings.edgeSessionToken
-      },
-      params: {},
-      responseType: 'json' as const,
+  initTableColumns() {
+    const columnFilters = this.columnFilters;
+    const headerComponentParams = {
+      filterType: 'TEXTINPUT',
+      columnFilters,
     };
-    return options;
+    this.columnDefs = [
+      {
+        field: 'name',
+        headerComponent: TableHeaderDefaultComponent,
+        headerComponentParams,
+        resizable: true,
+        cellClass: 'nf-cell-vert-align tCol',
+      },
+      { field: 'type.name', headerName: 'Type' },
+      { field: 'isAdmin' },
+      { field: 'createdAt' },
+      { field: 'token' },
+      { field: 'mfa', headerName: 'Type' }
+    ];
   }
 }

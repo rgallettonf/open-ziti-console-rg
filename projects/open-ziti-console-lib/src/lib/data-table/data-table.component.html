@@ -1,0 +1,45 @@
+<div *ngIf="gridRendered && showFilter" class="hidden-columns-list" id="ColumnVisibilityHeader">
+    <div
+            (click)="setColumnVisibilityColumn(col, true)"
+            *ngFor="let col of hiddenColumns"
+            class="hidden-column-item ag-dnd-ghost ag-unselectable ag-theme-alpine"
+            id="ColumnVisibility_{{ col.headerName }}"
+            title="Show column"
+    >
+        <span class="ag-dnd-ghost-icon">
+            <span class="ag-icon ag-icon-eye-slash"></span>
+        </span>
+        <div class="ag-dnd-ghost-label">{{ col.headerName }}</div>
+    </div>
+</div>
+<div (resized)="resizeGridColumnsDebounced($event)" class="nf-ag-grid" id="ItemTable">
+    <ag-grid-angular
+        #nfAgGrid
+        (gridReady)="onGridReady($event)"
+        [columnDefs]="mergedColumnDefinitions"
+        [components]="frameworkComponents"
+        [getDataPath]="getDataPath"
+        [getRowId]="getRowNodeId"
+        [gridOptions]="gridOptions"
+        [modules]="gridModules"
+        [rowData]="rowData"
+        class="nf-ag-grid-table ag-theme-alpine"
+        id="ItemGrid"
+    >
+    </ag-grid-angular>
+</div>
+<div
+        [ngClass]="{ open: openMenu }"
+        [ngStyle]="{ left: menuLeft + 'px', top: menuTop + 'px' }"
+        class="tMenu action-menu"
+        id="RowActionMenu"
+>
+    <div
+            (click)="actionRequested.emit({ action: 'update', item: selectedItem })"
+            *ngIf="selectedItem.actionList.includes('update')"
+            class="tActionRow"
+            id="EditSelectionButton"
+    >
+        Edit
+    </div>
+</div>

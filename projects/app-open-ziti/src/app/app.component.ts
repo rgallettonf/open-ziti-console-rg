@@ -26,7 +26,9 @@ export class AppComponent implements OnInit {
         this.settingsService.init();
         this.settingsService.settingsChange.subscribe(results => {
             this.loginVersion = results.version;
-            this.loggedIn = !isEmpty(this.settings.controllerBaseUrl) && !isEmpty(this.settings.edgeSessionToken);
         });
+        this.settingsService.settingsChange.subscribe((settings: any) => {
+            this.loggedIn = !isEmpty(settings.sessionId) && !isEmpty(settings.controllerDomain);
+        })
     }
 }

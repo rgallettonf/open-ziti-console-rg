@@ -13,10 +13,10 @@ const {growler, context} = window;
 })
 export class LoginComponent implements OnInit, OnDestroy {
     edgeControllerList: any[] = [];
-    username = '';
-    password = '';
-    edgeName: string = '';
-    edgeUrl: string = '';
+    username = 'ZTUSER8F2697013DCF296909FE3127EA1056D73A10D660';
+    password = 'ZTPASS11581A57398E75D18DB3C4556577210965332DEC';
+    edgeName: string = 'v8ManualTest';
+    edgeUrl: string = 'https://132.145.128.130';
     edgeCreate = false;
     userLogin = false;
     selectedEdgeController = '';

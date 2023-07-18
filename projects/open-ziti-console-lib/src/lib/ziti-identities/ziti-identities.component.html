@@ -21,11 +21,10 @@
     </div>
     <div class="nodata" data-defined="empty">No <span data-bind="pageTitle"></span> Defined, Click the plus to add A <span data-bind="singular"></span>.</div>
     <div class="nf-ag-grid" id="ItemTable">
-        <ag-grid-angular
-                style="width: 100%; height: 100%"
-                class="ag-theme-alpine"
-                [rowData]="rowData"
-                [columnDefs]="columnDefs">
-        </ag-grid-angular>
+        <lib-data-table
+            [rowData]="rowData"
+            [columnDefinitions]="columnDefs"
+        >
+        </lib-data-table>
     </div>
 </div>

@@ -1,0 +1,21 @@
+.row-toggle {
+  &.tSelect {
+    &.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: initial !important;
+
+      &:hover {
+        width: 25px;
+        height: 25px;
+        border: 2px var(--offWhite) solid;
+        border-radius: 15px;
+        transition: background-color 0.5s;
+        position: absolute;
+        top: 13px;
+        left: 17px;
+        background-color: var(--navigation);
+      }
+    }
+  }
+}
