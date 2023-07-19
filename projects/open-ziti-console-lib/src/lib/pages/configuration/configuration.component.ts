@@ -21,9 +21,9 @@ export class ConfigurationComponent extends ExtendableComponent implements OnDes
     ];
 
     lColorArray = [
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
+        'black',
+        'white',
+        'white',
     ]
 
     bColorArray = [

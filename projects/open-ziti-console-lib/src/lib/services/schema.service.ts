@@ -177,132 +177,37 @@ export class SchemaService {
             }
         }
     }
-
-    addField(view: ViewContainerRef, key: string, property: any, nestLevel: number, parentKey?: string) {
-        const type = this.getType(property);
-        let componentRef:ComponentRef<any> | null = null;
-        if (type == "object") {
-            if (property.properties != null) {
-                componentRef = this.buildNestedContainer(view, key, parentKey, nestLevel, property);
-            }
-        } else if (type == "integer") {
-            componentRef = this.buildNumericField(view, key, property);
-        } else if (type == "array") {
-            let items: any = {};
-            if (property.allOf && property.allOf.length >= 2) items = property.allOf[1];
-            if (property.items) items = property.items;
-            if (items.items) items = items.items;
-
-            // if (items.type && items.type == "object" && items.properties != null) {
-            //     let properties = items.properties;
-            //     html += '<div id="' + ((parentKey != null) ? parentKey + '_' : '') + 'schema_' + key + '_selected" class="selectedItems"></div>';
-            //     html += '<div class="subform">';
-            //     let values = [];
-            //     if (key == "portRanges" || key == "allowedPortRanges") html += '<div class="grid splitadd">';
-            //     let order = ['low', 'high'];
-            //     let subItems = [];
-            //     for (let subKey in properties) {
-            //         subItems.push({
-            //             key: key,
-            //             subKey: subKey,
-            //             value: properties[subKey]
-            //         });
-            //     }
-            //     subItems.sort(function (a, b) {
-            //         let aPort = a.subKey.replace(/[^A-Za-z]+/g, '').toLowerCase().replace(/\s/g, '');
-            //         let bPort = b.subKey.replace(/[^A-Za-z]+/g, '').toLowerCase().replace(/\s/g, '');
-            //         return order.indexOf(aPort) - order.indexOf(bPort);
-            //     });
-            //     for (let i = 0; i < subItems.length; i++) {
-            //         values.push(subItems[i].subKey);
-            //         html += this.getField(subItems[i].subKey, subItems[i].value, subItems[i].key);
-            //     }
-            //     html += '<div><div id="' + ((parentKey != null) ? parentKey + '_' : '') + 'schema_' + key + '_Button" class="button subobject" data-id="' + key + '_schema" data-to="' + ((parentKey != null) ? parentKey + '_' : '') + 'schema_' + key + '_selected" data-values="' + values.toString() + '">Add</div></div>'
-            //     if (key == "portRanges") html += '</div>';
-            //     html += '</div></div>';
-            // } else
-                if (Array.isArray(items.enum)) {
-                    // html += '<div id="' + ((parentKey != null) ? parentKey + '_' : '') + 'schema_' + key + '" data-total="' + items.enum.length + '" class="checkboxList">';
-                    // for (let i = 0; i < items.enum.length; i++) {
-                    //     html += '<label><div id="' + ((parentKey != null) ? parentKey + '_' : '') + 'schema_' + key + '_' + i + '" data-value="' + items.enum[i] + '" class="check"></div> ' + items.enum[i] + '</label>';
-                    // }
-                    // html += '</div></div>';
-                    componentRef = this.buildCheckBoxListField(view, key, items.enum);
-
-                } else {
-                    // html += '<div id="' + ((parentKey != null) ? parentKey + '_' : '') + 'schema_' + key + '_selected" class="selectedItems"></div>';
-                    // html += '<input id="' + ((parentKey != null) ? parentKey + '_' : '') + 'schema_' + key + '" type="text" class="jsonEntry arrayEntry" placeholder="enter values seperated with a comma"/></div>';
-                    componentRef = this.buildTextListField(view, key);
-                }
-        } else if (type == "boolean") {
-            componentRef = this.buildBooleanField(view, key);
-
-            // html = '<div>' + html;
-            // html += '<div id="schema_' + key + '" class="toggle"><div class="switch"></div><div class="label"></div></div></div>';
-            // if (key == "dialInterceptedAddress") {
-            //     html += '<div class="schema_dialInterceptedAddress_area" style="display:none">';
-            //     html += '<label for="schema_' + key + '_allowedAddresses">Forward Addresses</label>';
-            //     html += '<div id="schema_' + key + '_allowedAddresses_selected" class="selectedItems"></div>';
-            //     html += '<input id="schema_' + key + '_allowedAddresses" type="text" class="jsonEntry arrayEntry" placeholder="enter values seperated with a comma"/></div>';
-            //     html += "</div>";
-            // }
-            // if (key == "dialInterceptedPort") {
-            //     html += '<div class="schema_dialInterceptedPort_area" style="display:none">';
-            //     html += '<label for="schema_' + key + '_allowedPorts">Forward Port Ranges</label>';
-            //     html += '<div id="schema_' + key + '_allowedPorts_selected" class="selectedItems"></div>';
-            //
-            //     html += '<div class="subform"><div class="grid splitadd">';
-            //     html += '<div><label for="">High</label>';
-            //     html += '<input id="schema_' + key + '_allowedPorts_high" type="text" class="jsonEntry" placeholder="enter the value"/></div>';
-            //     html += '<div><label for="">Low</label>';
-            //     html += '<input id="schema_' + key + '_allowedPorts_low" type="text" class="jsonEntry" placeholder="enter the value"/></div>';
-            //     html += '<lab><div id="' + key + '_Button" class="button subobject" data-id="schema_' + key + '_allowedPorts" data-to="schema_' + key + '_allowedPorts_selected" data-types="number,number" data-values="high,low">Add</div></label>'
-            //     html += '</div></div></div>';
-            // }
-            // if (key == "dialInterceptedProtocol") {
-            //     html += '<div class="schema_dialInterceptedProtocol_area" style="display:none">';
-            //     html += '<label for="schema_' + key + '_allowedProtocols">Forward Protocols</label>';
-            //     html += '<div id="schema_' + key + '_allowedProtocols_selected" class="selectedItems"></div>';
-            //     html += '<input id="schema_' + key + '_allowedProtocols" type="text" class="jsonEntry arrayEntry" placeholder="enter values seperated with a comma"/></div>';
-            //     html += "</div>";
-            // }
-        }  else if (property.enum && property.enum.length > 0) {
-            componentRef = this.buildSelectField(view, key, property.enum);
-
-        }  else if (type == "string") {
-            componentRef = this.buildTextField(view, key);
-        }
-        return componentRef;
-    }
-
-    private buildNestedContainer(view: ViewContainerRef, key: string, parentKey: string | undefined, nestLevel: number, property: any) {
+    private buildNestedContainer(view: ViewContainerRef, nestLevel: number, key: string, parentKey: string | undefined, property: any) {
         let componentRef = view.createComponent(ObjectComponent);
         componentRef.setInput('fieldName', this.getLabel(key));
         if (parentKey && !_.isEmpty(parentKey)) componentRef.setInput('parentName', parentKey.toLowerCase());
         componentRef.setInput('bcolor', this.bColorArray[nestLevel]);
         const embeddedView = componentRef.instance.wrapperContents;
-        this.addFields(property, embeddedView, nestLevel++);
+        componentRef.setInput('labelColor', this.lColorArray[nestLevel]);
+        this.addFields(property, embeddedView, ++nestLevel, key);
         return componentRef;
     }
 
-    private buildBooleanField(view: ViewContainerRef, key: string, parentKey?: string) {
+    private buildBooleanField(view: ViewContainerRef, nestLevel: number, key: string, parentKey?: string) {
         let componentRef = view.createComponent(BooleanComponent);
         componentRef.setInput('fieldName', this.getLabel(key));
         if(parentKey && !_.isEmpty(parentKey) ) componentRef.setInput('parentName', parentKey.toLowerCase());
         componentRef.setInput('fieldValue', '');
+        componentRef.setInput('labelColor', this.lColorArray[nestLevel]);
         return componentRef;
     }
 
-    private buildTextField(view: ViewContainerRef, key: string, parentKey?: string) {
+    private buildTextField(view: ViewContainerRef, nestLevel: number, key: string, parentKey?: string) {
         let componentRef = view.createComponent(StringComponent);
         componentRef.setInput('fieldName', this.getLabel(key));
         if(parentKey && !_.isEmpty(parentKey) ) componentRef.setInput('parentName', parentKey.toLowerCase());
         componentRef.setInput('fieldValue', '');
         componentRef.setInput('placeholder', `enter a value for ${key}`);
+        componentRef.setInput('labelColor', this.lColorArray[nestLevel]);
         return componentRef;
     }
 
-    private buildNumericField(view: ViewContainerRef, key: string, property: any, parentKey?: string) {
+    private buildNumericField(view: ViewContainerRef, nestLevel: number, key: string, property: any, parentKey?: string) {
         let placeholder = "enter a numeric value";
         if (property.minimum != null && property.maximum != null) placeholder = "numeric value between " + property.minimum + "-" + property.maximum;
         else {
@@ -314,35 +219,39 @@ export class SchemaService {
         if(parentKey && !_.isEmpty(parentKey) ) componentRef.setInput('parentName', parentKey.toLowerCase());
         componentRef.setInput('fieldValue', false);
         componentRef.setInput('placeholder', placeholder);
+        componentRef.setInput('labelColor', this.lColorArray[nestLevel]);
         return componentRef;
     }
 
-    private buildSelectField(view: ViewContainerRef, key: string, list: string[], parentKey?: string) {
+    private buildSelectField(view: ViewContainerRef, nestLevel: number, key: string, list: string[], parentKey?: string) {
         let componentRef = view.createComponent(SelectorComponent);
         componentRef.setInput('fieldName', this.getLabel(key));
         if(parentKey && !_.isEmpty(parentKey) ) componentRef.setInput('parentName', parentKey.toLowerCase());
         componentRef.setInput('fieldValue', '');
         componentRef.setInput('valueList', list);
         componentRef.setInput('placeholder', `select a value`);
+        componentRef.setInput('labelColor', this.lColorArray[nestLevel]);
         return componentRef;
     }
 
-    private buildCheckBoxListField(view: ViewContainerRef, key: string, list: string[], parentKey?: string) {
+    private buildCheckBoxListField(view: ViewContainerRef, nestLevel: number, key: string, list: string[], parentKey?: string) {
         let componentRef = view.createComponent(CheckboxListComponent);
         componentRef.setInput('fieldName', this.getLabel(key));
         if(parentKey && !_.isEmpty(parentKey) ) componentRef.setInput('parentName', parentKey.toLowerCase());
         componentRef.setInput('fieldValue', '');
         componentRef.setInput('valueList', list);
         componentRef.setInput('placeholder', `select a value`);
+        componentRef.setInput('labelColor', this.lColorArray[nestLevel]);
         return componentRef;
     }
 
-    private buildTextListField(view: ViewContainerRef, key: string, parentKey?: string) {
+    private buildTextListField(view: ViewContainerRef, nestLevel: number, key: string, parentKey?: string) {
         let componentRef = view.createComponent(TextListComponent);
         componentRef.setInput('fieldName', this.getLabel(key));
         if(parentKey && !_.isEmpty(parentKey) ) componentRef.setInput('parentName', parentKey.toLowerCase());
-        componentRef.setInput('fieldValue', '');
-        componentRef.setInput('placeholder', `enter values seperated with a comma`);
+        componentRef.setInput('fieldValue', ['test1','test2']);
+        componentRef.setInput('placeholder', `enter values separated with a comma`);
+        componentRef.setInput('labelColor', this.lColorArray[nestLevel]);
         return componentRef;
     }
 
@@ -457,13 +366,105 @@ export class SchemaService {
         return this.items;
     }
 
-    private addFields(schema: any, view: ViewContainerRef, nestLevel: number) {
+    private addFields(schema: any, view: ViewContainerRef, nestLevel: number, parentKey?: string) {
         for (let key in schema.properties) {
             const k = key.toLowerCase();
             if (k !== "httpchecks" && k !== "portchecks") {
-                this.items.push({key: k, component: this.addField(view, key, schema.properties[key], nestLevel)});
+                this.items.push({key: k, component: this.addField(view, nestLevel, key, schema.properties[key], parentKey)});
             }
         }
+    }
+
+    addField(view: ViewContainerRef, nestLevel: number, key: string, property: any, parentKey?: string) {
+        const type = this.getType(property);
+        let componentRef:ComponentRef<any> | null = null;
+        if (type == "object") {
+            if (property.properties != null) {
+                componentRef = this.buildNestedContainer(view, nestLevel, key, parentKey, property);
+            }
+        } else if (type == "integer") {
+            componentRef = this.buildNumericField(view, nestLevel, key, property, parentKey);
+        } else if (type == "array") {
+            let items: any = {};
+            if (property.allOf && property.allOf.length >= 2) items = property.allOf[1];
+            if (property.items) items = property.items;
+            if (items.items) items = items.items;
+
+            // if (items.type && items.type == "object" && items.properties != null) {
+            //     let properties = items.properties;
+            //     html += '<div id="' + ((parentKey != null) ? parentKey + '_' : '') + 'schema_' + key + '_selected" class="selectedItems"></div>';
+            //     html += '<div class="subform">';
+            //     let values = [];
+            //     if (key == "portRanges" || key == "allowedPortRanges") html += '<div class="grid splitadd">';
+            //     let order = ['low', 'high'];
+            //     let subItems = [];
+            //     for (let subKey in properties) {
+            //         subItems.push({
+            //             key: key,
+            //             subKey: subKey,
+            //             value: properties[subKey]
+            //         });
+            //     }
+            //     subItems.sort(function (a, b) {
+            //         let aPort = a.subKey.replace(/[^A-Za-z]+/g, '').toLowerCase().replace(/\s/g, '');
+            //         let bPort = b.subKey.replace(/[^A-Za-z]+/g, '').toLowerCase().replace(/\s/g, '');
+            //         return order.indexOf(aPort) - order.indexOf(bPort);
+            //     });
+            //     for (let i = 0; i < subItems.length; i++) {
+            //         values.push(subItems[i].subKey);
+            //         html += this.getField(subItems[i].subKey, subItems[i].value, subItems[i].key);
+            //     }
+            //     html += '<div><div id="' + ((parentKey != null) ? parentKey + '_' : '') + 'schema_' + key + '_Button" class="button subobject" data-id="' + key + '_schema" data-to="' + ((parentKey != null) ? parentKey + '_' : '') + 'schema_' + key + '_selected" data-values="' + values.toString() + '">Add</div></div>'
+            //     if (key == "portRanges") html += '</div>';
+            //     html += '</div></div>';
+            // } else
+            if (Array.isArray(items.enum)) {
+                componentRef = this.buildCheckBoxListField(view, nestLevel, key, items.enum, parentKey);
+
+            } else {
+                // html += '<div id="' + ((parentKey != null) ? parentKey + '_' : '') + 'schema_' + key + '_selected" class="selectedItems"></div>';
+                // html += '<input id="' + ((parentKey != null) ? parentKey + '_' : '') + 'schema_' + key + '" type="text" class="jsonEntry arrayEntry" placeholder="enter values seperated with a comma"/></div>';
+                componentRef = this.buildTextListField(view, nestLevel,  key, parentKey);
+            }
+        } else if (type == "boolean") {
+            componentRef = this.buildBooleanField(view, nestLevel, key, parentKey);
+
+            // html = '<div>' + html;
+            // html += '<div id="schema_' + key + '" class="toggle"><div class="switch"></div><div class="label"></div></div></div>';
+            // if (key == "dialInterceptedAddress") {
+            //     html += '<div class="schema_dialInterceptedAddress_area" style="display:none">';
+            //     html += '<label for="schema_' + key + '_allowedAddresses">Forward Addresses</label>';
+            //     html += '<div id="schema_' + key + '_allowedAddresses_selected" class="selectedItems"></div>';
+            //     html += '<input id="schema_' + key + '_allowedAddresses" type="text" class="jsonEntry arrayEntry" placeholder="enter values seperated with a comma"/></div>';
+            //     html += "</div>";
+            // }
+            // if (key == "dialInterceptedPort") {
+            //     html += '<div class="schema_dialInterceptedPort_area" style="display:none">';
+            //     html += '<label for="schema_' + key + '_allowedPorts">Forward Port Ranges</label>';
+            //     html += '<div id="schema_' + key + '_allowedPorts_selected" class="selectedItems"></div>';
+            //
+            //     html += '<div class="subform"><div class="grid splitadd">';
+            //     html += '<div><label for="">High</label>';
+            //     html += '<input id="schema_' + key + '_allowedPorts_high" type="text" class="jsonEntry" placeholder="enter the value"/></div>';
+            //     html += '<div><label for="">Low</label>';
+            //     html += '<input id="schema_' + key + '_allowedPorts_low" type="text" class="jsonEntry" placeholder="enter the value"/></div>';
+            //     html += '<lab><div id="' + key + '_Button" class="button subobject" data-id="schema_' + key + '_allowedPorts" data-to="schema_' + key + '_allowedPorts_selected" data-types="number,number" data-values="high,low">Add</div></label>'
+            //     html += '</div></div></div>';
+            // }
+            // if (key == "dialInterceptedProtocol") {
+            //     html += '<div class="schema_dialInterceptedProtocol_area" style="display:none">';
+            //     html += '<label for="schema_' + key + '_allowedProtocols">Forward Protocols</label>';
+            //     html += '<div id="schema_' + key + '_allowedProtocols_selected" class="selectedItems"></div>';
+            //     html += '<input id="schema_' + key + '_allowedProtocols" type="text" class="jsonEntry arrayEntry" placeholder="enter values seperated with a comma"/></div>';
+            //     html += "</div>";
+            // }
+        }  else if (property.enum && property.enum.length > 0) {
+            componentRef = this.buildSelectField(view, nestLevel, key, property.enum, parentKey);
+
+        }  else if (type == "string") {
+            componentRef = this.buildTextField(view, nestLevel, key, parentKey);
+        }
+        return componentRef;
     }
 
     updateForm(value: string) {
