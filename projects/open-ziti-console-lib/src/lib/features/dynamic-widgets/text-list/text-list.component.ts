@@ -5,8 +5,8 @@ import {debounce} from "lodash";
 @Component({
   selector: 'lib-text-list',
   template: `
-    <label for="schema_{{parentName?parentName+'_':''}}{{_idName}}"  [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
-    <p-chips id="schema_{{parentName?parentName+'_':''}}{{_idName}}"
+    <label for="schema_{{parentage?parentage+'_':''}}{{_idName}}"  [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
+    <p-chips id="schema_{{parentage?parentage+'_':''}}{{_idName}}"
         (keyup)="onKeyup()"
         [(ngModel)]="fieldValue"
         [allowDuplicate]="false"
@@ -26,7 +26,7 @@ export class TextListComponent {
   }
   @Input() fieldValue = '';
   @Input() placeholder = '';
-  @Input() parentName = '';
+  @Input() parentage: string[] = [];
   @Input() labelColor = '#000000';
   @Output() fieldValueChange = new EventEmitter<string>();
   valueChange = new Subject<string> ();

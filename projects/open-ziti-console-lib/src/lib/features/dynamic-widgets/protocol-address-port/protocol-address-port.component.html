@@ -1,0 +1,20 @@
+<div class="grid addressFull">
+    <div>
+        <lib-selector [fieldName]="'Protocol'"
+                      [fieldValue]="protocolValue"
+                      [labelColor]="labelColor"
+                      (fieldValueChange)="protocolChange($event)"></lib-selector>
+    </div>
+    <div>
+        <lib-string [fieldName]="'Address'"
+                    [fieldValue]="addressValue"
+                    [labelColor]="labelColor"
+                    (fieldValueChange)="addressChange($event)"></lib-string>
+    </div>
+    <div>
+        <lib-number [fieldName]="'Port'"
+                    [fieldValue]="portValue"
+                    [labelColor]="labelColor"
+                    (fieldValueChange)="portChange($event)"></lib-number>
+    </div>
+</div>

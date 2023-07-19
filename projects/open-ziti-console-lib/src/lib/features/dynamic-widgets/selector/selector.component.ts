@@ -6,7 +6,7 @@ import {debounce} from "lodash";
   selector: 'lib-selector',
   template: `
     <label [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
-    <select id="schema_{{parentName?parentName+'_':''}}{{_idName}}"
+    <select id="schema_{{parentage?parentage+'_':''}}{{_idName}}"
            class="jsonEntry"
            [(ngModel)]="fieldValue" (change)="selected()">
         <option value="">{{placeholder}}</option>
@@ -23,7 +23,7 @@ export class SelectorComponent {
   }
   @Input() fieldValue = '';
   @Input() placeholder = '';
-  @Input() parentName = '';
+  @Input() parentage: string[] = [];
   @Input() valueList: string[] = [];
   @Input() labelColor = '#000000';
   @Output() fieldValueChange = new EventEmitter<string>();

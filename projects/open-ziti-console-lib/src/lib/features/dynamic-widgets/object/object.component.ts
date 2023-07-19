@@ -3,8 +3,8 @@ import {Component, Input, ViewChild, ViewContainerRef} from '@angular/core';
 @Component({
   selector: 'lib-object',
   template: `
-    <label for="schema_{{parentName?parentName+'_':''}}{{_idName}}"  [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
-    <div id="schema_{{parentName?parentName+'_':''}}{{_idName}}" class="wrapper" [ngStyle]="{'background-color': bcolor}">
+    <label for="schema_{{parentage?parentage+'_':''}}{{_idName}}"  [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
+    <div id="schema_{{parentage?parentage+'_':''}}{{_idName}}" class="wrapper" [ngStyle]="{'background-color': bcolor}">
       <ng-container #wrappercontents></ng-container>
     </div>
   `,
@@ -18,7 +18,7 @@ export class ObjectComponent {
     this._fieldName = name;
     this._idName = name.replace(/\s/g, '').toLowerCase();
   }
-  @Input() parentName = '';
+  @Input() parentage: string[] = [];
   @Input() bcolor = '#33aaff'
   @Input() labelColor = '#000000';
 }

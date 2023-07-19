@@ -27,7 +27,7 @@ export class CheckboxListComponent {
     this._idName = name.replace(/\s/g, '').toLowerCase();
   }  @Input() fieldValue: string[] = [];
   @Input() placeholder = '';
-  @Input() parentName = '';
+  @Input() parentage: string[] = [];
   @Input() set valueList(list: string[]) {
     const items: any[] = [];
     list.forEach(v => {

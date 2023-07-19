@@ -5,8 +5,8 @@ import {debounce} from "lodash";
 @Component({
   selector: 'lib-boolean',
   template: `
-    <label for="schema_{{parentName?parentName+'_':''}}{{_idName}}"  [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
-      <div id="schema_{{parentName?parentName+'_':''}}{{_idName}}" (click)="toggle()" [ngClass]="{ on: fieldValue }" class="toggle">
+    <label for="schema_{{parentage?parentage+'_':''}}{{_idName}}"  [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
+      <div id="schema_{{parentage?parentage+'_':''}}{{_idName}}" (click)="toggle()" [ngClass]="{ on: fieldValue }" class="toggle">
         <span class="no" [hidden]="fieldValue">NO</span >
         <span class="yes" [hidden]="!fieldValue">YES</span >
         <div class="switch"></div>
@@ -26,7 +26,7 @@ export class BooleanComponent {
     this._idName = name.replace(/\s/g, '').toLowerCase();
   }
   @Input() fieldValue = false;
-  @Input() parentName = '';
+  @Input() parentage: string[] = [];
   @Input() labelColor = '#000000';
   @Output() fieldValueChange = new EventEmitter<boolean>();
   valueChange = new Subject<boolean> ();

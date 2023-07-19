@@ -5,8 +5,8 @@ import {debounce} from "lodash";
 @Component({
   selector: 'lib-string',
   template: `
-      <label for="schema_{{parentName?parentName+'_':''}}{{_idName}}"  [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
-      <input id="schema_{{parentName?parentName+'_':''}}{{_idName}}"
+      <label for="schema_{{parentage?parentage+'_':''}}{{_idName}}"  [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
+      <input id="schema_{{parentage?parentage+'_':''}}{{_idName}}"
              type="text" class="jsonEntry"
              [placeholder]="placeholder" [(ngModel)]="fieldValue" (keyup)="onKeyup()"/>
   `
@@ -20,7 +20,7 @@ export class StringComponent {
     }
     @Input() fieldValue = '';
     @Input() placeholder = '';
-    @Input() parentName = '';
+    @Input() parentage: string[] = [];
     @Input() labelColor = '#000000';
     @Output() fieldValueChange = new EventEmitter<string>();
     valueChange = new Subject<string> ();

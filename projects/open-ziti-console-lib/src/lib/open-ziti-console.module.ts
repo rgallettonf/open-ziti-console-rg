@@ -16,6 +16,7 @@ import { SelectorComponent } from './features/dynamic-widgets/selector/selector.
 import { CheckboxListComponent } from './features/dynamic-widgets/checkbox-list/checkbox-list.component';
 import {TextListComponent} from "./features/dynamic-widgets/text-list/text-list.component";
 import {ChipsModule} from "primeng/chips";
+import { ProtocolAddressPortComponent } from './features/dynamic-widgets/protocol-address-port/protocol-address-port.component';
 
 @NgModule({
     declarations: [
@@ -29,7 +30,8 @@ import {ChipsModule} from "primeng/chips";
         ObjectComponent,
         SelectorComponent,
         TextListComponent,
-        CheckboxListComponent
+        CheckboxListComponent,
+        ProtocolAddressPortComponent
     ],
     imports: [
         CommonModule,
