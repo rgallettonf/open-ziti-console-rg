@@ -15,6 +15,9 @@ import { ObjectComponent } from './features/dynamic-widgets/object/object.compon
 import { SelectorComponent } from './features/dynamic-widgets/selector/selector.component';
 import { CheckboxListComponent } from './features/dynamic-widgets/checkbox-list/checkbox-list.component';
 import {TextListComponent} from "./features/dynamic-widgets/text-list/text-list.component";
+import {ChipsModule} from "primeng/chips";
+import { ProtocolAddressPortComponent } from './features/dynamic-widgets/protocol-address-port/protocol-address-port.component';
+
 @NgModule({
     declarations: [
         ZacWrapperComponent,
@@ -27,13 +30,15 @@ import {TextListComponent} from "./features/dynamic-widgets/text-list/text-list.
         ObjectComponent,
         SelectorComponent,
         TextListComponent,
-        CheckboxListComponent
+        CheckboxListComponent,
+        ProtocolAddressPortComponent
     ],
     imports: [
         CommonModule,
         FormsModule,
         HttpClientModule,
-        ZacRoutingModule
+        ZacRoutingModule,
+        ChipsModule
     ],
     exports: [
         ZacWrapperComponent,

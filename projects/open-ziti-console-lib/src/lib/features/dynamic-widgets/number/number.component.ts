@@ -5,18 +5,22 @@ import {debounce} from "lodash";
 @Component({
   selector: 'lib-number',
   template: `
-  <label for="{{parentName?parentName+'_':''}}schema_{{fieldName}}" [ngStyle]="{'color': labelColor}">{{fieldName}}</label>
-  <input id="{{parentName?parentName+'_':''}}schema_{{fieldName}}"
+    <label for="schema_{{parentage?parentage+'_':''}}{{_idName}}"  [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
+  <input id="schema_{{parentage?parentage+'_':''}}{{_idName}}"
        type="number" class="jsonEntry"
        [placeholder]="placeholder" [(ngModel)]="fieldValue" (keyup)="onKeyup()"/>
 `
 })
 export class NumberComponent {
-
-  @Input() fieldName = 'Field Label';
+  _fieldName = 'Field Label';
+  _idName = 'fieldname';
+  @Input() set fieldName(name: string) {
+    this._fieldName = name;
+    this._idName = name.replace(/\s/g, '').toLowerCase();
+  }
   @Input() fieldValue: number | undefined;
   @Input() placeholder = '';
-  @Input() parentName = '';
+  @Input() parentage: string[] = [];
   @Input() labelColor = '#000000';
   @Output() fieldValueChange = new EventEmitter<number| undefined>();
   valueChange = new Subject<number| undefined> ();

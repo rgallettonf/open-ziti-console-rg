@@ -5,7 +5,7 @@ import {debounce} from "lodash";
 @Component({
   selector: 'lib-checkbox-list',
   template: `
-    <label [ngStyle]="{'color': labelColor}">{{fieldName}}</label>
+    <label [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
     <div  *ngFor="let item of items">
         <input type="checkbox"
             class="jsonEntry"
@@ -20,11 +20,14 @@ import {debounce} from "lodash";
 })
 export class CheckboxListComponent {
   items: any[] = [];
-
-  @Input() fieldName = 'Field Label';
-  @Input() fieldValue: string[] = [];
+  _fieldName = 'Field Label';
+  _idName = 'fieldname';
+  @Input() set fieldName(name: string) {
+    this._fieldName = name;
+    this._idName = name.replace(/\s/g, '').toLowerCase();
+  }  @Input() fieldValue: string[] = [];
   @Input() placeholder = '';
-  @Input() parentName = '';
+  @Input() parentage: string[] = [];
   @Input() set valueList(list: string[]) {
     const items: any[] = [];
     list.forEach(v => {

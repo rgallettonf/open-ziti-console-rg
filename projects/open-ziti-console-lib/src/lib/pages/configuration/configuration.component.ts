@@ -21,9 +21,9 @@ export class ConfigurationComponent extends ExtendableComponent implements OnDes
     ];
 
     lColorArray = [
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
+        'black',
+        'white',
+        'white',
     ]
 
     bColorArray = [
@@ -73,11 +73,11 @@ export class ConfigurationComponent extends ExtendableComponent implements OnDes
             for (let obj of this.items) {
                 const cRef = obj.component;
                 if (cRef?.instance.valueChange) {
-                    const pName = cRef.instance.parentName;
+                    const pName = cRef.instance.parentage;
                     if (pName && !this.formData[pName]) this.formData[pName] = {};
                     this.subscription.add(
                         cRef.instance.valueChange.subscribe((val: any) => {
-                            const pName = cRef.instance.parentName;
+                            const pName = cRef.instance.parentage;
                             const fName = cRef.instance.fieldName;
                             if (pName && !this.formData[pName]) this.formData[pName][fName];
                             else this.formData[fName] = val;

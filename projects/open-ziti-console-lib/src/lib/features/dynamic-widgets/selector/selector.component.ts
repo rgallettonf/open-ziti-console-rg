@@ -5,8 +5,8 @@ import {debounce} from "lodash";
 @Component({
   selector: 'lib-selector',
   template: `
-    <label for="{{parentName?parentName+'_':''}}schema_{{fieldName}}" [ngStyle]="{'color': labelColor}">{{fieldName}}</label>
-    <select id="{{parentName?parentName+'_':''}}schema_{{fieldName}}"
+    <label [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
+    <select id="schema_{{parentage?parentage+'_':''}}{{_idName}}"
            class="jsonEntry"
            [(ngModel)]="fieldValue" (change)="selected()">
         <option value="">{{placeholder}}</option>
@@ -15,11 +15,15 @@ import {debounce} from "lodash";
 `
 })
 export class SelectorComponent {
-
-  @Input() fieldName = 'Field Label';
+  _fieldName = 'Field Label';
+  _idName = 'fieldname';
+  @Input() set fieldName(name: string) {
+    this._fieldName = name;
+    this._idName = name.replace(/\s/g, '').toLowerCase();
+  }
   @Input() fieldValue = '';
   @Input() placeholder = '';
-  @Input() parentName = '';
+  @Input() parentage: string[] = [];
   @Input() valueList: string[] = [];
   @Input() labelColor = '#000000';
   @Output() fieldValueChange = new EventEmitter<string>();
