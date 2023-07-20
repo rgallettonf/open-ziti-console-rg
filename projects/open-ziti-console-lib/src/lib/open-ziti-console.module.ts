@@ -17,6 +17,9 @@ import { CheckboxListComponent } from './features/dynamic-widgets/checkbox-list/
 import {TextListComponent} from "./features/dynamic-widgets/text-list/text-list.component";
 import {ChipsModule} from "primeng/chips";
 import { ProtocolAddressPortComponent } from './features/dynamic-widgets/protocol-address-port/protocol-address-port.component';
+import { SideToolbarComponent } from './features/side-toolbar/side-toolbar.component';
+import { SideNavbarComponent } from './features/side-navbar/side-navbar.component';
+import { SideBannerComponent } from './features/side-banner/side-banner.component';
 
 @NgModule({
     declarations: [
@@ -31,7 +34,10 @@ import { ProtocolAddressPortComponent } from './features/dynamic-widgets/protoco
         SelectorComponent,
         TextListComponent,
         CheckboxListComponent,
-        ProtocolAddressPortComponent
+        ProtocolAddressPortComponent,
+        SideToolbarComponent,
+        SideNavbarComponent,
+        SideBannerComponent
     ],
     imports: [
         CommonModule,
@@ -43,7 +49,10 @@ import { ProtocolAddressPortComponent } from './features/dynamic-widgets/protoco
     exports: [
         ZacWrapperComponent,
         ConfigurationComponent,
-        ExtendableComponent
+        ExtendableComponent,
+        SideToolbarComponent,
+        SideNavbarComponent,
+        SideBannerComponent
     ],
     providers: [
         {provide: SHAREDZ_EXTENSION, useClass: ExtensionsNoopService},

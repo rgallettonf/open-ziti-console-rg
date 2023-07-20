@@ -1,4 +1,4 @@
-<div id="LoginForm" class="form mini">
+<div class="loginForm">
     <div class="title">Ziti Admin Console</div>
     <div class="subtitle">Welcome, please login to continue</div>
 
@@ -13,7 +13,7 @@
                [(ngModel)]="edgeUrl"  [ngClass]="{'error': edgeUrlError}"/>
         <div id="CreateArea" class="edgecreate buttons">
             <div id="BackToLogin" *ngIf="backToLogin" class="linkButton" (click)="reset()">Back To Login</div>
-            <div id="CreateButton" class="button" (click)="create()">Set Controller</div>
+            <button class="button" (click)="create()" [disabled]="!edgeName ||!edgeUrl">Set Controller</button>
         </div>
     </ng-container>
 
@@ -35,7 +35,7 @@
                autocomplete="on" [(ngModel)]="password"/>
 
         <div class="buttons">
-            <div id="LoginButton" class="button" (click)="login()">Login</div>
+            <button class="button" (click)="login()" [disabled]="!username ||!password">Login</button>
         </div>
     </ng-container>
 

@@ -1,0 +1,30 @@
+.main {
+  display: flex;
+}
+
+.side {
+  position: relative;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  max-width: 23.75rem;
+  background-color: var(--shaded);
+}
+
+.page {
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+  flex: auto;
+  position: relative;
+  display: flex;
+  margin: 0;
+  padding: 1rem;
+}
+
+@media (max-width: 800px) {
+  ::ng-deep .aside {
+    display:none !important;
+  }
+}

@@ -38,7 +38,7 @@ export class ProtocolAddressPortComponent {
     this.update();
   }
 
-  portChange(value: number) {
+  portChange(value: number | undefined) {
     this.portValue = value;
     this.update();
   }

@@ -392,35 +392,37 @@ export class SchemaService {
             if (property.items) items = property.items;
             if (items.items) items = items.items;
 
-            // if (items.type && items.type == "object" && items.properties != null) {
-            //     let properties = items.properties;
-            //     html += '<div id="' + ((parentage != null) ? parentage + '_' : '') + 'schema_' + key + '_selected" class="selectedItems"></div>';
-            //     html += '<div class="subform">';
-            //     let values = [];
-            //     if (key == "portRanges" || key == "allowedPortRanges") html += '<div class="grid splitadd">';
-            //     let order = ['low', 'high'];
-            //     let subItems = [];
-            //     for (let subKey in properties) {
-            //         subItems.push({
-            //             key: key,
-            //             subKey: subKey,
-            //             value: properties[subKey]
-            //         });
-            //     }
-            //     subItems.sort(function (a, b) {
-            //         let aPort = a.subKey.replace(/[^A-Za-z]+/g, '').toLowerCase().replace(/\s/g, '');
-            //         let bPort = b.subKey.replace(/[^A-Za-z]+/g, '').toLowerCase().replace(/\s/g, '');
-            //         return order.indexOf(aPort) - order.indexOf(bPort);
-            //     });
-            //     for (let i = 0; i < subItems.length; i++) {
-            //         values.push(subItems[i].subKey);
-            //         html += this.getField(subItems[i].subKey, subItems[i].value, subItems[i].key);
-            //     }
-            //     html += '<div><div id="' + ((parentage != null) ? parentage + '_' : '') + 'schema_' + key + '_Button" class="button subobject" data-id="' + key + '_schema" data-to="' + ((parentage != null) ? parentage + '_' : '') + 'schema_' + key + '_selected" data-values="' + values.toString() + '">Add</div></div>'
-            //     if (key == "portRanges") html += '</div>';
-            //     html += '</div></div>';
-            // } else
-            if (Array.isArray(items.enum)) {
+            if (items.type && items.type == "object" && items.properties != null) {
+                componentRef = this.buildNestedContainer(view, nestLevel, key, parentage, property);
+                // if (items.type && items.type == "object" && items.properties != null) {
+                //     let properties = items.properties;
+                //     html += '<div id="' + ((parentage != null) ? parentage + '_' : '') + 'schema_' + key + '_selected" class="selectedItems"></div>';
+                //     html += '<div class="subform">';
+                //     let values = [];
+                //     if (key == "portRanges" || key == "allowedPortRanges") html += '<div class="grid splitadd">';
+                //     let order = ['low', 'high'];
+                //     let subItems = [];
+                //     for (let subKey in properties) {
+                //         subItems.push({
+                //             key: key,
+                //             subKey: subKey,
+                //             value: properties[subKey]
+                //         });
+                //     }
+                //     subItems.sort(function (a, b) {
+                //         let aPort = a.subKey.replace(/[^A-Za-z]+/g, '').toLowerCase().replace(/\s/g, '');
+                //         let bPort = b.subKey.replace(/[^A-Za-z]+/g, '').toLowerCase().replace(/\s/g, '');
+                //         return order.indexOf(aPort) - order.indexOf(bPort);
+                //     });
+                //     for (let i = 0; i < subItems.length; i++) {
+                //         values.push(subItems[i].subKey);
+                //         html += this.getField(subItems[i].subKey, subItems[i].value, subItems[i].key);
+                //     }
+                //     html += '<div><div id="' + ((parentage != null) ? parentage + '_' : '') + 'schema_' + key + '_Button" class="button subobject" data-id="' + key + '_schema" data-to="' + ((parentage != null) ? parentage + '_' : '') + 'schema_' + key + '_selected" data-values="' + values.toString() + '">Add</div></div>'
+                //     if (key == "portRanges") html += '</div>';
+                //     html += '</div></div>';
+                // } else
+            } else if (Array.isArray(items.enum)) {
                 componentRef = this.buildCheckBoxListField(view, nestLevel, key, items.enum, parentage);
 
             } else {
