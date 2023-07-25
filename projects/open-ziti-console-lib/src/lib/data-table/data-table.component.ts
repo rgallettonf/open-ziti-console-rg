@@ -238,7 +238,7 @@ export class DataTableComponent implements OnChanges, OnInit {
   openActionMenu(event, item): void {
     this.selectedItem = item;
     this.openMenu = true;
-    this.menuLeft = event.clientX - 100;
+    this.menuLeft = event.clientX - 150;
     this.menuTop = event.clientY + 5;
   }
 
@@ -288,18 +288,18 @@ export class DataTableComponent implements OnChanges, OnInit {
   }
 
   openHeaderActionMenu(event): void {
-    this.openHeaderMenu = true;
-    this.menuLeft = event.clientX - 100;
+    this.menuLeft = event.clientX - 150;
     this.menuTop = event.clientY + 5;
+    _.delay(() => {
+      this.openHeaderMenu = true;
+    }, 100);
   }
 
   openHeaderFilter(event, options): void {
     this.filterOptions = options;
     this.menuLeft = event.clientX;
     this.menuTop = event.clientY + 10;
-    _.defer(() => {
-      this.showFilterOptions = true;
-    });
+    this.showFilterOptions = true;
   }
 
   closeActionMenu(): void {

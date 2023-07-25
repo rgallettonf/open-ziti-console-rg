@@ -48,7 +48,7 @@ import { ProtocolAddressPortComponent } from './features/dynamic-widgets/protoco
         TableHeaderFilterComponent,
         ZitiIdentityFormComponent,
         HiddenColumnsBarComponent,
-        HeaderSearchBarComponent
+        HeaderSearchBarComponent,
         ConfigurationComponent,
         ExtendableComponent,
         StringComponent,
@@ -67,14 +67,14 @@ import { ProtocolAddressPortComponent } from './features/dynamic-widgets/protoco
         RouterModule,
         AgGridModule,
         ZacRoutingModule,
-        ClickOutsideModule
+        ClickOutsideModule,
+        ChipsModule
     ],
     exports: [
         ZacWrapperComponent,
         SideNavigatorComponent,
         ZitiIdentitiesComponent,
         ZacRoutingModule,
-        ChipsModule,
         ConfigurationComponent,
         ExtendableComponent
     ],

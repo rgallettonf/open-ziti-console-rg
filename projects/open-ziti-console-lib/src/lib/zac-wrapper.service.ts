@@ -9,6 +9,17 @@ import $ from 'jquery';
 import {ZITI_DOMAIN_CONTROLLER, ZitiDomainControllerService} from "./services/ziti-domain-controller.service";
 
 export const COMPONENTS: any = {
+    api: `<label data-i18n="APICalls"></label>
+          <div class="configBox">
+            <div class="related">
+                <input id="ApiUrl" type="text" readonly />
+                <div class="icon-copy copy" data-copy="ApiUrl"></div>
+            </div>
+            <div class="related">
+                <textarea id="ApiParams" autocapitalize="off" style="height:500px"></textarea>
+                <div class="icon-copy copy swap" data-copy="ApiParams"></div>
+            </div> 
+          </div>`,
     add: `<div class="action icon-plus" data-action="add"></div>`,
     line: `<div class="line"></div>`,
     noitems: `<div class="noitems"></div>`,

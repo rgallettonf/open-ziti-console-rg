@@ -1,5 +1,13 @@
 <div class="filters">
-    <input id="SearchFilter" data-defined="search" type="text" class="search" placeholder="Type to Filter" [(ngModel)]="filterString"/>
+    <input
+        id="SearchFilter"
+        data-defined="search"
+        type="text"
+        class="search"
+        placeholder="Type to Filter"
+        (keyup)="inputChangedDebounced()"
+        [(ngModel)]="filterString"
+    />
     <div class="clear icon-clear" data-defined="clear"></div>
     <div class="searchButton icon-search"></div>
     <div class="filtered-columns-list" id="ColumnFilterContainer">
@@ -16,7 +24,7 @@
             <div class="ag-dnd-ghost-label">{{ filter.filterName }}: {{ filter.label }}</div>
         </div>
     </div>
-    <div class="counters"><span id="Start">{{startCount}}</span>-<span id="End">{{startCount}}</span> of <span id="Total">{{totalCount}}</span></div>
+    <div class="counters"><span id="Start">{{startCount}}</span>-<span id="End">{{endCount}}</span> of <span id="Total">{{totalCount}}</span></div>
     <div class="navigate prev icon-prev disabled"></div>
     <div class="navigate next icon-next disabled"></div>
 </div>

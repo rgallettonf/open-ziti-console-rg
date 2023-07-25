@@ -13,38 +13,17 @@
     <div class="action" data-action="add" [ngClass]="{'icon-plus': !itemsSelected, 'icon-minus': itemsSelected, 'remove': itemsSelected}"></div>
     <lib-header-search-bar
         [filters]="filters"
+        [startCount]="startCount"
+        [endCount]="endCount"
+        [totalCount]="totalCount"
     ></lib-header-search-bar>
-    <div *ngIf="false" class="filters">
-        <input id="SearchFilter" data-defined="search" type="text" class="search" placeholder="Type to Filter" [(ngModel)]="filterString"/>
-        <div class="clear icon-clear" data-defined="clear"></div>
-        <div class="searchButton icon-search"></div>
-        <div class="filtered-columns-list" id="ColumnFilterContainer">
-            <div
-                    (click)="removeFilter(filter)"
-                    *ngFor="let filter of filters"
-                    class="filtered-column-item ag-dnd-ghost ag-unselectable ag-theme-alpine"
-                    id="ColumnVisibility_{{ filter.filterName }}"
-                    title="Remove filter"
-            >
-            <span class="ag-dnd-ghost-icon">
-                <span class="ag-icon ag-icon-filter"></span>
-            </span>
-                <div class="ag-dnd-ghost-label">{{ filter.filterName }}: {{ filter.label }}</div>
-            </div>
-        </div>
-        <div class="counters"><span id="Start">{{startCounter}}</span>-<span id="End">{{startCounter}}</span> of <span id="Total">{{totalCount}}</span></div>
-        <div class="navigate prev icon-prev disabled"></div>
-        <div class="navigate next icon-next disabled"></div>
-    </div>
     <div class="nodata" data-defined="empty">No <span data-bind="pageTitle"></span> Defined, Click the plus to add A <span data-bind="singular"></span>.</div>
-    <div class="nf-ag-grid" id="ItemTable">
-        <lib-data-table
-            [rowData]="rowData"
-            [columnDefinitions]="columnDefs"
-            (actionRequested)="tableAction($event)"
-            [tableId]="'ziti-identities'"
-        >
-        </lib-data-table>
-    </div>
+    <lib-data-table
+        [rowData]="rowData"
+        [columnDefinitions]="columnDefs"
+        (actionRequested)="tableAction($event)"
+        [tableId]="'ziti-identities'"
+    >
+    </lib-data-table>
     <app-zac-wrapper></app-zac-wrapper>
 </div>

@@ -15,8 +15,8 @@ import {TableFilterService} from "../services/table-filter.service";
 })
 export class ZitiIdentitiesComponent implements OnInit {
 
-  startCounter = '-';
-  endCounter = '-';
+  startCount = '-';
+  endCount = '-';
   totalCount = '-';
   filters = [];
   filterString = '';
@@ -39,13 +39,13 @@ export class ZitiIdentitiesComponent implements OnInit {
   ngOnInit() {
     this.svc.getZitiIdentities().then((data: any) => {
       this.rowData = data.data;
-      this.startCounter = 1 + '';
-      this.endCounter = data.meta.pagination.totalCount;
-      this.totalCount = data.meta.pagination.totalCount;
+      this.startCount = 1 + '';
+      this.endCount = data.meta.pagination.totalCount + '';
+      this.totalCount = data.meta.pagination.totalCount + '';
     });
     this.filterService.filterChanged.subscribe(event => {
       let filterAdded = false;
-      this.filters.forEach((filter) => {
+      this.filters = this.filters.map((filter) => {
         if (filter.columnId === event.columnId) {
           filter = event;
           filterAdded = true;
@@ -53,6 +53,7 @@ export class ZitiIdentitiesComponent implements OnInit {
           filter.value = event.value;
           filter.label = event.label;
         }
+        return filter;
       });
       this.filters = this.filters.filter((filter) => {
         return !isEmpty(filter.value);
@@ -62,9 +63,9 @@ export class ZitiIdentitiesComponent implements OnInit {
       }
 
       this.svc.getZitiIdentities(event).then((data: any) => {
-        this.rowData = data.data;
-        this.startCounter = 1 + '';
-        this.endCounter = data.meta.pagination.totalCount;
+        this.rowData = data.data
+        this.startCount = 1 + '';
+        this.endCount = data.meta.pagination.totalCount;
         this.totalCount = data.meta.pagination.totalCount;
       });;
     });
@@ -231,6 +232,15 @@ export class ZitiIdentitiesComponent implements OnInit {
       case 'toggleItem':
         this.toggleItem(event.item)
         break;
+      case 'update':
+        this.editItem(event.item)
+        break;
+      case 'toggleItem':
+        this.overrideItem(event.item)
+        break;
+      case 'toggleItem':
+        this.deleteItem(event.item)
+        break;
       default:
         break;
     }
@@ -252,6 +262,18 @@ export class ZitiIdentitiesComponent implements OnInit {
     defer(() => {
       window['app'].setAction();
     });
+  }
+
+  editItem(item: any) {
+    window['page']['edit'](item.id);
+  }
+
+  overrideItem(item: any) {
+    window['page']['addOveride'](item.id);
+  }
+
+  deleteItem(item: any) {
+    window['page']['delete'](item.id);
   }
 
   actionButtonClicked() {

@@ -1,6 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {TableFilterService} from "../services/table-filter.service";
 
+import {debounce} from "lodash";
+
 @Component({
   selector: 'lib-header-search-bar',
   templateUrl: './header-search-bar.component.html',
@@ -16,8 +18,11 @@ export class HeaderSearchBarComponent implements OnInit {
   @Output() filterRemoved = new EventEmitter();
 
   filterString = '';
+  inputChangedDebounced = debounce(this.inputChanged.bind(this), 400);
 
-  constructor(private filterService: TableFilterService) {}
+  constructor(private filterService: TableFilterService) {
+
+  }
 
   ngOnInit(): void {
     this.filterService.filterChanged.subscribe((event) => {
@@ -29,10 +34,7 @@ export class HeaderSearchBarComponent implements OnInit {
     })
   }
 
-  removeFilter(filter) {
-    if (filter.columnId === 'name') {
-      this.filterString = '';
-    }
+  inputChanged() {
     const filterObj = {
       filterName: 'name',
       columnId: 'name',
@@ -40,6 +42,13 @@ export class HeaderSearchBarComponent implements OnInit {
       label: this.filterString,
     };
     this.filterService.updateFilter(filterObj);
+  }
+
+  removeFilter(filter) {
+    if (filter.columnId === 'name') {
+      this.filterString = '';
+    }
+    this.inputChanged();
   }
 
 }

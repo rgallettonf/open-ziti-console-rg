@@ -2,6 +2,8 @@ import {HttpClient} from "@angular/common/http";
 import {Inject, Injectable} from "@angular/core";
 import {ZITI_DOMAIN_CONTROLLER, ZitiDomainControllerService} from "../services/ziti-domain-controller.service";
 
+import {isEmpty, delay} from 'lodash';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -34,7 +36,24 @@ export class ZitiIdentitiesService {
             this.paging.filter = filter.value;
             this.paging.searchOn = filter.columnId;
         }
-        return this.getZitiEntities('identities', this.paging);
+        return this.getZitiEntities('identities', this.paging).then((results) => {
+            if (!isEmpty(results?.data)) {
+                results.data = results.data.map((row) => {
+                    row.actionList = ['update', 'override', 'delete'];
+                    return row;
+                });
+            }
+            //this.setZacData(results);
+            return results;
+        });
+    }
+
+    setZacData(results) {
+        delay(() => {
+            window['page']['filterObject']['isLoaded'] = true;
+            window['page']['filterObject']['data'] = results.data;
+            window['page']['filterObject']['meta'] = results.meta;
+        }, 100);
     }
 
     getZitiEntities(type: string, paging: any) {

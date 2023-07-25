@@ -10,8 +10,8 @@
   ::ng-deep {
     .zac-wrapper-container {
       height: 0px;
-      top: 999999px;
-      position: absolute;
+      left: -999999px;
+      position: fixed;
       .action {
         display: none;
       }
@@ -521,3 +521,6 @@
   color: var(--navigation);
 }
 
+app-zac-wrapper {
+  z-index: 999999;
+}

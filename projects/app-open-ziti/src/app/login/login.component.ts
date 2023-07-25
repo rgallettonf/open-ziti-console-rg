@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LoginService} from "./login.service";
-import {SettingsService} from "open-ziti-console-lib";
+import {SettingsService} from "open-ziti-console";
 import {Subscription} from "rxjs";
 
 // @ts-ignore

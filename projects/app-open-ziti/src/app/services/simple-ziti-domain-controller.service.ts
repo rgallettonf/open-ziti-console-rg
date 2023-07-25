@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
-import {SettingsService} from "open-ziti-console-lib";
-import {ZitiDomainControllerService, ZitiSessionData} from "open-ziti-console-lib";
+import {SettingsService} from "open-ziti-console";
+import {ZitiDomainControllerService, ZitiSessionData} from "open-ziti-console";
 import {LoginService} from "../login/login.service";
 
 @Injectable({

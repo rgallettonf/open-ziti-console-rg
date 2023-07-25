@@ -30,7 +30,7 @@
 <div
         [ngClass]="{ open: openMenu }"
         [ngStyle]="{ left: menuLeft + 'px', top: menuTop + 'px' }"
-        class="tMenu action-menu"
+        class="tMenu action-menu item-menu"
         id="RowActionMenu"
 >
     <div
@@ -40,5 +40,21 @@
             id="EditSelectionButton"
     >
         Edit
+    </div>
+    <div
+            (click)="actionRequested.emit({ action: 'override', item: selectedItem })"
+            *ngIf="selectedItem.actionList.includes('override')"
+            class="tActionRow"
+            id="OverrideSelectionButton"
+    >
+        Override
+    </div>
+    <div
+            (click)="actionRequested.emit({ action: 'delete', item: selectedItem })"
+            *ngIf="selectedItem.actionList.includes('delete')"
+            class="tActionRow"
+            id="DeleteSelectionButton"
+    >
+        Delete
     </div>
 </div>

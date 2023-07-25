@@ -12,9 +12,12 @@
 
 .tMenu {
   &.action-menu {
-    &.header-menu {
+    &.header-menu,
+    &.item-menu {
       position: fixed;
-      height: 50px;
+      height: unset;
+      width: 200px;
+      transition-property: opacity;
     }
   }
 }
