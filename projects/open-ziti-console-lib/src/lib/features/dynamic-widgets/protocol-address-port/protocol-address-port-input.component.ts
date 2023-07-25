@@ -3,16 +3,18 @@ import {Subject} from "rxjs";
 import {debounce} from "lodash";
 
 @Component({
-  selector: 'lib-protocol-address-port',
-  templateUrl: './protocol-address-port.component.html',
-  styleUrls: ['./protocol-address-port.component.scss']
+  selector: 'lib-protocol-address-port-input',
+  templateUrl: './protocol-address-port-input.component.html',
+  styleUrls: ['./protocol-address-port-input.component.scss']
 })
-export class ProtocolAddressPortComponent {
+export class ProtocolAddressPortInputComponent {
   @Input() protocolValue: any;
   @Input() addressValue: any;
   @Input() portValue: any;
   @Input() parentage: string[] = [];
   @Input() labelColor = '#000000';
+  @Input() fieldClass = '';
+  @Input() error = '';
   @Output() fieldValueChange = new EventEmitter<any>();
   valueChange = new Subject<any> ();
 

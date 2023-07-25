@@ -3,18 +3,24 @@ import {Subject} from "rxjs";
 import {debounce} from "lodash";
 
 @Component({
-  selector: 'lib-selector',
+  selector: 'lib-text-list-input',
   template: `
-    <label [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
-    <select id="schema_{{parentage?parentage+'_':''}}{{_idName}}"
-           class="jsonEntry"
-           [(ngModel)]="fieldValue" (change)="selected()">
-        <option value="">{{placeholder}}</option>
-        <option *ngFor="let name of valueList" [value]="name">{{name}}</option>
-    </select>
-`
+    <div [ngClass]="fieldClass">
+      <label for="schema_{{parentage?parentage+'_':''}}{{_idName}}"  [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
+      <p-chips id="schema_{{parentage?parentage+'_':''}}{{_idName}}"
+          (keyup)="onKeyup()"
+          [(ngModel)]="fieldValue"
+          [allowDuplicate]="false"
+          [placeholder]="placeholder"
+          [addOnBlur]="true"
+          separator=",">
+      </p-chips>
+      <div *ngIf="error" class="error">{{error}}</div>
+    </div>
+ `,
+  styleUrls:['./text-list-input.component.scss'  ]
 })
-export class SelectorComponent {
+export class TextListInputComponent {
   _fieldName = 'Field Label';
   _idName = 'fieldname';
   @Input() set fieldName(name: string) {
@@ -24,12 +30,13 @@ export class SelectorComponent {
   @Input() fieldValue = '';
   @Input() placeholder = '';
   @Input() parentage: string[] = [];
-  @Input() valueList: string[] = [];
   @Input() labelColor = '#000000';
+  @Input() fieldClass = '';
+  @Input() error = '';
   @Output() fieldValueChange = new EventEmitter<string>();
   valueChange = new Subject<string> ();
 
-  selected() {
+  onKeyup() {
     debounce(() => {
       this.fieldValueChange.emit(this.fieldValue);
       this.valueChange.next(this.fieldValue);

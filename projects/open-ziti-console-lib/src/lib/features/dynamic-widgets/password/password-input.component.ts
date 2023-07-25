@@ -3,15 +3,20 @@ import {Subject} from "rxjs";
 import {debounce} from "lodash";
 
 @Component({
-  selector: 'lib-string',
+  selector: 'lib-password-input',
   template: `
-      <label for="schema_{{parentage?parentage+'_':''}}{{_idName}}"  [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
-      <input id="schema_{{parentage?parentage+'_':''}}{{_idName}}"
-             type="text" class="jsonEntry"
-             [placeholder]="placeholder" [(ngModel)]="fieldValue" (keyup)="onKeyup()"/>
-  `
+      <div [ngClass]="fieldClass">
+          <label for="schema_{{parentage?parentage+'_':''}}{{_idName}}"  [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
+          <input id="schema_{{parentage?parentage+'_':''}}{{_idName}}"
+                 type="password" class="jsonEntry"
+                 [ngClass]="{'error': error}"
+                 [placeholder]="placeholder" [(ngModel)]="fieldValue" (paste)="onKeyup()" (keyup)="onKeyup()"/>
+          <div *ngIf="error" class="error">{{error}}</div>
+      </div>
+  `,
+    styles:['input.error {border-color:red;}','div.error {color:red}']
 })
-export class StringComponent {
+export class PasswordInputComponent {
     _fieldName = 'Field Label';
     _idName = 'fieldname';
     @Input() set fieldName(name: string) {
@@ -22,6 +27,8 @@ export class StringComponent {
     @Input() placeholder = '';
     @Input() parentage: string[] = [];
     @Input() labelColor = '#000000';
+    @Input() fieldClass = '';
+    @Input() error = '';
     @Output() fieldValueChange = new EventEmitter<string>();
     valueChange = new Subject<string> ();
 

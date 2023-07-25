@@ -5,39 +5,50 @@ import {HttpClientModule} from "@angular/common/http";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {ZacRoutingModule} from "./zac-routing.module";
-import { ConfigurationComponent } from './pages/configuration/configuration.component';
 import {ExtendableComponent} from "./features/extendable/extendable.component";
 import {ExtensionsNoopService, SHAREDZ_EXTENSION} from "./features/extendable/extensions-noop.service";
-import { StringComponent } from './features/dynamic-widgets/string/string.component';
-import { NumberComponent } from './features/dynamic-widgets/number/number.component';
-import { BooleanComponent } from './features/dynamic-widgets/boolean/boolean.component';
+import { StringInputComponent } from './features/dynamic-widgets/string/string-input.component';
+import { NumberInputComponent } from './features/dynamic-widgets/number/number-input.component';
+import { BooleanToggleInputComponent } from './features/dynamic-widgets/boolean/boolean-toggle-input.component';
 import { ObjectComponent } from './features/dynamic-widgets/object/object.component';
-import { SelectorComponent } from './features/dynamic-widgets/selector/selector.component';
-import { CheckboxListComponent } from './features/dynamic-widgets/checkbox-list/checkbox-list.component';
-import {TextListComponent} from "./features/dynamic-widgets/text-list/text-list.component";
+import { SelectorInputComponent } from './features/dynamic-widgets/selector/selector-input.component';
+import { CheckboxListInputComponent } from './features/dynamic-widgets/checkbox-list/checkbox-list-input.component';
+import {TextListInputComponent} from "./features/dynamic-widgets/text-list/text-list-input.component";
 import {ChipsModule} from "primeng/chips";
-import { ProtocolAddressPortComponent } from './features/dynamic-widgets/protocol-address-port/protocol-address-port.component';
+import { ProtocolAddressPortInputComponent } from './features/dynamic-widgets/protocol-address-port/protocol-address-port-input.component';
 import { SideToolbarComponent } from './features/side-toolbar/side-toolbar.component';
 import { SideNavbarComponent } from './features/side-navbar/side-navbar.component';
 import { SideBannerComponent } from './features/side-banner/side-banner.component';
+import { PasswordInputComponent } from './features/dynamic-widgets/password/password-input.component';
+import { ConfigurationsComponent } from './pages/configurations/configurations.component';
+import { ListPageHeaderComponent } from './features/list-page-header/list-page-header.component';
+import { ListPageFilterComponent } from './features/list-page-filter/list-page-filter.component';
+import { ListPageTableComponent } from './features/list-page-table/list-page-table.component';
+import {ConfigurationComponent} from "./features/modals/configuration/configuration.component";
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
     declarations: [
         ZacWrapperComponent,
         SafePipe,
-        ConfigurationComponent,
         ExtendableComponent,
-        StringComponent,
-        NumberComponent,
-        BooleanComponent,
+        StringInputComponent,
+        NumberInputComponent,
+        BooleanToggleInputComponent,
         ObjectComponent,
-        SelectorComponent,
-        TextListComponent,
-        CheckboxListComponent,
-        ProtocolAddressPortComponent,
+        SelectorInputComponent,
+        TextListInputComponent,
+        CheckboxListInputComponent,
+        ProtocolAddressPortInputComponent,
         SideToolbarComponent,
         SideNavbarComponent,
-        SideBannerComponent
+        SideBannerComponent,
+        PasswordInputComponent,
+        ConfigurationsComponent,
+        ConfigurationComponent,
+        ListPageHeaderComponent,
+        ListPageFilterComponent,
+        ListPageTableComponent
     ],
     imports: [
         CommonModule,
@@ -48,11 +59,21 @@ import { SideBannerComponent } from './features/side-banner/side-banner.componen
     ],
     exports: [
         ZacWrapperComponent,
-        ConfigurationComponent,
         ExtendableComponent,
         SideToolbarComponent,
         SideNavbarComponent,
-        SideBannerComponent
+        SideBannerComponent,
+        StringInputComponent,
+        SelectorInputComponent,
+        PasswordInputComponent,
+        NumberInputComponent,
+        BooleanToggleInputComponent,
+        ObjectComponent,
+        TextListInputComponent,
+        CheckboxListInputComponent,
+        ProtocolAddressPortInputComponent,
+        ConfigurationsComponent,
+        MatDialogModule
     ],
     providers: [
         {provide: SHAREDZ_EXTENSION, useClass: ExtensionsNoopService},

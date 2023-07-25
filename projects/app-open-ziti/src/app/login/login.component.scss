@@ -12,3 +12,12 @@
   box-shadow: 0 3px 9px lightgrey;
 }
 
+select {
+  padding-right: 0;
+}
+
+select, input {
+  max-width: 600px;
+}
+
+

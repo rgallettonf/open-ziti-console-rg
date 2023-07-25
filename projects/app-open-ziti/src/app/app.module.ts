@@ -10,6 +10,7 @@ import {OpenZitiConsoleModule, ZITI_DOMAIN_CONTROLLER} from "open-ziti-console-l
 import {SettingsService} from "open-ziti-console-lib";
 import {AppRoutingModule} from "./app-routing.module";
 import {SimpleZitiDomainControllerServic} from "./services/simple-ziti-domain-controller.service";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import {SimpleZitiDomainControllerServic} from "./services/simple-ziti-domain-co
         HttpClientModule,
         AppRoutingModule,
         OpenZitiConsoleModule,
-        FormsModule
+        FormsModule,
+        BrowserAnimationsModule
     ],
   exports: [
   ],

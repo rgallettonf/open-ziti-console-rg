@@ -2,7 +2,7 @@
   position: relative;
   display: inline-block;
   width: 4rem;
-  background-color: transparent;
+  background: linear-gradient(to bottom, var(--primary) 0%, var(--secondary) 100%);
   height: 100%;
 
   .topButtons {

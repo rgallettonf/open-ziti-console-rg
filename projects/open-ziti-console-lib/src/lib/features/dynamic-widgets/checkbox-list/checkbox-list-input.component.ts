@@ -3,14 +3,18 @@ import {Subject} from "rxjs";
 import {debounce} from "lodash";
 
 @Component({
-  selector: 'lib-checkbox-list',
+  selector: 'lib-checkbox-list-input',
   template: `
-    <label [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
-    <div  *ngFor="let item of items">
-        <input type="checkbox"
-            class="jsonEntry"
-            [checked]="item.checked" (click)="item.checked=!item.checked;update();"/>
-        <span class="boxlabel">{{item.name}}</span>
+    <div [ngClass]="fieldClass">
+      <label [ngStyle]="{'color': labelColor}">{{_fieldName}}</label>
+      <div  *ngFor="let item of items">
+          <input type="checkbox"
+              class="jsonEntry"
+                 [ngClass]="{'error': error}"
+              [checked]="item.checked" (click)="item.checked=!item.checked;update();"/>
+          <span class="boxlabel">{{item.name}}</span>
+      </div>
+      <div *ngIf="error" class="error">{{error}}</div>
     </div>
   `,
   styles:['.boxlabel {text-transform: uppercase; position:absolute;padding-top: 0.3rem; padding-left:0.25rem}',
@@ -18,7 +22,7 @@ import {debounce} from "lodash";
       'input:checked {background-color: var(--green)!important}'
       ]
 })
-export class CheckboxListComponent {
+export class CheckboxListInputComponent {
   items: any[] = [];
   _fieldName = 'Field Label';
   _idName = 'fieldname';
@@ -36,6 +40,8 @@ export class CheckboxListComponent {
     this.items = items;
 }
   @Input() labelColor = '#000000';
+  @Input() fieldClass = '';
+  @Input() error = '';
   @Output() fieldValueChange = new EventEmitter<string[]>();
   valueChange = new Subject<string[]> ();
 

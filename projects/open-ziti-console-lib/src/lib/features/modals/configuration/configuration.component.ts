@@ -1,15 +1,14 @@
 import {Component, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
-import {ExtendableComponent} from "../../features/extendable/extendable.component";
 import {ConfigurationService} from "./configuration.service";
-import {SchemaService} from "../../services/schema.service";
 import {Subscription} from "rxjs";
+import {SchemaService} from "../../../services/schema.service";
 
 @Component({
     selector: 'lib-configuration',
     templateUrl: './configuration.component.html',
     styleUrls: ['./configuration.component.scss']
 })
-export class ConfigurationComponent extends ExtendableComponent implements OnDestroy {
+export class ConfigurationComponent implements OnDestroy {
     @ViewChild("dynamicform", {read: ViewContainerRef}) dynamicForm!: ViewContainerRef;
 
     options: string[] = [
@@ -41,7 +40,7 @@ export class ConfigurationComponent extends ExtendableComponent implements OnDes
 
     constructor(private svc: ConfigurationService,
                 private schemaSvc: SchemaService) {
-        super();
+
     }
 
     async createForm() {
