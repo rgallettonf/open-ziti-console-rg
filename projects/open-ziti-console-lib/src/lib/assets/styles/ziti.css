@@ -2,8 +2,6 @@
  ** Main Application Styles
 ***/
 :root {
-	--primary: #0027ab;
-    --secondary: #fe0029;
     --highlighted: #f5a93d;;
     --red: #ff104b;
     --white: #FFF;
@@ -36,7 +34,7 @@
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent url('/assets/images/scrollbar.png') repeat-y !important;
+    
 }
 
 ::-webkit-scrollbar-thumb {
@@ -61,11 +59,11 @@
 }
 
 ::-webkit-scrollbar-track-piece:start {
-    background: transparent url('/assets/images/scrollbar.png') repeat-y !important;
+    
 }
 
 ::-webkit-scrollbar-track-piece:end {
-    background: transparent url('/assets/images/scrollbar.png') repeat-y !important;
+    
 }
 
 ::-webkit-scrollbar * {
@@ -210,7 +208,9 @@ aside .icon {
 .version {
     position: absolute;
     bottom: 20px;
-    left: 80px;
+    right: 20px;
+    width: 75%;
+    text-align: center;
     color: var(--text);
     opacity: 0.7;
     font-size: 14px;
@@ -841,8 +841,12 @@ aside .icon {
     left: 2px;
 }
 
-.configBox input, .configBox select {
+.configBox input, .configBox select, .configBox textarea {
     background-color: var(--white) !important;
+}
+
+.configBox .sectionTitle {
+    margin-top: 0px;
 }
 
 .configBox .newConfig {
@@ -883,6 +887,12 @@ aside .icon {
     position: fixed;
 }
 
+.modal.box .close {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+}
+
 .close {
     position: absolute;
     z-index: 10;
@@ -909,11 +919,19 @@ aside .icon {
     display: none;
 }
 
+#IdentityQrCode {
+    display: inline-block;
+}
+ 
 .linkButton {
     color: var(--menu);
     line-height: 40px;
     cursor: pointer;
     transition: var(--transition);
+}
+
+#IdentityDownload {
+    text-align: center;
 }
 
 .linkButton:hover {
@@ -1345,6 +1363,18 @@ aside .icon {
     font-size: 16px;
 }
 
+.darkened .CodeMirror {
+    text-transform: none;
+}
+
+.icon-add:before {
+  content: "\e90a";
+}
+
+#ApiUrl {
+    padding-right: 40px;
+}
+
 .gridMenu {
     position: absolute;
     width: 150px;
@@ -1545,9 +1575,39 @@ aside .icon {
     color: var(--primary);
 }
 
+.iconButton {
+    width: 100%;
+    height: 150px;
+    position: relative;
+    background-color: var(--white);
+    border-radius: 7px;
+    box-sizing: var(--shadow);
+    cursor: pointer;
+}
+
+.iconButton:hover .image, .iconButton:hover .label {
+    color: var(--primary);
+}
+
+.iconButton .image {
+    font-size: 85px;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.iconButton .label {
+    font-size: 16px;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
+    transition: var(--transition);
+}
+
+
+
+
 #AddAnyModal {
     background-color: var(--background);
-    background-image: url(/assets/images/anywhere.png);
     background-size: contain;
     background-position: center center;
 }
@@ -2158,6 +2218,18 @@ path.green {
     display: block;
 }
 
+#CustomLogo {
+    width: 75%;
+    height: 100px;
+    position: absolute;
+    bottom: 49px;
+    right: 20px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+    display: none;
+}
+
 canvas { outline: none !important; }
 
 div:focus {
@@ -2183,7 +2255,26 @@ div:focus {
     display: none;
 }
 
+.totalPod .total {
+    line-height: 40px;
+}
+
+@media (max-width:1700px) {
+    .grid.numbers {
+        column-gap: 5px;
+    }
+    .totalPod .total {
+        font-size: 20px;
+    }
+    .totalPod .label, .iconLink .label {
+        font-size: 10px;
+    }
+}
+
 @media (max-width:1024px) {
+    #CustomLogo {
+        display: none !important;
+    }
     .dragger {
         display: none;
     }
@@ -2208,9 +2299,18 @@ div:focus {
     .hidetablet {
         display:inline-block;
     }
+    .grid.dashboard {
+        grid-template-columns: 100%;
+    }
+    #MainMap {
+        height: calc(100vh - 320px) !important;
+    }
     .grid.triple {
         grid-template-columns: 100px auto 100px;
     }  
+    .grid.numbers {
+        grid-template-columns: 50px auto 40%;
+    }
 	.grid.four, .grid.templates, .grid.five, .grid.fives, .grid.six, .grid.seven, .grid.sleven, .grid.ten, .grid.nine, .grid.eight, .grid.eightOS, .grid.nineOS, .grid.tenOS, .grid.policies, .grid.columns {
 		display: grid;
 	  	grid-template-columns: 50px auto 40px !important;
@@ -2342,6 +2442,10 @@ div:focus {
     
 }
 
+.related {
+    position: relative;
+}
+
 #VisualTitle {
     margin-right: auto;
     margin-left: auto;
@@ -2379,6 +2483,28 @@ div:focus {
 
 .pod a {
     color: unset;
+}
+
+.boxed .title {
+    font-size: 14px;
+}
+
+.boxed input, .boxed select {
+    border-color: var(--white);
+    background-color: var(--white) !important;
+}
+
+.boxed {
+    border-width: 3px;
+    border-style: solid;
+    border-color: var(--white);
+    background-color: rgba(255,255,255,0.5);
+    padding: 13px;
+    border-radius: 12px;
+    z-index: 10;
+    box-shadow: var(--shadowLarge);
+    transition: var(--transition);
+    overflow-y: auto;
 }
 
 .pod .button {    
@@ -2442,11 +2568,63 @@ div:focus {
     position: absolute;
 }
 
+#OperationCommands .title {
+    text-align: left;
+    font-size: 21px;
+    color: var(--white);
+    margin-bottom: 0px;
+}
+
+#IconDownload {
+    position: absolute;
+    right: 23px;
+    top: 24px;
+    width: 25px;
+    height: 25px;
+    font-size: 25px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+#IconDownload {
+    color: var(--primary);
+}
+
+.step {
+    background-color: var(--primary);
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
+    text-align: center;
+    line-height: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-block;
+    margin-right: 10px;
+    position: relative;
+    opacity: 0.6;
+}
+
+.step:hover {
+    opacity: 0.9;
+}
+
+.step.selected {
+    opacity: 1.0;
+}
+
 .views {
     position: absolute;
     right: 20px;
     top: 50px;
     height: 45px;
+}
+
+#ExecutionSteps {
+    position: absolute;
+    right: 48px;
+    top: 23px;
 }
 
 .views .imageButton {
@@ -2480,10 +2658,10 @@ div:focus {
     position: relative;
     width: 100%;
     height: calc(100vh - 220px);
-    margin-top: 20px;
     z-index: 10;
     border-radius: 12px;
     box-shadow: var(--shadowLarge);
+    margin-top: 20px;
 }
 
 .vert {
@@ -2553,6 +2731,10 @@ div:focus {
     height: 20vh;
     display: inline-block;
     text-align: center;
+}
+
+.personal {
+    display: none;
 }
 
 .circle {
@@ -2861,6 +3043,112 @@ svg {
     font-style: normal;
     font-display: swap;
 }
+
+.copy {
+    position: absolute;
+    right: 14px;
+    top: 16px;
+    font-size: 20px;
+    cursor: pointer; 
+    transition: var(--transition);
+    z-index: 150;
+}
+
+.copy.swap {
+    color: var(--dark);
+}
+
+.copy:hover {
+    color: var(--primary);
+}
+
+.commands.open {
+    height: fit-content;
+    opacity: 1.0;
+    display: inline-block;
+}
+
+.commands {
+    position: relative;
+    display: none;
+    width: 100%;
+    height: 0px;
+    opacity: 0;
+    background-color: var(--black);
+    color: var(--white);
+    border-radius: 7px;
+    padding: 20px;
+    transition: var(--transition);
+    margin-top: 15px;
+}
+
+.commands input {
+    background-color: var(--dark) !important;
+    border-color: var(--dark) !important;
+    color: var(--placeholder);
+    padding: 16px;    
+    padding-right: 43px;
+}
+
+.commands label {
+    color: var(--primary);
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.modal .CodeMirror {
+    height: 150px;
+    border-radius: 7px;
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+    margin-top: 10px;
+}
     
     
-    
+.lds-ripple {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+  .lds-ripple div {
+    position: absolute;
+    border: 4px solid var(--primary);
+    opacity: 1;
+    border-radius: 50%;
+    animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  }
+  .lds-ripple div:nth-child(2) {
+    animation-delay: -0.5s;
+  }
+  @keyframes lds-ripple {
+    0% {
+      top: 36px;
+      left: 36px;
+      width: 0;
+      height: 0;
+      opacity: 0;
+    }
+    4.9% {
+      top: 36px;
+      left: 36px;
+      width: 0;
+      height: 0;
+      opacity: 0;
+    }
+    5% {
+      top: 36px;
+      left: 36px;
+      width: 0;
+      height: 0;
+      opacity: 1;
+    }
+    100% {
+      top: 0px;
+      left: 0px;
+      width: 72px;
+      height: 72px;
+      opacity: 0;
+    }
+  }
+  

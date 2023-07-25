@@ -1,0 +1,48 @@
+<div id="AddModal" class="modal box full open">
+    <div class="sized">
+        <div class="close icon-close"></div>
+        <ng-container #beforetitleext></ng-container>
+        <ng-container *ngIf="!editMode">
+            <div class="title">
+                <span>Create</span>
+                <span> Configuration</span>
+                <div class="jsonButton" (click)="showCode=!showCode">{{ <span>JSON</span> }}</div>
+            </div>
+            <div class="subtitle">
+                <span>Add a New</span>
+                <span> Configuration</span>
+                <span> by completing this form</span>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="editMode">
+            <div class="title">
+                <span>Edit</span>
+                <span> Configuration</span>
+                <div class="jsonButton" (click)="showCode=!showCode">{{ <span>JSON</span> }}</div>
+            </div>
+            <div class="subtitle">
+                <span>Change</span>
+                <span> Configuration</span>
+                <span> Details</span>
+            </div>
+        </ng-container>
+        <ng-container #aftertitleext></ng-container>
+        <label for="Name">Name</label>
+        <input id="Name" type="text" maxlength="500"
+               placeholder="enter a name...">
+        <label for="Types">Types</label>
+        <select id="Types" [(ngModel)]="config" (change)="createForm()">
+            <option value="">Select A Type...</option>
+            <option *ngFor="let config of options"
+                    [value]="config">{{config}}
+            </option>
+        </select>
+        <ng-container #dynamicform></ng-container>
+        <ng-container #beforebuttonsext></ng-container>
+        <div class="buttons">
+            <div class="linkButton closer">Oops, No get me out of here</div>
+            <div id="SaveButton" class="button">Save</div>
+        </div>
+        <ng-container #afterbuttonsext></ng-container>
+    </div>
+</div>

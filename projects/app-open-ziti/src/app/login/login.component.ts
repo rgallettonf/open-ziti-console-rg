@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LoginService} from "./login.service";
-import {SettingsService} from "open-ziti-console";
+import {SettingsService} from "open-ziti-console-lib";
 import {Subscription} from "rxjs";
 
 // @ts-ignore
@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         if (this.isValid()) {
             this.settingsService.addContoller(this.edgeName, this.edgeUrl);
             context.set("serviceUrl", this.edgeUrl);
-            this.settingsService.set({...this.settingsService.settings, sessionId: ''});
+            this.settingsService.set(this.settingsService.settings);
         } else growler.form();
     }
 

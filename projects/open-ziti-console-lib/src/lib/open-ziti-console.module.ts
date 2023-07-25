@@ -20,6 +20,18 @@ import {TableHeaderFilterComponent} from "./data-table/table-header-filter/table
 import { ZitiIdentityFormComponent } from './ziti-identity-form/ziti-identity-form.component';
 import { HiddenColumnsBarComponent } from './hidden-columns-bar/hidden-columns-bar.component';
 import { HeaderSearchBarComponent } from './header-search-bar/header-search-bar.component';
+import { ConfigurationComponent } from './pages/configuration/configuration.component';
+import {ExtendableComponent} from "./features/extendable/extendable.component";
+import {ExtensionsNoopService, SHAREDZ_EXTENSION} from "./features/extendable/extensions-noop.service";
+import { StringComponent } from './features/dynamic-widgets/string/string.component';
+import { NumberComponent } from './features/dynamic-widgets/number/number.component';
+import { BooleanComponent } from './features/dynamic-widgets/boolean/boolean.component';
+import { ObjectComponent } from './features/dynamic-widgets/object/object.component';
+import { SelectorComponent } from './features/dynamic-widgets/selector/selector.component';
+import { CheckboxListComponent } from './features/dynamic-widgets/checkbox-list/checkbox-list.component';
+import {TextListComponent} from "./features/dynamic-widgets/text-list/text-list.component";
+import {ChipsModule} from "primeng/chips";
+import { ProtocolAddressPortComponent } from './features/dynamic-widgets/protocol-address-port/protocol-address-port.component';
 
 @NgModule({
     declarations: [
@@ -37,6 +49,16 @@ import { HeaderSearchBarComponent } from './header-search-bar/header-search-bar.
         ZitiIdentityFormComponent,
         HiddenColumnsBarComponent,
         HeaderSearchBarComponent
+        ConfigurationComponent,
+        ExtendableComponent,
+        StringComponent,
+        NumberComponent,
+        BooleanComponent,
+        ObjectComponent,
+        SelectorComponent,
+        TextListComponent,
+        CheckboxListComponent,
+        ProtocolAddressPortComponent
     ],
     imports: [
         CommonModule,
@@ -51,7 +73,14 @@ import { HeaderSearchBarComponent } from './header-search-bar/header-search-bar.
         ZacWrapperComponent,
         SideNavigatorComponent,
         ZitiIdentitiesComponent,
-    ]
+        ZacRoutingModule,
+        ChipsModule,
+        ConfigurationComponent,
+        ExtendableComponent
+    ],
+    providers: [
+        {provide: SHAREDZ_EXTENSION, useClass: ExtensionsNoopService},
+    ],
 })
 export class OpenZitiConsoleModule {
 }
