@@ -4,7 +4,7 @@ import {Subject, Subscription} from "rxjs";
 import {NavigationEnd, Router} from "@angular/router";
 import {URLS} from './urls';
 import {Resolver} from "@stoplight/json-ref-resolver";
-import {get, set} from 'lodash';
+import {get, isEmpty, set} from 'lodash';
 import $ from 'jquery';
 import {ZITI_DOMAIN_CONTROLLER, ZitiDomainControllerService} from "./services/ziti-domain-controller.service";
 
@@ -62,7 +62,7 @@ export const COMPONENTS: any = {
 export class ZacWrapperService {
     pageChange = new Subject<void>();
     subscription: Subscription = new Subscription();
-    page = 'index';
+    page = '';
     scriptsAdded = false;
     private zitiControllerDomain: any;
     private zitiSessionId: any;
@@ -195,6 +195,7 @@ export class ZacWrapperService {
     private initRouteListener() {
         this.router.events.subscribe((event) => {
             if ((event as any)['routerEvent'] instanceof NavigationEnd) {
+                const oldPage = this.page;
                 const page = (event as any)['routerEvent']['url'].split(';')[0].split('?')[0];
                 switch (page) {
                     case URLS.ZITI_DASHBOARD:
@@ -255,12 +256,17 @@ export class ZacWrapperService {
                         this.page = 'index';
                         break;
                 }
-                this.pageChange.next();
+                if (oldPage !== this.page) {
+                    this.pageChange.next();
+                }
             }
         });
     }
 
     loadCurrentPage() {
+        if (isEmpty(this.page)) {
+            this.page = 'index'
+        }
         const path = 'assets/pages/' + this.page + '.htm';
         return this.http.get(path, {responseType: "text"}).toPromise().then((html: any) => {
             for (const prop in COMPONENTS) {

@@ -1,17 +1,8 @@
-<div *ngIf="gridRendered && showFilter" class="hidden-columns-list" id="ColumnVisibilityHeader">
-    <div
-            (click)="setColumnVisibilityColumn(col, true)"
-            *ngFor="let col of hiddenColumns"
-            class="hidden-column-item ag-dnd-ghost ag-unselectable ag-theme-alpine"
-            id="ColumnVisibility_{{ col.headerName }}"
-            title="Show column"
-    >
-        <span class="ag-dnd-ghost-icon">
-            <span class="ag-icon ag-icon-eye-slash"></span>
-        </span>
-        <div class="ag-dnd-ghost-label">{{ col.headerName }}</div>
-    </div>
-</div>
+<lib-hidden-columns-bar
+    *ngIf="gridRendered && showFilter"
+    [hiddenColumns]="hiddenColumns"
+    (columnVisibilityChanged)="columnVisibilityChanged($event)"
+></lib-hidden-columns-bar>
 <div (resized)="resizeGridColumnsDebounced($event)" class="nf-ag-grid" id="ItemTable">
     <ag-grid-angular
         #nfAgGrid
@@ -23,10 +14,18 @@
         [gridOptions]="gridOptions"
         [modules]="gridModules"
         [rowData]="rowData"
-        class="nf-ag-grid-table ag-theme-alpine"
+        class="nf-ag-grid-table ag-theme-alpine rows"
         id="ItemGrid"
     >
     </ag-grid-angular>
+</div>
+<div
+        [ngClass]="{ open: openHeaderMenu }"
+        [ngStyle]="{ left: menuLeft + 'px', top: menuTop + 'px' }"
+        class="tMenu action-menu header-menu"
+        id="HeaderActionMenu"
+>
+    <div (click)="resetTableColumns()" class="tActionRow" id="ResetTableButton">Restore Default Table</div>
 </div>
 <div
         [ngClass]="{ open: openMenu }"

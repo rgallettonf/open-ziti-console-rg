@@ -8,6 +8,7 @@ import {SideNavigatorComponent} from './side-navigator/side-navigator.component'
 import {RouterModule} from "@angular/router";
 import {ZitiIdentitiesComponent} from './ziti-identities/ziti-identities.component';
 import {AgGridModule} from "ag-grid-angular";
+import {ClickOutsideModule} from 'ng-click-outside';
 import {ZacRoutingModule} from "./zac-routing.module";
 import { DataTableComponent } from './data-table/data-table.component';
 import {TableCellSelectComponent} from "./data-table/table-cell-select/table-cell-select.component";
@@ -16,6 +17,9 @@ import {TableCellMenuComponent} from "./data-table/table-cell-menu/table-cell-me
 import {TableHeaderMenuComponent} from "./data-table/table-header-menu/table-header-menu.component";
 import {TableHeaderDefaultComponent} from "./data-table/table-header-default/table-header-default.component";
 import {TableHeaderFilterComponent} from "./data-table/table-header-filter/table-header-filter.component";
+import { ZitiIdentityFormComponent } from './ziti-identity-form/ziti-identity-form.component';
+import { HiddenColumnsBarComponent } from './hidden-columns-bar/hidden-columns-bar.component';
+import { HeaderSearchBarComponent } from './header-search-bar/header-search-bar.component';
 
 @NgModule({
     declarations: [
@@ -29,7 +33,10 @@ import {TableHeaderFilterComponent} from "./data-table/table-header-filter/table
         TableCellMenuComponent,
         TableHeaderMenuComponent,
         TableHeaderDefaultComponent,
-        TableHeaderFilterComponent
+        TableHeaderFilterComponent,
+        ZitiIdentityFormComponent,
+        HiddenColumnsBarComponent,
+        HeaderSearchBarComponent
     ],
     imports: [
         CommonModule,
@@ -37,7 +44,8 @@ import {TableHeaderFilterComponent} from "./data-table/table-header-filter/table
         HttpClientModule,
         RouterModule,
         AgGridModule,
-        ZacRoutingModule
+        ZacRoutingModule,
+        ClickOutsideModule
     ],
     exports: [
         ZacWrapperComponent,

@@ -45,14 +45,14 @@
   text-transform: uppercase;
   border-style: solid;
   border-width: 1.5px;
-  border-color: var(--primaryColor);
-  color: var(--primaryColor);
+  border-color: var(--primary);
+  color: var(--primary);
   height: 30px;
   line-height: 24px;
 }
 
 .tabletab.selected {
-  background-color: var(--primaryColor);
+  background-color: var(--primary);
   color: var(--white);
 }
 
@@ -64,7 +64,7 @@
   grid-template-columns: auto 200px 200px;
   grid-template-rows: auto;
   border-bottom-style: solid;
-  border-bottom-color: var(--primaryColor);
+  border-bottom-color: var(--primary);
   border-bottom-width: 4px;
   font-size: 30px;
   color: var(--tableText);
@@ -114,7 +114,7 @@ main.table {
 
 .tHeadRow {
   box-sizing: border-box;
-  border-bottom: solid 4px var(--primaryColor);
+  border-bottom: solid 4px var(--primary);
   background-color: var(--navigation);
   padding-left: 4px;
   line-height: 55px;
@@ -175,7 +175,7 @@ main.table {
 }
 
 .tRow:active {
-  color: var(--primaryColor);
+  color: var(--primary);
   transition: 0.3s;
 }
 
@@ -233,7 +233,7 @@ main.table {
 }
 
 .tRow:hover {
-  border-left: 4px solid var(--primaryColor);
+  border-left: 4px solid var(--primary);
   -webkit-transition: 0.3s;
   -moz-transition: 0.3s;
   -ms-transition: 0.3s;
@@ -314,7 +314,7 @@ main.table {
 }
 
 .tMenu .tActionRow:hover {
-  background-color: var(--primaryColor);
+  background-color: var(--primary);
   color: var(--white);
 }
 
@@ -333,7 +333,7 @@ main.table {
 }
 
 .tSelect:hover {
-  border: 2px var(--primaryColor) solid;
+  border: 2px var(--primary) solid;
   cursor: pointer;
   background-color: var(--offWhite);
   -webkit-transition: background-color 0.5s;
@@ -360,7 +360,7 @@ main.table {
   width: 32px;
   height: 32px;
   border-radius: 18px;
-  background-color: linear-gradient(125deg, var(--primaryColor), var(--secondaryColor));
+  background-color: linear-gradient(125deg, var(--primary), var(--secondary));
   color: var(--white);
   position: absolute;
   left: 0px;
@@ -431,7 +431,7 @@ main.table {
 }
 
 .dots:hover {
-  color: var(--primaryColor);
+  color: var(--primary);
   transition: 0.5s;
 }
 
@@ -501,7 +501,7 @@ main.table {
   font-weight: 600;
   color: var(--tableText);
   border-bottom-style: solid;
-  border-bottom-color: var(--primaryColor);
+  border-bottom-color: var(--primary);
   border-bottom-width: 2px;
 }
 
@@ -518,7 +518,7 @@ main.table {
 }
 
 .gridLabel {
-  color: var(--primaryColor);
+  color: var(--primary);
   line-height: 50px;
   font-weight: bold;
 }
@@ -633,5 +633,5 @@ main.table {
 }
 
 .filterButton .options .option:hover {
-  background-color: var(--primaryColor);
+  background-color: var(--primary);
 }

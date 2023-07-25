@@ -71,8 +71,8 @@ export class DataTableComponent implements OnChanges, OnInit {
   getDataPath;
 
   public menuColumnDefinition = {
-    colId: 'nf-ag-menu',
-    field: 'nf-ag-menu',
+    colId: 'ziti-ag-menu',
+    field: 'ziti-ag-menu',
     resizable: false,
     width: 50,
     sortable: false,
@@ -108,8 +108,8 @@ export class DataTableComponent implements OnChanges, OnInit {
   private _saveColumnStateDebounced;
 
   private selectColumnDefinition = {
-    colId: 'nf-ag-selected',
-    field: 'nf-ag-selected',
+    colId: 'ziti-ag-selected',
+    field: 'ziti-ag-selected',
     suppressSizeToFit: true,
     lockPosition: true,
     suppressMovable: true,
@@ -129,7 +129,7 @@ export class DataTableComponent implements OnChanges, OnInit {
             row.selected = item.selected;
           }
         });
-        this._gridObj.api.nfAllToggled = _.every(this.rowData, {selected: true});
+        this._gridObj.api.zitiAllToggled = _.every(this.rowData, {selected: true});
       },
     },
     headerComponent: TableHeaderSelectComponent,
@@ -221,6 +221,10 @@ export class DataTableComponent implements OnChanges, OnInit {
     if (this._gridObj && changes.rowData) {
       this._refreshCellsDebounced(changes.rowData);
     }
+  }
+
+  columnVisibilityChanged(event) {
+    this.setColumnVisibilityColumn(event?.column, event?.visible);
   }
 
   setColumnVisibilityColumn(column, visible) {
@@ -332,8 +336,8 @@ export class DataTableComponent implements OnChanges, OnInit {
     return this.allowDownload && this._view !== 'process';
   }
 
-  getRowNodeId(data) {
-    return data.id ? data.id : data.name ? data.name : 'new_row_' + data.itemIndex;
+  getRowNodeId(row) {
+    return row?.data?.id ? row?.data?.id : row?.data?.name ? row?.data?.name : 'new_row_' + row?.data?.itemIndex;
   }
 
   _refreshCells(rowData) {
@@ -342,7 +346,7 @@ export class DataTableComponent implements OnChanges, OnInit {
     }
     const dataChanged = !_.isEqual(rowData.previousValue, rowData.currentValue);
     if (dataChanged) {
-      this._gridObj.api.nfAllToggled = !_.isEmpty(this.rowData) && _.every(this.rowData, {selected: true});
+      this._gridObj.api.zitiAllToggled = !_.isEmpty(this.rowData) && _.every(this.rowData, {selected: true});
       this._gridObj.api.refreshCells({force: true});
     }
   }
@@ -351,11 +355,9 @@ export class DataTableComponent implements OnChanges, OnInit {
     this.gridOptions = {
       pagination: false,
       rowSelection: 'single',
-      rowClass: 'tRow',
-      headerHeight: 50,
+      rowClass: 'ziti-table-row',
       rowHeight: 50,
       immutableData: true,
-      suppressRowTransform: true,
       suppressRowClickSelection: true,
       suppressHorizontalScroll: false,
       stopEditingWhenGridLosesFocus: true,
@@ -428,6 +430,32 @@ export class DataTableComponent implements OnChanges, OnInit {
           return _.get(params, 'data.roleItem');
         },
       },
+      getRowHeight: (params) => {
+        if (params.api.view === 'process') {
+          if (_.get(params, 'data.isRoot')) {
+            return 50;
+          }
+          if (_.get(params, 'data.isParallel')) {
+            return 35;
+          }
+          if (_.get(params, 'data.parentId')) {
+            return 40;
+          }
+          return 50;
+        } else if (
+            params.api.view === 'users' ||
+            params.api.view === 'user-roles' ||
+            params.api.view === 'roles'
+        ) {
+          if (_.get(params, 'data.roleItem')) {
+            return 35;
+          }
+          return 50;
+        } else {
+          return 50;
+        }
+      },
+
       onCellEditingStopped: (eventObj) => {
         if (!this.validateService) {
           return;
@@ -446,21 +474,17 @@ export class DataTableComponent implements OnChanges, OnInit {
         this._handleTableScroll(scroller);
       },
       onGridReady: (grid) => {
-        grid.api.nfAllToggled = false;
-        grid.api.nfHideColumn = this.setColumnVisibilityColumn.bind(this);
-        grid.api.nfApplyFilter = this.applyFilter.bind(this);
+        grid.api.zitiAllToggled = false;
+        grid.api.zitiHideColumn = this.setColumnVisibilityColumn.bind(this);
+        grid.api.zitiApplyFilter = this.applyFilter.bind(this);
         grid.api.columnFilters = this.columnFilters;
         grid.api.openHeaderFilter = this.openHeaderFilter.bind(this);
         grid.api.closeHeaderFilter = this.closeHeaderFilter.bind(this);
         grid.api.validateTable = this._validateTable.bind(this);
         grid.api.view = this._view;
-        grid.api.nfRowData = this.rowData;
-        grid.api.onRowHeightChanged = (temp) => {
-          console.log(temp);
-        };
+        grid.api.zitiRowData = this.rowData;
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        grid.api.rowsToggled = this.rowsToggled ? this.rowsToggled.bind(this) : () => {
-        };
+        grid.api.rowsToggled = this.rowsToggled ? this.rowsToggled.bind(this) : () => {};
         if (this.serverSideDataSource) {
           grid.api.setServerSideDatasource(this.serverSideDataSource);
         }
@@ -533,18 +557,18 @@ export class DataTableComponent implements OnChanges, OnInit {
   }
 
   _resetCookieConfig() {
-    localStorage.removeItem(`nf_${this.tableId}_table_state`);
-    localStorage.removeItem(`nf_${this.tableId}_column_widths`);
+    localStorage.removeItem(`ziti_${this.tableId}_table_state`);
+    localStorage.removeItem(`ziti_${this.tableId}_column_widths`);
   }
 
   _saveColumnState() {
     const tableState = this._gridObj.columnApi.getColumnState();
     const tableStateCookie = JSON.stringify(tableState);
-    localStorage.setItem(`nf_${this.tableId}_table_state`, tableStateCookie);
+    localStorage.setItem(`ziti_${this.tableId}_table_state`, tableStateCookie);
   }
 
   _applyColumnState() {
-    const tableStateCookie = localStorage.getItem(`nf_${this.tableId}_table_state`);
+    const tableStateCookie = localStorage.getItem(`ziti_${this.tableId}_table_state`);
     const tableState = JSON.parse(tableStateCookie);
     if (tableState) {
       this._gridObj.columnApi.applyColumnState({state: tableState});
@@ -558,16 +582,16 @@ export class DataTableComponent implements OnChanges, OnInit {
     }
     const columnId = column.colId;
     const columnWidth = column.actualWidth;
-    let colWidthsCookie = localStorage.getItem(`nf_${this.tableId}_column_widths`);
+    let colWidthsCookie = localStorage.getItem(`ziti_${this.tableId}_column_widths`);
     let colWidths: any = {};
     if (!_.isEmpty(colWidthsCookie)) {
       colWidths = JSON.parse(colWidthsCookie);
     }
     colWidths[columnId] = columnWidth;
     colWidthsCookie = JSON.stringify(colWidths);
-    localStorage.setItem(`nf_${this.tableId}_column_widths`, colWidthsCookie);
+    localStorage.setItem(`ziti_${this.tableId}_column_widths`, colWidthsCookie);
 
-    let tableStateCookie = localStorage.getItem(`nf_${this.tableId}_table_state`);
+    let tableStateCookie = localStorage.getItem(`ziti_${this.tableId}_table_state`);
     let tableState;
     if (_.isEmpty(tableStateCookie)) {
       tableState = this._gridObj.columnApi.getColumnState();
@@ -581,7 +605,7 @@ export class DataTableComponent implements OnChanges, OnInit {
       }
     });
     tableStateCookie = JSON.stringify(tableState);
-    localStorage.setItem(`nf_${this.tableId}_table_state`, tableStateCookie);
+    localStorage.setItem(`ziti_${this.tableId}_table_state`, tableStateCookie);
     _.forEach(this._gridObj.columnApi.columnModel.columnDefs, (colDef) => {
       if (colDef.colId === columnId) {
         colDef.suppressSizeToFit = true;
@@ -607,7 +631,7 @@ export class DataTableComponent implements OnChanges, OnInit {
     }
     const field = _.get(params, 'colDef.field', '');
     if (validationResult.errors[field]) {
-      return 'nf-table-cell-error';
+      return 'ziti-table-cell-error';
     }
     return '';
   }
@@ -698,7 +722,7 @@ export class DataTableComponent implements OnChanges, OnInit {
     if (this._view === 'upload' || this._view === 'process') {
       return;
     }
-    const colWidthsCookie = localStorage.getItem(`nf_${this.tableId}_column_widths`);
+    const colWidthsCookie = localStorage.getItem(`ziti_${this.tableId}_column_widths`);
     if (!_.isEmpty(colWidthsCookie)) {
       const colWidths = JSON.parse(colWidthsCookie);
       _.forEach(colWidths, (colWidth, colId) => {
@@ -716,7 +740,7 @@ export class DataTableComponent implements OnChanges, OnInit {
     if (this._view === 'upload' || this._view === 'process') {
       return;
     }
-    const tableStateCookie = localStorage.getItem(`nf_${this.tableId}_table_state`);
+    const tableStateCookie = localStorage.getItem(`ziti_${this.tableId}_table_state`);
     if (!_.isEmpty(tableStateCookie) || typeof tableStateCookie === 'undefined') {
       const colStates = JSON.parse(tableStateCookie);
       const columnIndexes = [];

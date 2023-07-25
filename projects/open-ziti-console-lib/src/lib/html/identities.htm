@@ -249,7 +249,7 @@
                 page.authPolicies = new Data("auth-policies");
                 page.authPolicies.init(false, false, true);
                 page.authPolicies.get();
-                
+
                 page.appData = CodeMirror.fromTextArea(document.getElementById("AppData"), { mode: "application/json", lineNumbers: true, extraKeys: {"Ctrl-Space": "autocomplete"} });
             }, 
             events: function() {

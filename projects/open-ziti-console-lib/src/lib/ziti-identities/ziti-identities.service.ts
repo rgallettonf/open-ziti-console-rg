@@ -12,8 +12,8 @@ export class ZitiIdentitiesService {
         noSearch: false,
         order: "ASC",
         page: 1,
-        searchOn: "id",
-        sort: "id",
+        searchOn: "name",
+        sort: "name",
         total: 100
     }
 
@@ -29,7 +29,11 @@ export class ZitiIdentitiesService {
         })
     }
 
-    public getZitiIdentities() {
+    public getZitiIdentities(filter?) {
+        if (filter) {
+            this.paging.filter = filter.value;
+            this.paging.searchOn = filter.columnId;
+        }
         return this.getZitiEntities('identities', this.paging);
     }
 

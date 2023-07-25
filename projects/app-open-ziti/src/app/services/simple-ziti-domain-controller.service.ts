@@ -21,6 +21,8 @@ export class SimpleZitiDomainControllerServic implements ZitiDomainControllerSer
             this.zitiSessionData.zitiSessionId = results.sessionId;
             this.zitiSessionData.zitiDomain = results.controllerDomain;
             this.zitiSettings.next({...this.zitiSessionData});
+            localStorage.setItem('ziti_session_id', results.sessionId);
+            localStorage.setItem('ziti_controller_domain', results.controllerDomain);
         });
 
     }

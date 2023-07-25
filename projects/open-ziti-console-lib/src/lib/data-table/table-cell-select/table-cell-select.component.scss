@@ -1,5 +1,25 @@
 .row-toggle {
   &.tSelect {
+    width: 25px;
+    height: 25px;
+    border: 1.5px var(--stroke) solid;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.5s;
+    position: absolute;
+    top: 13px;
+    left: 10px;
+    background-color: var(--offWhite);
+    transition: var(--transition);
+
+    &.selected{
+      background-color: var(--green);
+      background-image: url(/assets/images/check.png);
+      background-size: 45%;
+      background-position: center center;
+      border: none;
+    }
+
     &.disabled {
       opacity: 0.6;
       cursor: not-allowed;

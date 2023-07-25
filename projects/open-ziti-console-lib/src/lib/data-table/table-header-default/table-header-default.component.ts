@@ -166,7 +166,7 @@ export class TableHeaderDefaultComponent implements IHeaderAngularComp, AfterVie
   }
 
   hide(): void {
-    this.headerParams.api.nfHideColumn(this.columnObj, false);
+    this.headerParams.api.zitiHideColumn(this.columnObj, false);
   }
 
   sort(event): void {

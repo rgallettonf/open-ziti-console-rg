@@ -75,7 +75,7 @@
             </span>
       <app-table-header-filter
         *ngIf="((showFilter || comboActive) && !(filterType === 'COMBO' && !comboActive)) && filterType !== 'SELECT' && filterType !== 'CUSTOM'"
-        [applyFilter]="headerParams.api.nfApplyFilter"
+        [applyFilter]="headerParams.api.zitiApplyFilter"
         [columnFilters]="headerParams.api.columnFilters"
         [columnId]="columnDef.colId"
         [filterName]="headerName"

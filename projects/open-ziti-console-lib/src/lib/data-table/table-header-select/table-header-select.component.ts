@@ -10,7 +10,7 @@ import {IHeaderParams} from 'ag-grid-community';
 export class TableHeaderSelectComponent implements IHeaderAngularComp {
   headerParams: any;
   gridApi: any = {
-    nfAllToggled: undefined,
+    zitiAllToggled: undefined,
   };
 
   @ViewChild('toggleButton') toggleButton: ElementRef;
@@ -25,9 +25,9 @@ export class TableHeaderSelectComponent implements IHeaderAngularComp {
   }
 
   toggleAll(): void {
-    this.gridApi.nfAllToggled = !this.gridApi.nfAllToggled;
+    this.gridApi.zitiAllToggled = !this.gridApi.zitiAllToggled;
     if (this.headerParams.toggleAll) {
-      this.headerParams.toggleAll(this.gridApi.nfAllToggled, this.headerParams);
+      this.headerParams.toggleAll(this.gridApi.zitiAllToggled, this.headerParams);
     }
   }
 }
