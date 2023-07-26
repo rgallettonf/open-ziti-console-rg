@@ -2,7 +2,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 20;
+  z-index: 30;
   width: 100%;
   height: 100%;
   justify-content: center;
@@ -14,6 +14,7 @@
   padding: 1.5rem;
   padding-bottom: 2.5rem;
   transition: var(--transition);
+  background-color: var(--background);
 
 
   .innerblock {
@@ -36,7 +37,7 @@
     font-size: 30px;
     top: 1.25rem;
     left:1.25rem;;
-    z-index: 20;
+    z-index: 31;
     color: var(--stroke);
     text-transform: uppercase;
     text-align: center;

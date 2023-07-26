@@ -9,16 +9,16 @@ import {
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
-import {ExtendableComponent} from "../extendable/extendable.component";
+import {ExtendableComponent} from "../../extendable/extendable.component";
 
-type CallbackResults = {passed: boolean, errors:string[]}
+type CallbackResults = {passed: boolean, errors: { name: string, msg:string }[]}
 type ValidatorCallback = (data: any) => Promise<CallbackResults>;
 
 @Component({
-    selector: 'lib-list-page-item',
+    selector: 'lib-list-page-form',
     template: `
         <div *ngIf="_show" class="fullModal" [ngClass]="formClass">
-            <div class="buttonBall close icon-close">
+            <div class="buttonBall close icon-close" (click)="closeThisForm()">
                 <div class="buttonLabel">ESC</div>
             </div>
             <div class="innerblock">
@@ -38,17 +38,18 @@ type ValidatorCallback = (data: any) => Promise<CallbackResults>;
             </div>
         </div>
     `,
-    styleUrls: ['./list-page-item.component.scss']
+    styleUrls: ['./list-page-form.component.scss']
 })
-export class ListPageItemComponent extends ExtendableComponent implements AfterViewInit {
+export class ListPageFormComponent extends ExtendableComponent implements AfterViewInit {
 
     @ContentChild("projectable", {read: ComponentRef, static: true}) public itemForm!: ComponentRef<any>;
     @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-        this.closeItem();
+        this.closeThisForm();
     }
 
     @Input() title = 'Form Title';
     @Input() subTitle = 'Form Subtitle';
+    @Input() buttonLabel = 'Create';
     @Input() set data(d:any) {
         if(this.itemForm)
             this.itemForm.setInput('formData', d);
@@ -66,21 +67,21 @@ export class ListPageItemComponent extends ExtendableComponent implements AfterV
     _show = false;
 
     @Input() set show(val: boolean) {
-        this._show = val;
-        if (!val) this.closeItem();
-        else this.openItem();
+        if (val && !this._show) this.openThisForm();
     }
+    @Output() showChange = new EventEmitter<boolean>()
 
     override ngAfterViewInit() {
         super.ngAfterViewInit();
     }
 
-    async closeItem() {
+    async closeThisForm() {
         this.close.emit();
         this._show = false;
+        this.showChange.emit(false);
     }
 
-    async openItem() {
+    async openThisForm() {
         this._show = true;
         this.afterOpen.emit();
     }
@@ -97,6 +98,6 @@ export class ListPageItemComponent extends ExtendableComponent implements AfterV
 
     updateAndClose() {
         this.update.emit(this.itemForm.instance.formData);
-        this.closeItem();
+        this.closeThisForm();
     }
 }

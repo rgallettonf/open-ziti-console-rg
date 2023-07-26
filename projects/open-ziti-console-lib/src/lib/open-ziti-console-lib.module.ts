@@ -22,13 +22,13 @@ import {SideToolbarComponent} from './features/side-toolbar/side-toolbar.compone
 import {SideNavbarComponent} from './features/side-navbar/side-navbar.component';
 import {SideBannerComponent} from './features/side-banner/side-banner.component';
 import {PasswordInputComponent} from './features/dynamic-widgets/password/password-input.component';
-import {ConfigurationsComponent} from './pages/configurations/configurations.component';
-import {ListPageHeaderComponent} from './features/list-page-header/list-page-header.component';
-import {ListPageFilterComponent} from './features/list-page-filter/list-page-filter.component';
-import {ListPageTableComponent} from './features/list-page-table/list-page-table.component';
+import {ConfigurationsPageComponent} from './pages/configurations/configurations-page.component';
+import {ListPageHeaderComponent} from './features/list-page-features/list-page-header/list-page-header.component';
+import {ListPageFilterComponent} from './features/list-page-features/list-page-filter/list-page-filter.component';
+import {ListPageTableComponent} from './features/list-page-features/list-page-table/list-page-table.component';
 import {MatDialogModule} from "@angular/material/dialog";
-import {ConfigurationComponent} from "./features/projectableForms/configuration/configuration.component";
-import {ListPageItemComponent} from './features/list-page-item/list-page-item.component';
+import {ConfigurationFormComponent} from "./features/projectable-forms/configuration/configuration-form.component";
+import {ListPageFormComponent} from './features/list-page-features/list-page-form/list-page-form.component';
 
 @NgModule({
     declarations: [
@@ -47,12 +47,12 @@ import {ListPageItemComponent} from './features/list-page-item/list-page-item.co
         SideNavbarComponent,
         SideBannerComponent,
         PasswordInputComponent,
-        ConfigurationComponent,
-        ConfigurationsComponent,
+        ConfigurationFormComponent,
+        ConfigurationsPageComponent,
         ListPageHeaderComponent,
         ListPageFilterComponent,
         ListPageTableComponent,
-        ListPageItemComponent
+        ListPageFormComponent
     ],
     imports: [
         CommonModule,
@@ -77,8 +77,8 @@ import {ListPageItemComponent} from './features/list-page-item/list-page-item.co
         TextListInputComponent,
         CheckboxListInputComponent,
         ProtocolAddressPortInputComponent,
-        ConfigurationsComponent,
-        ConfigurationComponent
+        ConfigurationsPageComponent,
+        ConfigurationFormComponent
     ],
     providers: [
         {provide: SHAREDZ_EXTENSION, useClass: ExtensionsNoopService},

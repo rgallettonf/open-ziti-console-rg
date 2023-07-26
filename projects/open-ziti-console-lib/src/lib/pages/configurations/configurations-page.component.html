@@ -3,8 +3,8 @@
                           [tabs]="tabs" (actionClicked)="headerActionClicked($event)"></lib-list-page-header>
     <lib-list-page-filter></lib-list-page-filter>
     <lib-list-page-table></lib-list-page-table>
-    <lib-list-page-item [show]="showEditForm"
+    <lib-list-page-form [(show)]="showEditForm"
                         [title]="formTitle"
                         [subTitle]="formSubtitle"
-                        (update)="itemUpdate()"><lib-configuration></lib-configuration></lib-list-page-item>
+                        (update)="itemUpdate()"><lib-configuration></lib-configuration></lib-list-page-form>
 </div>

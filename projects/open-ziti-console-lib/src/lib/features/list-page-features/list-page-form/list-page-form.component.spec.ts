@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListPageItemComponent } from './list-page-item.component';
+import { ListPageFormComponent } from './list-page-form.component';
 
 describe('ListPageItemComponent', () => {
-  let component: ListPageItemComponent;
-  let fixture: ComponentFixture<ListPageItemComponent>;
+  let component: ListPageFormComponent;
+  let fixture: ComponentFixture<ListPageFormComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ListPageItemComponent]
+      declarations: [ListPageFormComponent]
     });
-    fixture = TestBed.createComponent(ListPageItemComponent);
+    fixture = TestBed.createComponent(ListPageFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

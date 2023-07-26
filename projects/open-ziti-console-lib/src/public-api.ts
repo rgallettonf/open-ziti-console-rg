@@ -9,7 +9,7 @@ export * from './lib/zac-wrapper.service';
 export * from './lib/zac-wrapper.service';
 export * from './lib/services/settings.service';
 export * from './lib/services/ziti-domain-controller.service';
-export * from './lib/features/projectableForms/configuration/configuration.component';
+export * from './lib/features/projectable-forms/configuration/configuration-form.component';
 export * from './lib/features/extendable/extendable.component';
 export * from './lib/features/side-toolbar/side-toolbar.component';
 export * from './lib/features/side-navbar/side-navbar.component';
@@ -23,5 +23,5 @@ export * from './lib/features/dynamic-widgets/checkbox-list/checkbox-list-input.
 export * from './lib/features/dynamic-widgets/object/object.component';
 export * from './lib/features/dynamic-widgets/text-list/text-list-input.component';
 export * from './lib/features/dynamic-widgets/protocol-address-port/protocol-address-port-input.component';
-export * from './lib/features/projectableForms/projectableForm.type';
-export * from './lib/pages/configurations/configurations.component';
+export * from './lib/features/projectable-forms/projectableForm.type';
+export * from './lib/pages/configurations/configurations-page.component';

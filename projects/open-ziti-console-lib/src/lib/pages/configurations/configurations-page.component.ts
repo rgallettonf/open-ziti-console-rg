@@ -2,10 +2,10 @@ import {Component} from '@angular/core';
 
 @Component({
   selector: 'lib-configurations',
-  templateUrl: './configurations.component.html',
-  styleUrls: ['./configurations.component.scss']
+  templateUrl: './configurations-page.component.html',
+  styleUrls: ['./configurations-page.component.scss']
 })
-export class ConfigurationsComponent {
+export class ConfigurationsPageComponent {
     title = 'Configuration Management'
     tabs: { url: string, label: string }[] = [
         {label: 'Services', url:'/services'},
@@ -14,6 +14,8 @@ export class ConfigurationsComponent {
     ];
     formTitle = '';
     formSubtitle = '';
+
+    showEditForm = false;
 
     constructor(
         ) {
@@ -49,6 +51,4 @@ export class ConfigurationsComponent {
     itemUpdate() {
 
     }
-
-    showEditForm: any;
 }

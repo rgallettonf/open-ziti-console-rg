@@ -5,7 +5,7 @@ import {authenticationGuard} from "./guards/authentication.guard";
 import {ZacWrapperComponent} from "open-ziti-console-lib";
 import {LoginComponent} from "./login/login.component";
 import {
-  ConfigurationsComponent
+  ConfigurationsPageComponent
 } from "open-ziti-console-lib";
 
 const routes: Routes = [
@@ -55,7 +55,7 @@ const routes: Routes = [
   },
   {
     path: 'configs',
-    component: ConfigurationsComponent,
+    component: ConfigurationsPageComponent,
     canActivate: [authenticationGuard],
   },
   {

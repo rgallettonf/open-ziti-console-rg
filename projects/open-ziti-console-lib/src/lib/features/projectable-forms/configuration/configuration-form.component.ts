@@ -7,10 +7,10 @@ import {ProjectableFormType} from "../projectableForm.type";
 
 @Component({
     selector: 'lib-configuration',
-    templateUrl: './configuration.component.html',
-    styleUrls: ['./configuration.component.scss']
+    templateUrl: './configuration-form.component.html',
+    styleUrls: ['./configuration-form.component.scss']
 })
-export class ConfigurationComponent extends ExtendableComponent implements ProjectableFormType, OnDestroy {
+export class ConfigurationFormComponent extends ExtendableComponent implements ProjectableFormType, OnDestroy {
     @ViewChild("dynamicform", {read: ViewContainerRef}) dynamicForm!: ViewContainerRef;
     @Input() formData: any = {};
     @Input() errors: string[] = [];
