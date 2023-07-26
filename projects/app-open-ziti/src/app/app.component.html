@@ -1,7 +1,7 @@
 <div class="main">
     <div class="side">
         <ng-container *ngIf="isAuthorized; else login">
-            <lib-side-toolbar></lib-side-toolbar>
+            <lib-side-toolbar *ngIf="displayTool" ></lib-side-toolbar>
             <lib-side-navbar *ngIf="displayNav" [version]="version"></lib-side-navbar>
         </ng-container>
         <ng-template #login>

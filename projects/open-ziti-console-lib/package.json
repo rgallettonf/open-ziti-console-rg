@@ -3,7 +3,7 @@
   "version": "0.0.8",
   "repository": {
     "type": "git",
-    "url":  "https://github.com/edthompson-nf/open-ziti-console"
+    "url": "https://github.com/edthompson-nf/open-ziti-console"
   },
   "author": {
     "name": "Ed Thompson",
@@ -13,8 +13,8 @@
   "peerDependencies": {
     "@angular/common": "^16.0.0",
     "@angular/core": "^16.0.0",
-    "@angular/cdk": "^16.0.0",
-    "@angular/material": "^16.0.0"
+    "@angular/cdk": "^16.1.5",
+    "@angular/material": "^16.1.5"
   },
   "private": false,
   "dependencies": {

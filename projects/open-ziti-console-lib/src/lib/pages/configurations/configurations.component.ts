@@ -1,6 +1,4 @@
-import { Component } from '@angular/core';
-import {ConfigurationComponent} from "../../features/modals/configuration/configuration.component";
-import {MatDialog} from "@angular/material/dialog";
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'lib-configurations',
@@ -14,17 +12,17 @@ export class ConfigurationsComponent {
         {label: 'Configurations', url:'/configs'},
         {label: 'Config Types', url:'/config-types'},
     ];
-    model: any = {};
+    formTitle = '';
+    formSubtitle = '';
 
     constructor(
-        private dialogForm: MatDialog
         ) {
     }
 
     headerActionClicked(action: string) {
         switch(action) {
             case 'add':
-                this.openCreate();
+                this.openUpdate();
                 break;
             case 'delete':
                 this.openBulkDelete()
@@ -33,20 +31,24 @@ export class ConfigurationsComponent {
         }
     }
 
-    private openCreate() {
-        const dialogRef = this.dialogForm.open(ConfigurationComponent, {
-            data: {
-                model: this.model,
-            },
-            minHeight: '100%',
-            minWidth: '100%',
-            height: '100%',
-            width: '100%',
-        });
-
+    private openUpdate(model?: any) {
+        if(!model) {
+            this.formTitle = 'Create Configuration'
+            this.formSubtitle = 'Add a New Configuration by completing this form';
+        } else {
+            this.formTitle = 'Edit Configuration'
+            this.formSubtitle = 'Change Configuration details';
+        }
+        this.showEditForm = true;
     }
 
     private openBulkDelete() {
 
     }
+
+    itemUpdate() {
+
+    }
+
+    showEditForm: any;
 }

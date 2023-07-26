@@ -1,15 +1,19 @@
-import {Component, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, Input, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
 import {ConfigurationService} from "./configuration.service";
 import {Subscription} from "rxjs";
 import {SchemaService} from "../../../services/schema.service";
+import {ExtendableComponent} from "../../extendable/extendable.component";
+import {ProjectableFormType} from "../projectableForm.type";
 
 @Component({
     selector: 'lib-configuration',
     templateUrl: './configuration.component.html',
     styleUrls: ['./configuration.component.scss']
 })
-export class ConfigurationComponent implements OnDestroy {
+export class ConfigurationComponent extends ExtendableComponent implements ProjectableFormType, OnDestroy {
     @ViewChild("dynamicform", {read: ViewContainerRef}) dynamicForm!: ViewContainerRef;
+    @Input() formData: any = {};
+    @Input() errors: string[] = [];
 
     options: string[] = [
         "host.v1",
@@ -33,14 +37,12 @@ export class ConfigurationComponent implements OnDestroy {
 
     config: string = '';
     editMode = false;
-    showCode = false;
     items: any = [];
-    formData: any = {};
     subscription = new Subscription()
 
     constructor(private svc: ConfigurationService,
                 private schemaSvc: SchemaService) {
-
+        super();
     }
 
     async createForm() {

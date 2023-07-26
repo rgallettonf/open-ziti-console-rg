@@ -7,25 +7,28 @@ import {FormsModule} from "@angular/forms";
 import {ZacRoutingModule} from "./zac-routing.module";
 import {ExtendableComponent} from "./features/extendable/extendable.component";
 import {ExtensionsNoopService, SHAREDZ_EXTENSION} from "./features/extendable/extensions-noop.service";
-import { StringInputComponent } from './features/dynamic-widgets/string/string-input.component';
-import { NumberInputComponent } from './features/dynamic-widgets/number/number-input.component';
-import { BooleanToggleInputComponent } from './features/dynamic-widgets/boolean/boolean-toggle-input.component';
-import { ObjectComponent } from './features/dynamic-widgets/object/object.component';
-import { SelectorInputComponent } from './features/dynamic-widgets/selector/selector-input.component';
-import { CheckboxListInputComponent } from './features/dynamic-widgets/checkbox-list/checkbox-list-input.component';
+import {StringInputComponent} from './features/dynamic-widgets/string/string-input.component';
+import {NumberInputComponent} from './features/dynamic-widgets/number/number-input.component';
+import {BooleanToggleInputComponent} from './features/dynamic-widgets/boolean/boolean-toggle-input.component';
+import {ObjectComponent} from './features/dynamic-widgets/object/object.component';
+import {SelectorInputComponent} from './features/dynamic-widgets/selector/selector-input.component';
+import {CheckboxListInputComponent} from './features/dynamic-widgets/checkbox-list/checkbox-list-input.component';
 import {TextListInputComponent} from "./features/dynamic-widgets/text-list/text-list-input.component";
 import {ChipsModule} from "primeng/chips";
-import { ProtocolAddressPortInputComponent } from './features/dynamic-widgets/protocol-address-port/protocol-address-port-input.component';
-import { SideToolbarComponent } from './features/side-toolbar/side-toolbar.component';
-import { SideNavbarComponent } from './features/side-navbar/side-navbar.component';
-import { SideBannerComponent } from './features/side-banner/side-banner.component';
-import { PasswordInputComponent } from './features/dynamic-widgets/password/password-input.component';
-import { ConfigurationsComponent } from './pages/configurations/configurations.component';
-import { ListPageHeaderComponent } from './features/list-page-header/list-page-header.component';
-import { ListPageFilterComponent } from './features/list-page-filter/list-page-filter.component';
-import { ListPageTableComponent } from './features/list-page-table/list-page-table.component';
-import {ConfigurationComponent} from "./features/modals/configuration/configuration.component";
+import {
+    ProtocolAddressPortInputComponent
+} from './features/dynamic-widgets/protocol-address-port/protocol-address-port-input.component';
+import {SideToolbarComponent} from './features/side-toolbar/side-toolbar.component';
+import {SideNavbarComponent} from './features/side-navbar/side-navbar.component';
+import {SideBannerComponent} from './features/side-banner/side-banner.component';
+import {PasswordInputComponent} from './features/dynamic-widgets/password/password-input.component';
+import {ConfigurationsComponent} from './pages/configurations/configurations.component';
+import {ListPageHeaderComponent} from './features/list-page-header/list-page-header.component';
+import {ListPageFilterComponent} from './features/list-page-filter/list-page-filter.component';
+import {ListPageTableComponent} from './features/list-page-table/list-page-table.component';
 import {MatDialogModule} from "@angular/material/dialog";
+import {ConfigurationComponent} from "./features/projectableForms/configuration/configuration.component";
+import {ListPageItemComponent} from './features/list-page-item/list-page-item.component';
 
 @NgModule({
     declarations: [
@@ -44,18 +47,20 @@ import {MatDialogModule} from "@angular/material/dialog";
         SideNavbarComponent,
         SideBannerComponent,
         PasswordInputComponent,
-        ConfigurationsComponent,
         ConfigurationComponent,
+        ConfigurationsComponent,
         ListPageHeaderComponent,
         ListPageFilterComponent,
-        ListPageTableComponent
+        ListPageTableComponent,
+        ListPageItemComponent
     ],
     imports: [
         CommonModule,
         FormsModule,
+        MatDialogModule,
         HttpClientModule,
         ZacRoutingModule,
-        ChipsModule
+        ChipsModule,
     ],
     exports: [
         ZacWrapperComponent,
@@ -73,11 +78,11 @@ import {MatDialogModule} from "@angular/material/dialog";
         CheckboxListInputComponent,
         ProtocolAddressPortInputComponent,
         ConfigurationsComponent,
-        MatDialogModule
+        ConfigurationComponent
     ],
     providers: [
         {provide: SHAREDZ_EXTENSION, useClass: ExtensionsNoopService},
     ],
 })
-export class OpenZitiConsoleModule {
+export class OpenZitiConsoleLibModule {
 }
