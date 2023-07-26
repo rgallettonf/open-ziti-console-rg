@@ -8,13 +8,10 @@ import {SettingsService} from "open-ziti-console-lib";
 })
 export class AppComponent implements OnInit {
     title = 'Open Ziti Console';
-    auth = '';
-    level = '';
-    subtitle = '';
-    time = '';
-    message = '';
-    type = '';
-    loginVersion: any;
+    version = '';
+    isAuthorized = false;
+    displayNav = true;
+    displayTool = true;
 
     constructor(private settingsService: SettingsService) {
 
@@ -22,8 +19,11 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this.settingsService.init();
-        this.settingsService.settingsChange.subscribe(results => {
-            this.loginVersion = results.version;
+        this.settingsService.settingsChange.subscribe((results:any) => {
+            this.version = results.version;
+            this.isAuthorized = results.session?.id;
+            this.displayNav = !results.hideNav ?? true;
+            this.displayTool = !results.hideTool ?? true;
         });
     }
 }

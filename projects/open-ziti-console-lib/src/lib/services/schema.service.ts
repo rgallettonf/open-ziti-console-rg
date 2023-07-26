@@ -1,12 +1,12 @@
 import {ComponentRef, Injectable, ViewContainerRef} from '@angular/core';
 import {ObjectComponent} from "../features/dynamic-widgets/object/object.component";
-import {NumberComponent} from "../features/dynamic-widgets/number/number.component";
-import {BooleanComponent} from "../features/dynamic-widgets/boolean/boolean.component";
-import {StringComponent} from "../features/dynamic-widgets/string/string.component";
-import {SelectorComponent} from "../features/dynamic-widgets/selector/selector.component";
+import {NumberInputComponent} from "../features/dynamic-widgets/number/number-input.component";
+import {BooleanToggleInputComponent} from "../features/dynamic-widgets/boolean/boolean-toggle-input.component";
+import {StringInputComponent} from "../features/dynamic-widgets/string/string-input.component";
+import {SelectorInputComponent} from "../features/dynamic-widgets/selector/selector-input.component";
 import _ from "lodash";
-import {TextListComponent} from "../features/dynamic-widgets/text-list/text-list.component";
-import {CheckboxListComponent} from "../features/dynamic-widgets/checkbox-list/checkbox-list.component";
+import {TextListInputComponent} from "../features/dynamic-widgets/text-list/text-list-input.component";
+import {CheckboxListInputComponent} from "../features/dynamic-widgets/checkbox-list/checkbox-list-input.component";
 
 @Injectable({
     providedIn: 'root'
@@ -191,7 +191,7 @@ export class SchemaService {
     }
 
     private buildBooleanField(view: ViewContainerRef, nestLevel: number, key: string, parentage: string[]) {
-        let componentRef = view.createComponent(BooleanComponent);
+        let componentRef = view.createComponent(BooleanToggleInputComponent);
         componentRef.setInput('fieldName', this.getLabel(key));
         if(parentage && !_.isEmpty(parentage) ) componentRef.setInput('parentage', parentage);
         componentRef.setInput('fieldValue', '');
@@ -200,7 +200,7 @@ export class SchemaService {
     }
 
     private buildTextField(view: ViewContainerRef, nestLevel: number, key: string, parentage: string[]) {
-        let componentRef = view.createComponent(StringComponent);
+        let componentRef = view.createComponent(StringInputComponent);
         componentRef.setInput('fieldName', this.getLabel(key));
         if(parentage && !_.isEmpty(parentage) ) componentRef.setInput('parentage', parentage);
         componentRef.setInput('fieldValue', '');
@@ -216,7 +216,7 @@ export class SchemaService {
             if (property.minimum != null) placeholder = "number great than " + property.minimum;
             if (property.maximum != null) placeholder = "number less than " + property.maximum;
         }
-        let componentRef = view.createComponent(NumberComponent);
+        let componentRef = view.createComponent(NumberInputComponent);
         componentRef.setInput('fieldName', this.getLabel(key));
         if(parentage && !_.isEmpty(parentage) ) componentRef.setInput('parentage', parentage);
         componentRef.setInput('fieldValue', false);
@@ -226,7 +226,7 @@ export class SchemaService {
     }
 
     private buildSelectField(view: ViewContainerRef, nestLevel: number, key: string, list: string[], parentage: string[]) {
-        let componentRef = view.createComponent(SelectorComponent);
+        let componentRef = view.createComponent(SelectorInputComponent);
         componentRef.setInput('fieldName', this.getLabel(key));
         if(parentage && !_.isEmpty(parentage) ) componentRef.setInput('parentage', parentage);
         componentRef.setInput('fieldValue', '');
@@ -237,7 +237,7 @@ export class SchemaService {
     }
 
     private buildCheckBoxListField(view: ViewContainerRef, nestLevel: number, key: string, list: string[], parentage: string[]) {
-        let componentRef = view.createComponent(CheckboxListComponent);
+        let componentRef = view.createComponent(CheckboxListInputComponent);
         componentRef.setInput('fieldName', this.getLabel(key));
         if(parentage && !_.isEmpty(parentage) ) componentRef.setInput('parentage', parentage);
         componentRef.setInput('fieldValue', '');
@@ -248,7 +248,7 @@ export class SchemaService {
     }
 
     private buildTextListField(view: ViewContainerRef, nestLevel: number, key: string, parentage: string[]) {
-        let componentRef = view.createComponent(TextListComponent);
+        let componentRef = view.createComponent(TextListInputComponent);
         componentRef.setInput('fieldName', this.getLabel(key));
         if(parentage && !_.isEmpty(parentage) ) componentRef.setInput('parentage', parentage);
         componentRef.setInput('fieldValue', ['test1','test2']);
@@ -392,35 +392,37 @@ export class SchemaService {
             if (property.items) items = property.items;
             if (items.items) items = items.items;
 
-            // if (items.type && items.type == "object" && items.properties != null) {
-            //     let properties = items.properties;
-            //     html += '<div id="' + ((parentage != null) ? parentage + '_' : '') + 'schema_' + key + '_selected" class="selectedItems"></div>';
-            //     html += '<div class="subform">';
-            //     let values = [];
-            //     if (key == "portRanges" || key == "allowedPortRanges") html += '<div class="grid splitadd">';
-            //     let order = ['low', 'high'];
-            //     let subItems = [];
-            //     for (let subKey in properties) {
-            //         subItems.push({
-            //             key: key,
-            //             subKey: subKey,
-            //             value: properties[subKey]
-            //         });
-            //     }
-            //     subItems.sort(function (a, b) {
-            //         let aPort = a.subKey.replace(/[^A-Za-z]+/g, '').toLowerCase().replace(/\s/g, '');
-            //         let bPort = b.subKey.replace(/[^A-Za-z]+/g, '').toLowerCase().replace(/\s/g, '');
-            //         return order.indexOf(aPort) - order.indexOf(bPort);
-            //     });
-            //     for (let i = 0; i < subItems.length; i++) {
-            //         values.push(subItems[i].subKey);
-            //         html += this.getField(subItems[i].subKey, subItems[i].value, subItems[i].key);
-            //     }
-            //     html += '<div><div id="' + ((parentage != null) ? parentage + '_' : '') + 'schema_' + key + '_Button" class="button subobject" data-id="' + key + '_schema" data-to="' + ((parentage != null) ? parentage + '_' : '') + 'schema_' + key + '_selected" data-values="' + values.toString() + '">Add</div></div>'
-            //     if (key == "portRanges") html += '</div>';
-            //     html += '</div></div>';
-            // } else
-            if (Array.isArray(items.enum)) {
+            if (items.type && items.type == "object" && items.properties != null) {
+                componentRef = this.buildNestedContainer(view, nestLevel, key, parentage, property);
+                // if (items.type && items.type == "object" && items.properties != null) {
+                //     let properties = items.properties;
+                //     html += '<div id="' + ((parentage != null) ? parentage + '_' : '') + 'schema_' + key + '_selected" class="selectedItems"></div>';
+                //     html += '<div class="subform">';
+                //     let values = [];
+                //     if (key == "portRanges" || key == "allowedPortRanges") html += '<div class="grid splitadd">';
+                //     let order = ['low', 'high'];
+                //     let subItems = [];
+                //     for (let subKey in properties) {
+                //         subItems.push({
+                //             key: key,
+                //             subKey: subKey,
+                //             value: properties[subKey]
+                //         });
+                //     }
+                //     subItems.sort(function (a, b) {
+                //         let aPort = a.subKey.replace(/[^A-Za-z]+/g, '').toLowerCase().replace(/\s/g, '');
+                //         let bPort = b.subKey.replace(/[^A-Za-z]+/g, '').toLowerCase().replace(/\s/g, '');
+                //         return order.indexOf(aPort) - order.indexOf(bPort);
+                //     });
+                //     for (let i = 0; i < subItems.length; i++) {
+                //         values.push(subItems[i].subKey);
+                //         html += this.getField(subItems[i].subKey, subItems[i].value, subItems[i].key);
+                //     }
+                //     html += '<div><div id="' + ((parentage != null) ? parentage + '_' : '') + 'schema_' + key + '_Button" class="button subobject" data-id="' + key + '_schema" data-to="' + ((parentage != null) ? parentage + '_' : '') + 'schema_' + key + '_selected" data-values="' + values.toString() + '">Add</div></div>'
+                //     if (key == "portRanges") html += '</div>';
+                //     html += '</div></div>';
+                // } else
+            } else if (Array.isArray(items.enum)) {
                 componentRef = this.buildCheckBoxListField(view, nestLevel, key, items.enum, parentage);
 
             } else {

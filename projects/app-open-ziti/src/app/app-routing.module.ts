@@ -2,13 +2,16 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 import {authenticationGuard} from "./guards/authentication.guard";
-import {ZacWrapperComponent, ConfigurationComponent} from "open-ziti-console-lib";
+import {ZacWrapperComponent} from "open-ziti-console-lib";
 import {LoginComponent} from "./login/login.component";
+import {
+  ConfigurationsPageComponent
+} from "open-ziti-console-lib";
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'ziti-dashboard',
+    redirectTo: 'configs',
     pathMatch: 'full'
   },
   {
@@ -52,7 +55,7 @@ const routes: Routes = [
   },
   {
     path: 'configs',
-    component: ConfigurationComponent,
+    component: ConfigurationsPageComponent,
     canActivate: [authenticationGuard],
   },
   {
