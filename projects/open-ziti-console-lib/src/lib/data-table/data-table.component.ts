@@ -57,7 +57,7 @@ export class DataTableComponent implements OnChanges, OnInit {
   gridRendered;
   resizeGridColumnsDebounced;
   allToggled;
-  selectedItem = {
+  selectedItem: any = {
     actionList: [],
   };
   showFilterOptions = false;
@@ -122,14 +122,12 @@ export class DataTableComponent implements OnChanges, OnInit {
     cellRenderer: 'cellSelectComponent',
     cellRendererParams: {
       toggleItem: (item) => {
-        this.actionRequested.emit({action: 'toggleItem', item: item});
-
-        this.rowData.forEach((row) => {
-          if (item.id === row.id) {
-            row.selected = item.selected;
-          }
-        });
+        item.selected = !item.selected;
         this._gridObj.api.zitiAllToggled = _.every(this.rowData, {selected: true});
+        _.defer(() => {
+          this._gridObj.api.refreshCells({force: true});
+        });
+        this.actionRequested.emit({action: 'toggleItem', item: item});
       },
     },
     headerComponent: TableHeaderSelectComponent,

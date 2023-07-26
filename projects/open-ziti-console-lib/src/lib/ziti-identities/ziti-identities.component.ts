@@ -130,19 +130,21 @@ export class ZitiIdentitiesComponent implements OnInit {
       const enrollmentData = row?.data?.enrollment;
       if (enrollmentData&&enrollmentData?.ott&&enrollmentData?.ott?.jwt) {
         if (enrollmentData?.ott?.expiresAt!=null) {
-          var difference = moment(enrollmentData?.ott?.expiresAt).diff(moment(new Date()));
+          const difference = moment(enrollmentData?.ott?.expiresAt).diff(moment(new Date()));
           if (difference>0) enrollment = '<span class="cert" data-id="'+row?.data?.id+'"></span><span class="qr icon-qr" data-id="'+row?.data?.id+'"></span>';
         } else {
           enrollment = '<span class="cert" data-id="'+row?.data?.id+'"></span><span class="qr icon-qr" data-id="'+row?.data?.id+'"></span>';
         }
+        enrollment = `<div class="gridAction">${enrollment}</div>`
       } else {
-        if (enrollmentData.updb) {
+        if (enrollmentData?.updb) {
           if (enrollmentData?.updb?.expiresAt!=null) {
-            var difference = moment(enrollmentData?.updb?.expiresAt).diff(moment(new Date()));
+            const difference = moment(enrollmentData?.updb?.expiresAt).diff(moment(new Date()));
             if (difference>0) enrollment = '<span class="cert" data-id="'+row?.data?.id+'"></span><span class="qr icon-qr" data-id="'+row?.data?.id+'"></span>';
           } else {
             enrollment = '<span class="cert" data-id="'+row?.data?.id+'"></span><span class="qr icon-qr" data-id="'+row?.data?.id+'"></span>';
           }
+          enrollment = `<div class="gridAction">${enrollment}</div>`
         }
       }
 
@@ -229,29 +231,31 @@ export class ZitiIdentitiesComponent implements OnInit {
 
   tableAction(event) {
     switch(event?.action) {
+      case 'toggleAll':
       case 'toggleItem':
-        this.toggleItem(event.item)
+        this.itemToggled(event.item)
         break;
       case 'update':
         this.editItem(event.item)
         break;
-      case 'toggleItem':
-        this.overrideItem(event.item)
+      case 'override':
+        this.getOverrides(event.item)
         break;
-      case 'toggleItem':
+      case 'delete':
         this.deleteItem(event.item)
+        break;
+      case 'download-enrollment':
+        this.downloadJWT(event.item)
+        break;
+      case 'qr-code':
+        this.getQRCode(event.item)
         break;
       default:
         break;
     }
   }
 
-  toggleItem(item: any) {
-    item.selected = !item.selected;
-    if (isEmpty(this.rowData)) {
-      this.itemsSelected = false;
-      return;
-    }
+  itemToggled(item: any) {
     let itemSelected = false;
     this.rowData.forEach((item) => {
       if (item.selected) {
@@ -259,25 +263,40 @@ export class ZitiIdentitiesComponent implements OnInit {
       }
     });
     this.itemsSelected = itemSelected;
-    defer(() => {
-      window['app'].setAction();
-    });
   }
 
   editItem(item: any) {
     window['page']['edit'](item.id);
   }
 
-  overrideItem(item: any) {
-    window['page']['addOveride'](item.id);
+  getOverrides(item: any) {
+    window['page']['getOverrides'](item.id);
+  }
+
+  downloadJWT(item: any) {
+    window['page']['getCert'](item);
+  }
+
+  getQRCode(item: any) {
+    window['page']['genQR'](item);
   }
 
   deleteItem(item: any) {
-    window['page']['delete'](item.id);
+    window['page']['filterObject']['delete']([item.id]);
   }
 
   actionButtonClicked() {
-    window['modal']['show']('AddModal');
+    const selectedItems = this.rowData.filter((row) => {
+        return row.selected;
+    }).map((row) => {
+        return row.id;
+    });
+    if (!this.itemsSelected) {
+      window['modal']['show']('AddModal');
+    } else {
+
+      window['page']['filterObject']['delete'](selectedItems);
+    }
   }
 
   removeFilter(filter) {

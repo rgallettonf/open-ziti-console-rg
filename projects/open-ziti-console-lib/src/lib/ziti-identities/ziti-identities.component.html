@@ -10,7 +10,10 @@
             <div class="tab" data-go="/posture-checks" data-i18n="PostureChecks"></div>
         </div>
     </div>
-    <div class="action" data-action="add" [ngClass]="{'icon-plus': !itemsSelected, 'icon-minus': itemsSelected, 'remove': itemsSelected}"></div>
+    <div class="action-button"
+         [ngClass]="{'icon-plus': !itemsSelected, 'icon-minus': itemsSelected, 'remove': itemsSelected}"
+         (click)="actionButtonClicked()"
+    ></div>
     <lib-header-search-bar
         [filters]="filters"
         [startCount]="startCount"

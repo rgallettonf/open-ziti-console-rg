@@ -302,6 +302,9 @@ export class ZacWrapperService {
             case 'dataSave':
                 this.saveZitiEntity(params, returnTo);
                 break;
+            case 'subSave':
+                this.saveZitiSubData(params, returnTo);
+                break;
             case 'call':
                 this.callZitiEdge(`${this.zitiControllerDomain}/edge/management/v1/${params.url}`, {}).then((result) => {
                     returnTo(result);
@@ -461,6 +464,24 @@ export class ZacWrapperService {
                     });
                 }
             } else returnTo({error: "Unable to save data"});
+        });
+    }
+
+    saveZitiSubData(params: any, returnTo: any) {
+        const serviceUrl = `${this.zitiControllerDomain}/edge/management/v1`;
+
+        const id = params.id;
+        const type = params.type;
+        const doing = params.doing || 'POST';
+        const parentType = params.parentType;
+        const fullType = parentType+"/"+id+"/"+type;
+        const url = serviceUrl+"/"+fullType;
+        const saveParams = params.save;
+
+        this.callZitiEdge(url, saveParams, doing).then((result) => {
+            this.getZitiEntities(fullType, params.paging).then((data) => {
+                returnTo(data);
+            });
         });
     }
 

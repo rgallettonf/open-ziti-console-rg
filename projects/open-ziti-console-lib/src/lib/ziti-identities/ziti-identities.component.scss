@@ -1,8 +1,9 @@
 .ziti-page-container {
   .action {
     line-height: 60px;
-    top: 10px;
-    right: 0px;
+    top: 25px;
+    right: 25px;
+    z-index: 999;
   }
 }
 
@@ -18,12 +19,12 @@
     }
   }
 }
-.nf-ag-grid {
+.ziti-ag-grid {
   height: 100%;
   position: relative;
   width: 100%;
 
-  .nf-ag-grid-table {
+  .ziti-ag-grid-table {
     height: 100%;
     width: 100%;
 

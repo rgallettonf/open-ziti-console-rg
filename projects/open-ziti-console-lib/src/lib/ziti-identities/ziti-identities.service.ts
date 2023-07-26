@@ -3,6 +3,7 @@ import {Inject, Injectable} from "@angular/core";
 import {ZITI_DOMAIN_CONTROLLER, ZitiDomainControllerService} from "../services/ziti-domain-controller.service";
 
 import {isEmpty, delay} from 'lodash';
+import moment from 'moment';
 
 @Injectable({
     providedIn: 'root'
@@ -40,6 +41,29 @@ export class ZitiIdentitiesService {
             if (!isEmpty(results?.data)) {
                 results.data = results.data.map((row) => {
                     row.actionList = ['update', 'override', 'delete'];
+                    if (row?.enrollment?.ott) {
+                        if (row?.enrollment?.ott?.expiresAt) {
+                            const difference = moment(row?.enrollment?.ott?.expiresAt).diff(moment(new Date()));
+                            if (difference>0) {
+                                row.actionList.push('download-enrollment');
+                                row.actionList.push('qr-code');
+                            }
+                        } else {
+                            row.actionList.push('download-enrollment');
+                            row.actionList.push('qr-code');
+                        }
+                    } else if (row?.enrollment?.updb) {
+                        if (row?.enrollment?.updb?.expiresAt!=null) {
+                            const difference = moment(row?.enrollment?.updb?.expiresAt).diff(moment(new Date()));
+                            if (difference > 0) {
+                                row.actionList.push('download-enrollment');
+                                row.actionList.push('qr-code');
+                            }
+                        } else {
+                            row.actionList.push('download-enrollment');
+                            row.actionList.push('qr-code');
+                        }
+                    }
                     return row;
                 });
             }
