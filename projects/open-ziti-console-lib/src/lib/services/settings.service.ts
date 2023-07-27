@@ -71,6 +71,8 @@ export class SettingsService {
         }
         settings.data = this.settings;
         context.set(this.name, this.settings);
+        if(this.settings.selectedEdgeController)
+            this.initApiVersions(this.settings.selectedEdgeController);
         this.settingsChange.next(this.settings)
     }
 
@@ -106,7 +108,7 @@ export class SettingsService {
         }
     }
 
-    async initVersions(url: string) {
+    async initApiVersions(url: string) {
         url = url.split('#').join('').split('?').join('');
         if (url.endsWith('/')) url = url.substr(0, url.length - 1);
         if(!url.startsWith('https://')) url = 'https://' + url;
@@ -162,6 +164,7 @@ export class SettingsService {
                                 default: isDefault
                             };
                         }
+                        this.settings.selectedEdgeController = url;
                         this.set(this.settings);
 
                     } else {

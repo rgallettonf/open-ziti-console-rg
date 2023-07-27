@@ -2,23 +2,40 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {firstValueFrom} from "rxjs";
 import {catchError} from "rxjs/operators";
+import {SettingsService} from "../../../services/settings.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class ConfigurationService {
 
-    constructor(private httpClient: HttpClient) {
+    constructor(private httpClient: HttpClient,
+                private settingsService: SettingsService) {
     }
 
-    getSchema(configName: string): Promise<any> {
-        return firstValueFrom(this.httpClient.get(`/assets/schemas/${configName}.schema.json`)
-            .pipe(catchError((err: any) => {
-                throw "Edge Controller not Online: " + err?.message;
-            })))
-            .then((results: any) => {
-                return this.parseSchema(results);
-            });
+    getSchema(schemaType: string): Promise<any> {
+        if (!schemaType) return Promise.resolve();
+
+        const prefix = this.settingsService.apiVersions["edge-management"].v1.path;
+        const url = this.settingsService.settings.selectedEdgeController;
+        const serviceUrl = url + prefix + "/api/schema";
+        return firstValueFrom(this.httpClient.post(serviceUrl,
+            {schema: schemaType}, {
+                headers: {
+                    "content-type": "application/json",
+                }
+            })
+            .pipe(
+                catchError((err: any) => {
+                    const error = "Server Not Accessible";
+                    if (err.code != "ECONNREFUSED") throw({error: err.code});
+                    throw({error: error});
+                })
+            )
+        ).then((body: any) => {
+            if (body.error) throw body.error;
+            return this.parseSchema(body.schema);
+        });
     }
 
     parseSchema(results: any): any {

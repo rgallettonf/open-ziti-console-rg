@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     async login() {
         if(this.selectedEdgeController) {
             context.set("serviceUrl", this.selectedEdgeController);
-            await this.settingsService.initVersions(this.selectedEdgeController);
+            await this.settingsService.initApiVersions(this.selectedEdgeController);
             const prefix = this.settingsService.apiVersions["edge-management"].v1.path;
             this.svc.login(
                 prefix,
@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         } else {
             this.edgeCreate = false;
             this.userLogin = true;
-            this.settingsService.initVersions(this.selectedEdgeController)
+            this.settingsService.initApiVersions(this.selectedEdgeController)
         }
     }
 
