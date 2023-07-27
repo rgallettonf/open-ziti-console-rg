@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {InjectionToken, NgModule} from '@angular/core';
 import {ZacWrapperComponent} from "./zac-wrapper.component";
 import {SafePipe} from "./safe.pipe";
 import {HttpClientModule} from "@angular/common/http";
@@ -29,7 +29,6 @@ import {ListPageTableComponent} from './features/list-page-features/list-page-ta
 import {MatDialogModule} from "@angular/material/dialog";
 import {ConfigurationFormComponent} from "./features/projectable-forms/configuration/configuration-form.component";
 import {ListPageFormComponent} from './features/list-page-features/list-page-form/list-page-form.component';
-import {SideNavigatorComponent} from "./side-navigator/side-navigator.component";
 import {ZitiIdentitiesComponent} from "./ziti-identities/ziti-identities.component";
 import {DataTableComponent} from "./data-table/data-table.component";
 import {TableCellSelectComponent} from "./data-table/table-cell-select/table-cell-select.component";
@@ -42,6 +41,9 @@ import {ZitiIdentityFormComponent} from "./ziti-identity-form/ziti-identity-form
 import {HiddenColumnsBarComponent} from "./hidden-columns-bar/hidden-columns-bar.component";
 import {HeaderSearchBarComponent} from "./header-search-bar/header-search-bar.component";
 import {AgGridModule} from "ag-grid-angular";
+
+export const ZITI_URLS = new InjectionToken<string>('ZITI_URLS');
+export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
 
 @NgModule({
     declarations: [
@@ -66,7 +68,6 @@ import {AgGridModule} from "ag-grid-angular";
         ListPageFilterComponent,
         ListPageTableComponent,
         ListPageFormComponent,
-        SideNavigatorComponent,
         ZitiIdentitiesComponent,
         DataTableComponent,
         TableCellSelectComponent,
@@ -107,7 +108,6 @@ import {AgGridModule} from "ag-grid-angular";
         ProtocolAddressPortInputComponent,
         ConfigurationsPageComponent,
         ConfigurationFormComponent,
-        SideNavigatorComponent,
         ZitiIdentitiesComponent,
         ZacRoutingModule,
     ],
