@@ -13,7 +13,6 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  margin-left: 65px;
 
   .side-navigator-title {
     color: var(--primary);
@@ -38,9 +37,6 @@
     pointer-events: none;
     z-index: 1;
   }
-
-  margin-left: 65px;
-
 
   .side-navigator-header-container {
     height: 75px;

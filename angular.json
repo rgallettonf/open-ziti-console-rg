@@ -30,12 +30,12 @@
               "projects/app-open-ziti/src/assets",
               {
                 "glob": "**/*",
-                "input": "./node_modules/open-ziti-console/assets/",
+                "input": "./node_modules/open-ziti-console-lib/assets/",
                 "output": "/assets"
               },
               {
                 "glob": "**/*",
-                "input": "./node_modules/open-ziti-console/html/",
+                "input": "./node_modules/open-ziti-console-lib/html/",
                 "output": "/assets/pages"
               }
             ],

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {SettingsService, ZitiSessionData} from "open-ziti-console";
+import {SettingsService, ZitiSessionData} from "open-ziti-console-lib";
 import {isEmpty} from "lodash";
 
 @Component({
@@ -10,13 +10,10 @@ import {isEmpty} from "lodash";
 export class AppComponent implements OnInit {
     loggedIn = false;
     title = 'Open Ziti Console';
-    auth = '';
-    level = '';
-    subtitle = '';
-    time = '';
-    message = '';
-    type = '';
-    loginVersion: any;
+    version = '';
+    isAuthorized = false;
+    displayNav = true;
+    displayTool = true;
 
     constructor(private settingsService: SettingsService) {
 
@@ -24,11 +21,14 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this.settingsService.init();
-        this.settingsService.settingsChange.subscribe(results => {
-            this.loginVersion = results.version;
+        this.settingsService.settingsChange.subscribe((results:any) => {
+            this.version = results.version;
+            this.isAuthorized = results.session?.id;
+            this.displayNav = !results.hideNav ?? true;
+            this.displayTool = !results.hideTool ?? true;
         });
         this.settingsService.settingsChange.subscribe((settings: any) => {
-            this.loggedIn = !isEmpty(settings.sessionId) && !isEmpty(settings.controllerDomain);
+            this.loggedIn = !isEmpty(settings.session.id) && !isEmpty(settings.session.controllerDomain);
             if (!this.loggedIn) {
                 const sessionId = localStorage.getItem('ziti_session_id');
                 const controllerDomain = localStorage.getItem('ziti_controller_domain');

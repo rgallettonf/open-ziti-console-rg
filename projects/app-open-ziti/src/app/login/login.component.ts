@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LoginService} from "./login.service";
-import {SettingsService} from "open-ziti-console";
+import {SettingsService} from "open-ziti-console-lib";
 import {Subscription} from "rxjs";
 
 // @ts-ignore
@@ -20,8 +20,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     edgeCreate = false;
     userLogin = false;
     selectedEdgeController = '';
-    edgeNameError = false;
-    edgeUrlError = false;
+    edgeNameError = '';
+    edgeUrlError = '';
     backToLogin = false;
     showEdge = false;
     private subscription = new Subscription();
@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     async login() {
-        if(!!this.selectedEdgeController) {
+        if(this.selectedEdgeController) {
             context.set("serviceUrl", this.selectedEdgeController);
             await this.settingsService.initVersions(this.selectedEdgeController);
             const prefix = this.settingsService.apiVersions["edge-management"].v1.path;
@@ -60,23 +60,23 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     isValid() {
-        this.edgeNameError = false;
-        this.edgeUrlError = false;
-        if (this.edgeName.trim().length == 0) this.edgeNameError = true;
-        if (this.edgeUrl.trim().length == 0) this.edgeUrlError = true;
+        this.edgeNameError = '';
+        this.edgeUrlError = '';
+        if (this.edgeName.trim().length == 0) this.edgeNameError = '';
+        if (this.edgeUrl.trim().length == 0) this.edgeUrlError = '';
         return!(this.edgeNameError || this.edgeUrlError);
     }
 
     reset() {
-        this.edgeNameError = false;
-        this.edgeUrlError = false;
+        this.edgeNameError = '';
+        this.edgeUrlError = '';
         this.edgeCreate = false;
         this.userLogin = true;
     }
 
     edgeChanged() {
-        this.edgeNameError = false;
-        this.edgeUrlError = false;
+        this.edgeNameError = '';
+        this.edgeUrlError = '';
         if (this.selectedEdgeController?.length === 0) {
             this.edgeName = ''
             this.edgeUrl = ''

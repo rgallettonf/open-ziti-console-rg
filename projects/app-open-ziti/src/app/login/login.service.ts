@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {SettingsService} from "open-ziti-console";
+import {SettingsService} from "open-ziti-console-lib";
 import {firstValueFrom} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {Router} from "@angular/router";
