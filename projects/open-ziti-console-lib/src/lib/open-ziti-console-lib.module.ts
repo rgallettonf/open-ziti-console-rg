@@ -30,7 +30,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {ConfigurationFormComponent} from "./features/projectable-forms/configuration/configuration-form.component";
 import {ListPageFormComponent} from './features/list-page-features/list-page-form/list-page-form.component';
 import {SideNavigatorComponent} from "./side-navigator/side-navigator.component";
-import {ZitiIdentitiesComponent} from "./ziti-identities/ziti-identities.component";
+import {ZitiIdentitiesComponent} from "./pages/ziti-identities/ziti-identities.component";
 import {DataTableComponent} from "./data-table/data-table.component";
 import {TableCellSelectComponent} from "./data-table/table-cell-select/table-cell-select.component";
 import {TableHeaderSelectComponent} from "./data-table/table-header-select/table-header-select.component";
@@ -39,8 +39,8 @@ import {TableHeaderMenuComponent} from "./data-table/table-header-menu/table-hea
 import {TableHeaderDefaultComponent} from "./data-table/table-header-default/table-header-default.component";
 import {TableHeaderFilterComponent} from "./data-table/table-header-filter/table-header-filter.component";
 import {ZitiIdentityFormComponent} from "./ziti-identity-form/ziti-identity-form.component";
-import {HiddenColumnsBarComponent} from "./hidden-columns-bar/hidden-columns-bar.component";
-import {HeaderSearchBarComponent} from "./header-search-bar/header-search-bar.component";
+import {HiddenColumnsBarComponent} from "./features/hidden-columns-bar/hidden-columns-bar.component";
+import {HeaderSearchBarComponent} from "./features/header-search-bar/header-search-bar.component";
 import {AgGridModule} from "ag-grid-angular";
 
 @NgModule({
