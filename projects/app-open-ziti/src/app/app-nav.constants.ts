@@ -1,4 +1,4 @@
-import {URLS} from "../urls";
+import {URLS} from "./app-urls.constants";
 
 export const OPEN_ZITI_NAVIGATOR = {
     groups: [
