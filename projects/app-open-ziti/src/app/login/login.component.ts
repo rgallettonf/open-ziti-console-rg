@@ -77,28 +77,27 @@ export class LoginComponent implements OnInit, OnDestroy {
     edgeChanged() {
         this.edgeNameError = '';
         this.edgeUrlError = '';
-        if (this.selectedEdgeController?.length === 0) {
+        if (this.selectedEdgeController) {
             this.edgeName = ''
             this.edgeUrl = ''
-            this.edgeCreate = true;
-            this.userLogin = false;
-        } else {
             this.edgeCreate = false;
             this.userLogin = true;
             this.settingsService.initApiVersions(this.selectedEdgeController)
+        } else {
+            this.edgeCreate = true;
+            this.userLogin = false;
         }
     }
 
     settingsReturned(settings: any) {
         this.edgeControllerList = [];
-        this.selectedEdgeController = '';
+        this.selectedEdgeController = settings.selectedEdgeController;
         if (settings.edgeControllers?.length > 0) {
-            this.backToLogin = true;
-            this.reset();
-            this.edgeControllerList = settings.edgeControllers;
-            this.showEdge = (settings.editable || settings.editable == null);
-        } else {
             this.backToLogin = false;
+            this.edgeControllerList = settings.edgeControllers;
+            this.reset();
+        } else {
+            this.backToLogin = true;
             this.edgeCreate = true;
             this.userLogin = false;
         }

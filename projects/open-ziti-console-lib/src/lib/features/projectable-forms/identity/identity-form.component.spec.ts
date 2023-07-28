@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ZitiIdentityFormComponent } from './ziti-identity-form.component';
+import { IdentityFormComponent } from './identity-form.component';
 
 describe('ZitiIdentityFormComponent', () => {
-  let component: ZitiIdentityFormComponent;
-  let fixture: ComponentFixture<ZitiIdentityFormComponent>;
+  let component: IdentityFormComponent;
+  let fixture: ComponentFixture<IdentityFormComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ZitiIdentityFormComponent]
+      declarations: [IdentityFormComponent]
     });
-    fixture = TestBed.createComponent(ZitiIdentityFormComponent);
+    fixture = TestBed.createComponent(IdentityFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

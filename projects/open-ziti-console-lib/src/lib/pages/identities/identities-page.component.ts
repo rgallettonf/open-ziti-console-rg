@@ -8,7 +8,7 @@ import moment from 'moment';
 import {TableFilterService} from "../../services/table-filter.service";
 
 @Component({
-  selector: 'lib-ziti-identities',
+  selector: 'lib-identities',
   templateUrl: './identities-page.component.html',
   styleUrls: ['./identities-page.component.scss']
 })
