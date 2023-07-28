@@ -1,42 +1,35 @@
-<div id="LoginForm" class="form mini">
+<div class="loginForm">
     <div class="title">Ziti Admin Console</div>
     <div class="subtitle">Welcome, please login to continue</div>
-
-
     <div id="SelectedEdgeController">{{ selectedEdgeController }}</div>
-    <ng-container *ngIf="edgeCreate">
-        <label for="EdgeName">Edge Controller Name</label>
-        <input id="EdgeName" type="text" max="100" placeholder="enter a name for your controller"
-               [(ngModel)]="edgeName" [ngClass]="{'error': edgeNameError}"/>
-        <label for="EdgeUrl">Url</label>
-        <input id="EdgeUrl" type="text" max="500" placeholder="e.g. http://10.0.0.1:1280"
-               [(ngModel)]="edgeUrl"  [ngClass]="{'error': edgeUrlError}"/>
+
+    <ng-container *ngIf="edgeCreate; else userLogin">
+        <lib-string-input [fieldName]="'Edge Controller Name'"
+                    [(fieldValue)]="edgeName" [error]="edgeNameError"
+                    [placeholder]="'enter a name for your controller'"></lib-string-input>
+        <lib-string-input [fieldName]="'URL'"
+                    [(fieldValue)]="edgeUrl" [error]="edgeUrlError"
+                    [placeholder]="'e.g. http://10.0.0.1:1280'"></lib-string-input>
         <div id="CreateArea" class="edgecreate buttons">
             <div id="BackToLogin" *ngIf="backToLogin" class="linkButton" (click)="reset()">Back To Login</div>
-            <div id="CreateButton" class="button" (click)="create()">Set Controller</div>
+            <button class="button" (click)="create()" [disabled]="!edgeName ||!edgeUrl">Set Controller</button>
         </div>
     </ng-container>
 
-    <ng-container *ngIf="userLogin">
-        <label for="EdgeControllerList">Edge Controller</label>
-        <select *ngIf="showEdge" class="userlogin edge"
-                id="EdgeControllerList" (change)="edgeChanged()">
-            <option value="">Connect to a new Edge Controller</option>
-            <option *ngFor="let controller of edgeControllerList" [value]="controller.url" [selected]="controller.default">
-                {{ controller.name }} ({{controller.url}})
-            </option>
-        </select>
-        <label for="Username">Username</label>
-        <input id="Username" type="text" max="500" placeholder="enter your login username"
-               autocomplete="on" [(ngModel)]="username"/>
-        <label for="Password">Password</label>
-        <input id="Password" type="password" max="500"
-               placeholder="enter the password for your account"
-               autocomplete="on" [(ngModel)]="password"/>
+    <ng-template #userLogin>
+        <lib-selector-input [fieldName]="'Edge Controller'"
+                    [(fieldValue)]="selectedEdgeController" [error]="edgeNameError"
+                    [placeholder]="'Connect to a new Edge Controller'"
+                    [valueList]="edgeControllerList"></lib-selector-input>
+        <lib-string-input [fieldName]="'Username'"
+                    [(fieldValue)]="username"
+                    [placeholder]="'enter username of controller'"></lib-string-input>
+        <lib-password-input [fieldName]="'Password'"
+                    [(fieldValue)]="password"
+                    [placeholder]="'enter password of controller'"></lib-password-input>
 
         <div class="buttons">
-            <div id="LoginButton" class="button" (click)="login()">Login</div>
+            <button class="button" (click)="login()" [disabled]="!username ||!password">Login</button>
         </div>
-    </ng-container>
-
+    </ng-template>
 </div>

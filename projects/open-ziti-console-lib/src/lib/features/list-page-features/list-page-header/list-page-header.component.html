@@ -1,0 +1,14 @@
+<div class="header" style="min-width:600px;">
+    <div class="title">
+        <span>{{title}}</span>
+    </div>
+    <div class="bread"></div>
+    <div class="line"></div>
+    <div class="tabs">
+        <div *ngFor="let tab of tabs" class="tab" [routerLink]="tab.url" >{{tab.label}}</div>
+    </div>
+    <div *ngIf="showAdd" [ngClass]="{hideAction: hideAction}" (click)="clickAction('add')"
+         class="action icon-plus icon-add"></div>
+    <div *ngIf="!showAdd" [ngClass]="{hideAction: hideAction}" (click)="clickAction('delete')"
+         class="action icon-minus icon-delete" data-action="delete"></div>
+</div>

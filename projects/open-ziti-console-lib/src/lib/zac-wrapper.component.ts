@@ -30,6 +30,7 @@ export class ZacWrapperComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    this.pageHtml = undefined;
   }
 
   async loadPage() {

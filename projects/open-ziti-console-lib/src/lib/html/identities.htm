@@ -316,6 +316,12 @@
             appData: null,
             apiParams: null,
             init: function() {
+                page.appData = CodeMirror.fromTextArea(document.getElementById("AppData"), { mode: "application/json", lineNumbers: true, extraKeys: {"Ctrl-Space": "autocomplete"} });
+                page.apiParams = CodeMirror.fromTextArea(document.getElementById("ApiParams"), { mode: "application/json", lineNumbers: true, extraKeys: {"Ctrl-Space": "autocomplete"}, readOnly: true });
+                page.appData.on('change', (args) => {
+                    page.params();
+                });
+
                 page.roles = new MultiSelect("Roles", 10, true);
                 page.roles.addSource(new SelectSource("identity-role-attributes", "", "id")); 
                 page.roles.init();
@@ -345,12 +351,6 @@
                     formatTime: "h:i A"
                 });
 				$("#ResetDate").val(moment().add("d", 2).format("MM/DD/YYYY h:mm A"));
-                
-                page.appData = CodeMirror.fromTextArea(document.getElementById("AppData"), { mode: "application/json", lineNumbers: true, extraKeys: {"Ctrl-Space": "autocomplete"} });
-                page.apiParams = CodeMirror.fromTextArea(document.getElementById("ApiParams"), { mode: "application/json", lineNumbers: true, extraKeys: {"Ctrl-Space": "autocomplete"}, readOnly: true });
-                page.appData.on('change', (args) => { 
-                    page.params(); 
-                });
             }, 
             events: function() {
                 context.addListener(page.filterObject.name, page.loaded);
