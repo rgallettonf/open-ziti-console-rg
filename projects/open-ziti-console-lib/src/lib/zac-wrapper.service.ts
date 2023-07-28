@@ -4,11 +4,22 @@ import {Subject, Subscription} from "rxjs";
 import {NavigationEnd, Router} from "@angular/router";
 import {URLS} from './urls';
 import {Resolver} from "@stoplight/json-ref-resolver";
-import {get, set} from 'lodash';
+import {get, isEmpty, set} from 'lodash';
 import $ from 'jquery';
 import {ZITI_DOMAIN_CONTROLLER, ZitiDomainControllerService} from "./services/ziti-domain-controller.service";
 
 export const COMPONENTS: any = {
+    api: `<label data-i18n="APICalls"></label>
+          <div class="configBox">
+            <div class="related">
+                <input id="ApiUrl" type="text" readonly />
+                <div class="icon-copy copy" data-copy="ApiUrl"></div>
+            </div>
+            <div class="related">
+                <textarea id="ApiParams" autocapitalize="off" style="height:500px"></textarea>
+                <div class="icon-copy copy swap" data-copy="ApiParams"></div>
+            </div> 
+          </div>`,
     add: `<div class="action icon-plus" data-action="add"></div>`,
     line: `<div class="line"></div>`,
     noitems: `<div class="noitems"></div>`,
@@ -62,7 +73,7 @@ export const COMPONENTS: any = {
 export class ZacWrapperService {
     pageChange = new Subject<void>();
     subscription: Subscription = new Subscription();
-    page = 'index';
+    page = '';
     scriptsAdded = false;
     private zitiControllerDomain: any;
     private zitiSessionId: any;
@@ -195,6 +206,7 @@ export class ZacWrapperService {
     private initRouteListener() {
         this.router.events.subscribe((event) => {
             if ((event as any)['routerEvent'] instanceof NavigationEnd) {
+                const oldPage = this.page;
                 const page = (event as any)['routerEvent']['url'].split(';')[0].split('?')[0];
                 switch (page) {
                     case URLS.ZITI_DASHBOARD:
@@ -255,12 +267,17 @@ export class ZacWrapperService {
                         this.page = 'index';
                         break;
                 }
-                this.pageChange.next();
+                if (oldPage !== this.page) {
+                    this.pageChange.next();
+                }
             }
         });
     }
 
     loadCurrentPage() {
+        if (isEmpty(this.page)) {
+            this.page = 'index'
+        }
         const path = 'assets/pages/' + this.page + '.htm';
         return this.http.get(path, {responseType: "text"}).toPromise().then((html: any) => {
             for (const prop in COMPONENTS) {
@@ -285,8 +302,11 @@ export class ZacWrapperService {
             case 'dataSave':
                 this.saveZitiEntity(params, returnTo);
                 break;
+            case 'subSave':
+                this.saveZitiSubData(params, returnTo);
+                break;
             case 'call':
-                this.callZitiEdge(`https://${this.zitiControllerDomain}/edge/management/v1/${params.url}`, {}).then((result) => {
+                this.callZitiEdge(`${this.zitiControllerDomain}/edge/management/v1/${params.url}`, {}).then((result) => {
                     returnTo(result);
                 });
                 break;
@@ -339,7 +359,7 @@ export class ZacWrapperService {
     }
 
     getZitiEntities(type: string, paging: any) {
-        const serviceUrl = `https://${this.zitiControllerDomain}/edge/management/v1`;
+        const serviceUrl = `${this.zitiControllerDomain}/edge/management/v1`;
         let urlFilter = "";
         let toSearchOn = "name";
         let noSearch = false;
@@ -363,7 +383,7 @@ export class ZacWrapperService {
     }
 
     getZitiEntity(params: any) {
-        const serviceUrl = `https://${this.zitiControllerDomain}/edge/management/v1`;
+        const serviceUrl = `${this.zitiControllerDomain}/edge/management/v1`;
         const url = params.url.split("./").join("");
         const id = params.id;
         const type = params.type;
@@ -379,7 +399,7 @@ export class ZacWrapperService {
     }
 
     saveZitiEntity(params: any, returnTo: any) {
-        const serviceUrl = `https://${this.zitiControllerDomain}/edge/management/v1`;
+        const serviceUrl = `${this.zitiControllerDomain}/edge/management/v1`;
         const saveParams = params.save;
         const additional = params.additional;
         const removal = params.removal;
@@ -444,6 +464,24 @@ export class ZacWrapperService {
                     });
                 }
             } else returnTo({error: "Unable to save data"});
+        });
+    }
+
+    saveZitiSubData(params: any, returnTo: any) {
+        const serviceUrl = `${this.zitiControllerDomain}/edge/management/v1`;
+
+        const id = params.id;
+        const type = params.type;
+        const doing = params.doing || 'POST';
+        const parentType = params.parentType;
+        const fullType = parentType+"/"+id+"/"+type;
+        const url = serviceUrl+"/"+fullType;
+        const saveParams = params.save;
+
+        this.callZitiEdge(url, saveParams, doing).then((result) => {
+            this.getZitiEntities(fullType, params.paging).then((data) => {
+                returnTo(data);
+            });
         });
     }
 

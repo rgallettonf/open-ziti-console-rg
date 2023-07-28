@@ -45,20 +45,16 @@ export class SettingsService {
 
     constructor(private httpClient: HttpClient) {
         this.id = Math.random();
+        this.init();
     }
 
     init() {
-        this.events();
         this.get();
         this.version();
 
         if (this.settings.port && !isNaN(this.settings.port)) this.port = this.settings.port;
         if (this.settings.portTLS && !isNaN(this.settings.portTLS)) this.portTLS = this.settings.portTLS;
         if (this.settings.rejectUnauthorized && !isNaN(this.settings.rejectUnauthorized)) this.rejectUnauthorized = this.settings.rejectUnauthorized;
-    }
-
-    events() {
-
     }
 
     get() {

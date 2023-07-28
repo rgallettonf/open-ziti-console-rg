@@ -15,6 +15,7 @@
     --shadowColor: rgba(255,255,255,0.08);
     --transition: 0.5s;
     --offWhite: #2A2B31;
+    --navigation: #18191D;
 }
 
 .filters .navigate {

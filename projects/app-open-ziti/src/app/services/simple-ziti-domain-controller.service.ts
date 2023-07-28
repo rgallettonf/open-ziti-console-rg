@@ -11,7 +11,8 @@ export class SimpleZitiDomainControllerServic implements ZitiDomainControllerSer
 
     zitiSessionData: ZitiSessionData = {
         zitiDomain: '',
-        zitiSessionId: ''
+        zitiSessionId: '',
+        expiresAt: ''
     }
 
     zitiSettings = new BehaviorSubject(this.zitiSessionData);
