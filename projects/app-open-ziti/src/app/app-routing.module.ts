@@ -30,7 +30,7 @@ const routes: Routes = [
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-identities',
+    path: 'identities',
     component: IdentitiesPageComponent,
     canActivate: [authenticationGuard],
   },
