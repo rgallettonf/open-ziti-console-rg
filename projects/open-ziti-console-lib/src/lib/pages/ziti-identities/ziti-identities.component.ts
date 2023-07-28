@@ -1,12 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import { ColDef } from 'ag-grid-community';
-import {SettingsService} from "../services/settings.service";
+import {SettingsService} from "../../services/settings.service";
 import {ZitiIdentitiesService} from "./ziti-identities.service";
-import {TableHeaderDefaultComponent} from "../data-table/table-header-default/table-header-default.component";
-
+import {TableHeaderDefaultComponent} from "../../data-table/table-header-default/table-header-default.component";
 import {invoke, isEmpty, defer} from 'lodash';
 import moment from 'moment';
-import {TableFilterService} from "../services/table-filter.service";
+import {TableFilterService} from "../../services/table-filter.service";
 
 @Component({
   selector: 'lib-ziti-identities',
@@ -14,6 +13,13 @@ import {TableFilterService} from "../services/table-filter.service";
   styleUrls: ['./ziti-identities.component.scss']
 })
 export class ZitiIdentitiesComponent implements OnInit {
+  title = 'Identity Management'
+  tabs: { url: string, label: string }[] = [
+    {label: 'Identities', url:'/ziti-identities'},
+    {label: 'Recipes', url:'/recipes'},
+    {label: 'Terminators', url:'/config-terminators'},
+    {label: 'Posture Checks', url:'/config-posture-checks'},
+  ];
 
   startCount = '-';
   endCount = '-';
@@ -38,10 +44,7 @@ export class ZitiIdentitiesComponent implements OnInit {
 
   ngOnInit() {
     this.svc.getZitiIdentities().then((data: any) => {
-      this.rowData = data.data;
-      this.startCount = 1 + '';
-      this.endCount = data.meta.pagination.totalCount + '';
-      this.totalCount = data.meta.pagination.totalCount + '';
+
     });
     this.filterService.filterChanged.subscribe(event => {
       let filterAdded = false;
@@ -67,7 +70,7 @@ export class ZitiIdentitiesComponent implements OnInit {
         this.startCount = 1 + '';
         this.endCount = data.meta.pagination.totalCount;
         this.totalCount = data.meta.pagination.totalCount;
-      });;
+      });
     });
   }
 
@@ -285,25 +288,38 @@ export class ZitiIdentitiesComponent implements OnInit {
     window['page']['filterObject']['delete']([item.id]);
   }
 
-  actionButtonClicked() {
-    const selectedItems = this.rowData.filter((row) => {
-        return row.selected;
-    }).map((row) => {
-        return row.id;
-    });
-    if (!this.itemsSelected) {
-      window['modal']['show']('AddModal');
-    } else {
 
-      window['page']['filterObject']['delete'](selectedItems);
-    }
-  }
 
   removeFilter(filter) {
     this.updateAppliedFilters();
   }
 
   updateAppliedFilters() {
+
+  }
+  headerActionClicked(action: string) {
+
+    switch(action) {
+      case 'add':
+        this.openUpdate();
+        break;
+      case 'delete':
+        const selectedItems = this.rowData.filter((row) => {
+          return row.selected;
+        }).map((row) => {
+          return row.id;
+        });
+        this.openBulkDelete(selectedItems)
+        break;
+      default:
+    }
+  }
+
+  private openUpdate() {
+
+  }
+
+  private openBulkDelete(selectedItems: any[]) {
 
   }
 }

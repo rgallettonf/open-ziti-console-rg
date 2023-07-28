@@ -1,0 +1,21 @@
+<div class="ziti-page-container ziti-identities-container">
+    <lib-list-page-header [title]="'Manage Identities'"
+                          [tabs]="tabs" (actionClicked)="headerActionClicked($event)"></lib-list-page-header>
+    <lib-header-search-bar
+        [filters]="filters"
+        [startCount]="startCount"
+        [endCount]="endCount"
+        [totalCount]="totalCount"
+    ></lib-header-search-bar>
+    <lib-data-table *ngIf="rowData?.length > 0;else nodata"
+        [rowData]="rowData"
+        [columnDefinitions]="columnDefs"
+        (actionRequested)="tableAction($event)"
+        [tableId]="'ziti-identities'"
+    >
+    </lib-data-table>
+
+    <ng-template #nodata>
+        <div class="nodata" data-defined="empty">No <span data-bind="pageTitle"></span> Defined, Click the plus to add A <span data-bind="singular"></span>.</div>
+    </ng-template>
+</div>

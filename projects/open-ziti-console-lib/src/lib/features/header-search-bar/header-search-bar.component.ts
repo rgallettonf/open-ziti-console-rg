@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {TableFilterService} from "../services/table-filter.service";
+import {TableFilterService} from "../../services/table-filter.service";
 
 import {debounce} from "lodash";
 

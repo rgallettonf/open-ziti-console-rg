@@ -1,9 +1,11 @@
 import {HttpClient} from "@angular/common/http";
-import {Inject, Injectable} from "@angular/core";
-import {ZITI_DOMAIN_CONTROLLER, ZitiDomainControllerService} from "../services/ziti-domain-controller.service";
+import {Injectable} from "@angular/core";
 
-import {isEmpty, delay} from 'lodash';
+import {isEmpty} from 'lodash';
 import moment from 'moment';
+import {SettingsService} from "../../services/settings.service";
+import {firstValueFrom} from "rxjs";
+import {catchError} from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
@@ -20,16 +22,10 @@ export class ZitiIdentitiesService {
         total: 100
     }
 
-    zitiControllerDomain = '';
-    zitiSessionId = '';
     constructor(
-        private http: HttpClient,
-        @Inject(ZITI_DOMAIN_CONTROLLER) private zitiDomainController: ZitiDomainControllerService
+        private httpClient: HttpClient,
+        private settingsService: SettingsService
     ) {
-        this.zitiDomainController.zitiSettings.subscribe(results => {
-            this.zitiControllerDomain  = results.zitiDomain;
-            this.zitiSessionId = results.zitiSessionId;
-        })
     }
 
     public getZitiIdentities(filter?) {
@@ -37,7 +33,7 @@ export class ZitiIdentitiesService {
             this.paging.filter = filter.value;
             this.paging.searchOn = filter.columnId;
         }
-        return this.getZitiEntities('identities', this.paging).then((results) => {
+        return this.getZitiEntities('identities', this.paging).then((results: any) => {
             if (!isEmpty(results?.data)) {
                 results.data = results.data.map((row) => {
                     row.actionList = ['update', 'override', 'delete'];
@@ -67,22 +63,36 @@ export class ZitiIdentitiesService {
                     return row;
                 });
             }
-            //this.setZacData(results);
             return results;
         });
     }
 
-    setZacData(results) {
-        delay(() => {
-            window['page']['filterObject']['isLoaded'] = true;
-            window['page']['filterObject']['data'] = results.data;
-            window['page']['filterObject']['meta'] = results.meta;
-        }, 100);
+    getZitiEntities(type: string, paging: any) {
+        const sessionId = this.settingsService.settings.session.id;
+        const prefix = this.settingsService.apiVersions["edge-management"].v1.path;
+        const url = this.settingsService.settings.selectedEdgeController;
+        const urlFilter = this.getUrlFilter(paging);
+        const serviceUrl = url + prefix + "/" + type + urlFilter;
+
+        return firstValueFrom(this.httpClient.post(serviceUrl,
+            {}, {
+                headers: {
+                    "content-type": "application/json",
+                    "zt-session": sessionId
+                }
+            })
+            .pipe(
+                catchError((err: any) => {
+                    const error = "Server Not Accessible";
+                    if (err.code != "ECONNREFUSED") throw({error: err.code});
+                    throw({error: error});
+                })
+            )
+        );
     }
 
-    getZitiEntities(type: string, paging: any) {
-        const serviceUrl = `${this.zitiControllerDomain}/edge/management/v1`;
-        let urlFilter = "";
+    private getUrlFilter(paging: any) {
+        let urlFilter = '';
         let toSearchOn = "name";
         let noSearch = false;
         if (paging && paging.sort != null) {
@@ -101,46 +111,6 @@ export class ZitiIdentitiesService {
                 }
             }
         }
-        return this.callZitiEdge(serviceUrl + "/" + type + urlFilter, {});
-    }
-
-    callZitiEdge(url: string, body: any, method: string = 'GET') {
-        const options = this.getHttpOptions();
-        let prom;
-        switch (method) {
-            case 'GET':
-                prom = this.http.get(url, options).toPromise();
-                break;
-            case 'POST':
-                prom = this.http.post(url, body, options).toPromise();
-                break;
-            case 'PUT':
-                prom = this.http.put(url, body, options).toPromise();
-                break;
-            case 'PATCH':
-                prom = this.http.patch(url, body, options).toPromise();
-                break;
-            case 'DELETE':
-                prom = this.http.delete(url, options).toPromise();
-                break;
-            default:
-                prom = this.http.get(url, options).toPromise();
-                break;
-        }
-        return prom.catch((result) => {
-            return result?.error;
-        });
-    }
-
-    getHttpOptions(useZitiCreds = false) {
-        const options: any = {
-            headers: {
-                accept: 'application/json',
-                'zt-session': this.zitiSessionId
-            },
-            params: {},
-            responseType: 'json' as const,
-        };
-        return options;
+        return urlFilter;
     }
 }
