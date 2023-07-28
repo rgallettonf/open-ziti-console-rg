@@ -18,7 +18,6 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.settingsService.init();
         this.settingsService.settingsChange.subscribe((results:any) => {
             this.version = results.version;
             this.isAuthorized = results.session?.id;
