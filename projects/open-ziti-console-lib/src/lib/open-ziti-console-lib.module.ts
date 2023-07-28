@@ -29,7 +29,6 @@ import {ListPageTableComponent} from './features/list-page-features/list-page-ta
 import {MatDialogModule} from "@angular/material/dialog";
 import {ConfigurationFormComponent} from "./features/projectable-forms/configuration/configuration-form.component";
 import {ListPageFormComponent} from './features/list-page-features/list-page-form/list-page-form.component';
-import {ZitiIdentitiesComponent} from "./ziti-identities/ziti-identities.component";
 import {DataTableComponent} from "./data-table/data-table.component";
 import {TableCellSelectComponent} from "./data-table/table-cell-select/table-cell-select.component";
 import {TableHeaderSelectComponent} from "./data-table/table-header-select/table-header-select.component";
@@ -41,6 +40,7 @@ import {ZitiIdentityFormComponent} from "./ziti-identity-form/ziti-identity-form
 import {HiddenColumnsBarComponent} from "./features/hidden-columns-bar/hidden-columns-bar.component";
 import {HeaderSearchBarComponent} from "./features/header-search-bar/header-search-bar.component";
 import {AgGridModule} from "ag-grid-angular";
+import {IdentitiesPageComponent} from "./pages/ziti-identities/identities-page.component";
 
 export const ZITI_URLS = new InjectionToken<string>('ZITI_URLS');
 export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
@@ -68,7 +68,7 @@ export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
         ListPageFilterComponent,
         ListPageTableComponent,
         ListPageFormComponent,
-        ZitiIdentitiesComponent,
+        IdentitiesPageComponent,
         DataTableComponent,
         TableCellSelectComponent,
         TableHeaderSelectComponent,
@@ -108,7 +108,7 @@ export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
         ProtocolAddressPortInputComponent,
         ConfigurationsPageComponent,
         ConfigurationFormComponent,
-        ZitiIdentitiesComponent,
+        IdentitiesPageComponent,
         ZacRoutingModule,
     ],
     providers: [

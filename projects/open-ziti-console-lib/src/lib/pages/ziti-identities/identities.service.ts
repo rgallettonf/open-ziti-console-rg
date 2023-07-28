@@ -10,7 +10,7 @@ import {catchError} from "rxjs/operators";
 @Injectable({
     providedIn: 'root'
 })
-export class ZitiIdentitiesService {
+export class IdentitiesService {
 
     private paging: any = {
         filter: "",
