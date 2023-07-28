@@ -4,10 +4,9 @@ import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 import {authenticationGuard} from "./guards/authentication.guard";
 import {LoginComponent} from "./login/login.component";
 import {
-  ConfigurationFormComponent,
   ConfigurationsPageComponent,
   ZacWrapperComponent,
-  ZitiIdentitiesComponent
+  IdentitiesPageComponent
 } from "open-ziti-console-lib";
 
 const routes: Routes = [
@@ -32,7 +31,7 @@ const routes: Routes = [
   },
   {
     path: 'ziti-identities',
-    component: ZitiIdentitiesComponent,
+    component: IdentitiesPageComponent,
     canActivate: [authenticationGuard],
   },
   {

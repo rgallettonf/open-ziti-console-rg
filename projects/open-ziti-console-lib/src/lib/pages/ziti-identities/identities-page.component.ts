@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { ColDef } from 'ag-grid-community';
 import {SettingsService} from "../../services/settings.service";
-import {ZitiIdentitiesService} from "./ziti-identities.service";
+import {IdentitiesService} from "./identities.service";
 import {TableHeaderDefaultComponent} from "../../data-table/table-header-default/table-header-default.component";
 import {invoke, isEmpty, defer} from 'lodash';
 import moment from 'moment';
@@ -9,10 +9,10 @@ import {TableFilterService} from "../../services/table-filter.service";
 
 @Component({
   selector: 'lib-ziti-identities',
-  templateUrl: './ziti-identities.component.html',
-  styleUrls: ['./ziti-identities.component.scss']
+  templateUrl: './identities-page.component.html',
+  styleUrls: ['./identities-page.component.scss']
 })
-export class ZitiIdentitiesComponent implements OnInit {
+export class IdentitiesPageComponent implements OnInit {
   title = 'Identity Management'
   tabs: { url: string, label: string }[] = [
     {label: 'Identities', url:'/ziti-identities'},
@@ -36,7 +36,7 @@ export class ZitiIdentitiesComponent implements OnInit {
 
   constructor(
     private settings: SettingsService,
-    private svc: ZitiIdentitiesService,
+    private svc: IdentitiesService,
     private filterService: TableFilterService,
   ) {
     this.initTableColumns();

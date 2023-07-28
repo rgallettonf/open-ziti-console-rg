@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ZitiIdentitiesComponent } from './ziti-identities.component';
+import { IdentitiesPageComponent } from './identities-page.component';
 
 describe('ZitiIdentitiesComponent', () => {
-  let component: ZitiIdentitiesComponent;
-  let fixture: ComponentFixture<ZitiIdentitiesComponent>;
+  let component: IdentitiesPageComponent;
+  let fixture: ComponentFixture<IdentitiesPageComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ZitiIdentitiesComponent]
+      declarations: [IdentitiesPageComponent]
     });
-    fixture = TestBed.createComponent(ZitiIdentitiesComponent);
+    fixture = TestBed.createComponent(IdentitiesPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
