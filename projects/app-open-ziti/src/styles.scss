@@ -3,6 +3,9 @@
 @import 'ag-grid-community/styles/ag-theme-alpine.css';
 @import './assets/styles/tables.scss';
 
+html {
+  height:100vh!important;
+}
 body {
   --navigation: #ffffff;
   --primary: #0027ab;
@@ -18,6 +21,7 @@ body {
   --shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.08);
   --shadowLarge: 0 12px 23px 0 rgba(0, 0, 0, .07);
   --shadowColor: rgba(0, 0, 0, 0.08);
+  height: 100vh!important;
 }
 
 .ziti-page-container .filters {
@@ -32,14 +36,14 @@ body {
 .ziti-page-container {
   height: 100%;
   width: 100%;
+  position: absolute;
+  top: 0;
   left: 0;
   display: flex;
   flex-direction: column;
-  position: absolute;
   padding-top: 14px;
   padding-left: 35px;
   padding-right: 35px;
-  top: 0px;
 
   .searchButton {
     display: none;
@@ -99,7 +103,7 @@ body {
     box-shadow: var(--shadow);
     transition: var(--transition);
     background-color: var(--red);
-    margin-top: 0px;
+    margin-top: 0;
     opacity: 1;
   }
 }
@@ -110,4 +114,20 @@ app-zac-wrapper {
   width: 100%;
   height: 100%;
   position: relative;
+}
+
+@media (max-width: 800px) {
+  .side-navigator-menu-item-label,
+  .side-navigator-menu-group-label  {
+    display: none !important;
+  }
+
+  .sideNavbar {
+    width:6rem !important;
+    padding-top: 1rem!important;
+
+    > .title {
+      display: none !important;
+    }
+  }
 }

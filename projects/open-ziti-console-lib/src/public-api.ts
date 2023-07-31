@@ -27,3 +27,4 @@ export * from './lib/features/dynamic-widgets/text-list/text-list-input.componen
 export * from './lib/features/dynamic-widgets/protocol-address-port/protocol-address-port-input.component';
 export * from './lib/features/projectable-forms/projectableForm.type';
 export * from './lib/pages/configurations/configurations-page.component';
+export * from './lib/open-ziti.constants';

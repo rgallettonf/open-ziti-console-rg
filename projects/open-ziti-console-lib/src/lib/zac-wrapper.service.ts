@@ -2,11 +2,11 @@ import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Subject, Subscription} from "rxjs";
 import {NavigationEnd, Router} from "@angular/router";
-import {URLS} from './urls';
 import {Resolver} from "@stoplight/json-ref-resolver";
 import {get, isEmpty, set} from 'lodash';
 import $ from 'jquery';
 import {ZITI_DOMAIN_CONTROLLER, ZitiDomainControllerService} from "./services/ziti-domain-controller.service";
+import {ZITI_URLS} from "./open-ziti.constants";
 
 export const COMPONENTS: any = {
     api: `<label data-i18n="APICalls"></label>
@@ -80,6 +80,7 @@ export class ZacWrapperService {
 
     constructor(
         @Inject(ZITI_DOMAIN_CONTROLLER) private zitiDomainController: ZitiDomainControllerService,
+        @Inject(ZITI_URLS) private URLS:any,
         private http: HttpClient,
         private router: Router,
     ) {
@@ -107,96 +108,96 @@ export class ZacWrapperService {
             switch (url) {
                 case '':
                     this.page = 'index';
-                    route = URLS.ZITI_DASHBOARD;
+                    route = this.URLS.ZITI_DASHBOARD;
                     break;
                 case '/identities':
                 case 'identities':
                     this.page = 'identities';
-                    route = URLS.ZITI_IDENTITIES;
+                    route = this.URLS.ZITI_IDENTITIES;
                     break;
                 case '/jwt-signers':
                 case 'jwt-signers':
                     this.page = 'jwt-signers';
-                    route = URLS.ZITI_JWT_SIGNERS;
+                    route = this.URLS.ZITI_JWT_SIGNERS;
                     break;
                 case '/services':
                 case 'services':
                     this.page = 'services';
-                    route = URLS.ZITI_SERVICES;
+                    route = this.URLS.ZITI_SERVICES;
                     break;
                 case '/routers':
                 case 'routers':
                     this.page = 'routers';
-                    route = URLS.ZITI_ROUTERS;
+                    route = this.URLS.ZITI_ROUTERS;
                     break;
                 case '/transit-routers':
                 case 'transit-routers':
                     this.page = 'transit-routers';
-                    route = URLS.ZITI_TRANSIT_ROUTERS;
+                    route = this.URLS.ZITI_TRANSIT_ROUTERS;
                     break;
                 case '/configs':
                 case 'configs':
                     this.page = 'configs';
-                    route = URLS.ZITI_CONFIGS;
+                    route = this.URLS.ZITI_CONFIGS;
                     break;
                 case '/config-types':
                 case 'config-types':
                     this.page = 'config-types';
-                    route = URLS.ZITI_CONFIG_TYPES;
+                    route = this.URLS.ZITI_CONFIG_TYPES;
                     break;
                 case '/recipes':
                 case 'recipes':
                     this.page = 'recipes';
-                    route = URLS.ZITI_RECIPES;
+                    route = this.URLS.ZITI_RECIPES;
                     break;
                 case '/terminators':
                 case 'terminators':
                     this.page = 'terminators';
-                    route = URLS.ZITI_TERMINATORS;
+                    route = this.URLS.ZITI_TERMINATORS;
                     break;
                 case '/auth-policies':
                 case 'auth-policies':
                     this.page = 'auth-policies';
-                    route = URLS.ZITI_AUTH_POLICIES;
+                    route = this.URLS.ZITI_AUTH_POLICIES;
                     break;
                 case '/service-policies':
                 case 'service-policies':
                     this.page = 'service-policies';
-                    route = URLS.ZITI_SERVICE_POLICIES;
+                    route = this.URLS.ZITI_SERVICE_POLICIES;
                     break;
                 case '/router-policies':
                 case 'router-policies':
                     this.page = 'router-policies';
-                    route = URLS.ZITI_ROUTER_POLICIES;
+                    route = this.URLS.ZITI_ROUTER_POLICIES;
                     break;
                 case '/service-router-policies':
                 case 'service-router-policies':
                     this.page = 'service-router-policies';
-                    route = URLS.ZITI_SERVICE_ROUTER_POLICIES;
+                    route = this.URLS.ZITI_SERVICE_ROUTER_POLICIES;
                     break;
                 case '/posture-checks':
                 case 'posture-checks':
                     this.page = 'posture-checks';
-                    route = URLS.ZITI_POSTURE_CHECKS;
+                    route = this.URLS.ZITI_POSTURE_CHECKS;
                     break;
                 case '/cas':
                 case 'cas':
                     this.page = 'cas';
-                    route = URLS.ZITI_CERT_AUTHORITIES;
+                    route = this.URLS.ZITI_CERT_AUTHORITIES;
                     break;
                 case '/sessions':
                 case 'sessions':
                     this.page = 'sessions';
-                    route = URLS.ZITI_SESSIONS;
+                    route = this.URLS.ZITI_SESSIONS;
                     break;
                 case '/login':
                 case 'login':
                     this.page = 'login';
-                    route = URLS.ZAC_LOGIN;
+                    route = this.URLS.ZAC_LOGIN;
                     break;
                 default:
                     this.page = 'index';
-                    route = URLS.ZITI_DASHBOARD;
+                    route = this.URLS.ZITI_DASHBOARD;
                     break;
             }
             this.router.navigate([route]);
@@ -209,58 +210,58 @@ export class ZacWrapperService {
                 const oldPage = this.page;
                 const page = (event as any)['routerEvent']['url'].split(';')[0].split('?')[0];
                 switch (page) {
-                    case URLS.ZITI_DASHBOARD:
+                    case this.URLS.ZITI_DASHBOARD:
                         this.page = 'index';
                         break;
-                    case URLS.ZITI_SERVICES:
+                    case this.URLS.ZITI_SERVICES:
                         this.page = 'services';
                         break;
-                    case URLS.ZITI_IDENTITIES:
+                    case this.URLS.ZITI_IDENTITIES:
                         this.page = 'identities';
                         break;
-                    case URLS.ZITI_JWT_SIGNERS:
+                    case this.URLS.ZITI_JWT_SIGNERS:
                         this.page = 'jwt-signers';
                         break;
-                    case URLS.ZITI_CONFIGS:
+                    case this.URLS.ZITI_CONFIGS:
                         this.page = 'configs';
                         break;
-                    case URLS.ZITI_CONFIG_TYPES:
+                    case this.URLS.ZITI_CONFIG_TYPES:
                         this.page = 'config-types';
                         break;
-                    case URLS.ZITI_ROUTERS:
+                    case this.URLS.ZITI_ROUTERS:
                         this.page = 'routers';
                         break;
-                    case URLS.ZITI_TRANSIT_ROUTERS:
+                    case this.URLS.ZITI_TRANSIT_ROUTERS:
                         this.page = 'transit-routers';
                         break;
-                    case URLS.ZITI_RECIPES:
+                    case this.URLS.ZITI_RECIPES:
                         this.page = 'recipes';
                         break;
-                    case URLS.ZITI_TERMINATORS:
+                    case this.URLS.ZITI_TERMINATORS:
                         this.page = 'terminators';
                         break;
-                    case URLS.ZITI_AUTH_POLICIES:
+                    case this.URLS.ZITI_AUTH_POLICIES:
                         this.page = 'service-policies';
                         break;
-                    case URLS.ZITI_SERVICE_POLICIES:
+                    case this.URLS.ZITI_SERVICE_POLICIES:
                         this.page = 'service-policies';
                         break;
-                    case URLS.ZITI_ROUTER_POLICIES:
+                    case this.URLS.ZITI_ROUTER_POLICIES:
                         this.page = 'router-policies';
                         break;
-                    case URLS.ZITI_SERVICE_ROUTER_POLICIES:
+                    case this.URLS.ZITI_SERVICE_ROUTER_POLICIES:
                         this.page = 'service-router-policies';
                         break;
-                    case URLS.ZITI_POSTURE_CHECKS:
+                    case this.URLS.ZITI_POSTURE_CHECKS:
                         this.page = 'posture-checks';
                         break;
-                    case URLS.ZITI_CERT_AUTHORITIES:
+                    case this.URLS.ZITI_CERT_AUTHORITIES:
                         this.page = 'cas';
                         break;
-                    case URLS.ZITI_SESSIONS:
+                    case this.URLS.ZITI_SESSIONS:
                         this.page = 'sessions';
                         break;
-                    case URLS.ZAC_LOGIN:
+                    case this.URLS.ZAC_LOGIN:
                         this.page = 'login';
                         break;
                     default:

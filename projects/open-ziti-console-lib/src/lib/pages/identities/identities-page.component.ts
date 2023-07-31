@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import { ColDef } from 'ag-grid-community';
 import {SettingsService} from "../../services/settings.service";
 import {IdentitiesService} from "./identities.service";
 import {TableHeaderDefaultComponent} from "../../data-table/table-header-default/table-header-default.component";
@@ -43,8 +42,11 @@ export class IdentitiesPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.svc.getZitiIdentities().then((data: any) => {
-
+    this.svc.getZitiIdentities(event).then((data: any) => {
+      this.rowData = data.data
+      this.startCount = 1 + '';
+      this.endCount = data.meta.pagination.totalCount;
+      this.totalCount = data.meta.pagination.totalCount;
     });
     this.filterService.filterChanged.subscribe(event => {
       let filterAdded = false;
