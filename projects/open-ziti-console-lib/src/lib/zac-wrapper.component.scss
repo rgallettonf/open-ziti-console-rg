@@ -1,7 +1,9 @@
 .zac-wrapper-container {
   width: 100%;
   height: 100%;
-  position: relative;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
   top: 0;
   left: 0;
   flex: 1 0 auto;

@@ -41,6 +41,7 @@ import {ZitiIdentityFormComponent} from "./ziti-identity-form/ziti-identity-form
 import {HiddenColumnsBarComponent} from "./hidden-columns-bar/hidden-columns-bar.component";
 import {HeaderSearchBarComponent} from "./header-search-bar/header-search-bar.component";
 import {AgGridModule} from "ag-grid-angular";
+import {ClickOutsideModule} from 'ng-click-outside';
 
 export const ZITI_URLS = new InjectionToken<string>('ZITI_URLS');
 export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
@@ -89,7 +90,8 @@ export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
         ZacRoutingModule,
         ChipsModule,
         AgGridModule,
-        ChipsModule
+        ChipsModule,
+        ClickOutsideModule
     ],
     exports: [
         ZacWrapperComponent,
