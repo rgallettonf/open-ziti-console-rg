@@ -116,6 +116,40 @@ app-zac-wrapper {
   position: relative;
 }
 
+.empty-table {
+  position: relative;
+  font-size: 1.5rem;
+  line-height: 18rem;
+  color: var(--menu);
+
+  span {
+    display: inline-block;
+    line-height: 2rem;
+    text-align: center;
+  }
+}
+
+.empty-table::before {
+  position: absolute;
+  content: " ";
+  z-index: -1;
+  opacity: 0.2;
+  background-image: url(/assets/svgs/nodata.svg);
+  background-position: top center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  width:100%;
+  height: 18rem;
+}
+.flex-wrapper {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+  flex:auto;
+}
+
+
 @media (max-width: 800px) {
   .side-navigator-menu-item-label,
   .side-navigator-menu-group-label  {

@@ -13,10 +13,10 @@ export class ConfigurationService {
                 private settingsService: SettingsService) {
     }
 
-    getSchema(schemaType: string): Promise<any> {
+    async getSchema(schemaType: string): Promise<any> {
         if (!schemaType) return Promise.resolve();
-
-        const prefix = this.settingsService.apiVersions["edge-management"].v1.path;
+        const apiVersions = this.settingsService.apiVersions;
+        const prefix = apiVersions["edge-management"].v1.path;
         const url = this.settingsService.settings.selectedEdgeController;
         const serviceUrl = url + prefix + "/api/schema";
         return firstValueFrom(this.httpClient.post(serviceUrl,

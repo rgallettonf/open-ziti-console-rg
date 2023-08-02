@@ -1,4 +1,4 @@
-import {InjectionToken, NgModule} from '@angular/core';
+import {APP_INITIALIZER, InjectionToken, Injector, NgModule} from '@angular/core';
 import {ZacWrapperComponent} from "./zac-wrapper.component";
 import {SafePipe} from "./safe.pipe";
 import {HttpClientModule} from "@angular/common/http";
@@ -41,6 +41,8 @@ import {HiddenColumnsBarComponent} from "./features/list-page-features/hidden-co
 import {HeaderSearchBarComponent} from "./features/list-page-features/header-search-bar/header-search-bar.component";
 import {AgGridModule} from "ag-grid-angular";
 import {IdentitiesPageComponent} from "./pages/identities/identities-page.component";
+import { GrowlerComponent } from './features/messaging/growler.component';
+import {onAppInit} from "./app.initializer";
 
 
 @NgModule({
@@ -78,6 +80,7 @@ import {IdentitiesPageComponent} from "./pages/identities/identities-page.compon
         HiddenColumnsBarComponent,
         HeaderSearchBarComponent,
         ExtendableComponent,
+        GrowlerComponent,
     ],
     imports: [
         CommonModule,
@@ -108,9 +111,16 @@ import {IdentitiesPageComponent} from "./pages/identities/identities-page.compon
         ConfigurationFormComponent,
         IdentitiesPageComponent,
         ZacRoutingModule,
+        GrowlerComponent,
     ],
     providers: [
         {provide: SHAREDZ_EXTENSION, useClass: ExtensionsNoopService},
+        {
+            provide: APP_INITIALIZER,
+            useFactory: onAppInit,
+            deps: [Injector],
+            multi: true
+        },
     ],
 })
 export class OpenZitiConsoleLibModule {

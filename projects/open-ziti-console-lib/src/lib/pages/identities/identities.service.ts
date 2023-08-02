@@ -28,7 +28,7 @@ export class IdentitiesService {
     ) {
     }
 
-    public getZitiIdentities(filter?) {
+    async getZitiIdentities(filter?) {
         if (filter) {
             this.paging.filter = filter.value;
             this.paging.searchOn = filter.columnId;
@@ -67,18 +67,18 @@ export class IdentitiesService {
         });
     }
 
-    getZitiEntities(type: string, paging: any) {
+    async getZitiEntities(type: string, paging: any) {
         const sessionId = this.settingsService.settings.session.id;
-        const prefix = this.settingsService.apiVersions["edge-management"].v1.path;
+        const apiVersions = this.settingsService.apiVersions;
+        const prefix = apiVersions["edge-management"].v1.path;
         const url = this.settingsService.settings.selectedEdgeController;
         const urlFilter = this.getUrlFilter(paging);
-        const serviceUrl = url + prefix + "/" + type + urlFilter;
+        const serviceUrl = url + prefix + "/" + type + urlFilter ;
 
         return firstValueFrom(this.httpClient.get(serviceUrl,
             {
                 headers: {
-                    "content-type": "application/json",
-                    "zt-session": sessionId
+                    "content-type": "application/json"
                 }
             })
             .pipe(

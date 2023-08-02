@@ -8,7 +8,7 @@ export const authenticationGuard: CanActivateFn = (route, state) => {
   const settingsSvc = inject(SettingsService);
   const isAuthorized = !!settingsSvc.settings.session?.id;
   if (!isAuthorized) {
-    // growler.error('not authorized');
+    // messaging.error('not authorized');
     inject(Router).navigate(['/login']);
   }
 

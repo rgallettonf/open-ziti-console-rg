@@ -14,12 +14,12 @@
 }
 
 .page {
+  display: flex;
   justify-content: center;
   align-content: center;
   flex-wrap: wrap;
-  flex: auto;
+  flex:auto;
   position: relative;
-  display: flex;
   margin: 0;
   padding: 1.5rem;
   transition: var(--transition);

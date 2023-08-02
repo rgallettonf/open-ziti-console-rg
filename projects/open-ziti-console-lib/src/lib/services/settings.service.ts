@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, firstValueFrom} from "rxjs";
+import {BehaviorSubject, firstValueFrom, map, tap} from "rxjs";
 import {catchError} from "rxjs/operators";
 
 import {HttpClient} from "@angular/common/http";
@@ -7,7 +7,7 @@ import {HttpClient} from "@angular/common/http";
 // @ts-ignore
 const {service, growler, context, page, settings} = window;
 const DEFAULTS = {
-    "session":{},
+    "session": {},
     "edgeControllers": [],
     "editable": true,
     "update": false,
@@ -40,12 +40,9 @@ export class SettingsService {
     rejectUnauthorized = false;
     port = DEFAULTS.port;
     portTLS = DEFAULTS.portTLS;
-    apiVersions: any = {};
-    id= 0;
+    apiVersions: any[] = [];
 
     constructor(private httpClient: HttpClient) {
-        this.id = Math.random();
-        this.init();
     }
 
     init() {
@@ -55,6 +52,8 @@ export class SettingsService {
         if (this.settings.port && !isNaN(this.settings.port)) this.port = this.settings.port;
         if (this.settings.portTLS && !isNaN(this.settings.portTLS)) this.portTLS = this.settings.portTLS;
         if (this.settings.rejectUnauthorized && !isNaN(this.settings.rejectUnauthorized)) this.rejectUnauthorized = this.settings.rejectUnauthorized;
+        if(this.settings.selectedEdgeController) return this.initApiVersions(this.settings.selectedEdgeController);
+        else return Promise.resolve();
     }
 
     get() {
@@ -67,8 +66,6 @@ export class SettingsService {
         }
         settings.data = this.settings;
         context.set(this.name, this.settings);
-        if(this.settings.selectedEdgeController)
-            this.initApiVersions(this.settings.selectedEdgeController);
         this.settingsChange.next(this.settings)
     }
 
@@ -104,32 +101,34 @@ export class SettingsService {
         }
     }
 
-    async initApiVersions(url: string) {
+    initApiVersions(url: string) {
         url = url.split('#').join('').split('?').join('');
         if (url.endsWith('/')) url = url.substr(0, url.length - 1);
-        if(!url.startsWith('https://')) url = 'https://' + url;
-        const callUrl = url + "/edge/management/v1/version?rejectUnauthorized=" + this.rejectUnauthorized;
-        await firstValueFrom(this.httpClient.get(callUrl).pipe(catchError((err: any) => {
-            throw "Edge Controller not Online: " + err?.message;
-        }))).then((body: any) => {
-            try {
-                if (body.error) {
-                    growler.error("Invalid Edge Controller: " + body.error);
-                } else {
-                    this.apiVersions = body.data.apiVersions;
-                }
-            } catch (e) {
-                growler.error("Invalid Edge Controller: " + body);
-            }
-        }).catch(err => {
-            growler.error(err?.message);
-        });
+        if (!url.startsWith('https://')) url = 'https://' + url;
+        const callUrl = url + "/edge/management/v1/version?rejectUnauthorized=false";
+        return firstValueFrom(this.httpClient.get(callUrl)
+            .pipe(
+                tap((body: any) => {
+                    try {
+                        if (body.error) {
+                            growler.error("Invalid Edge Controller: " + body.error);
+                        } else {
+                            this.apiVersions = body.data.apiVersions;
+                        }
+                    } catch (e) {
+                        growler.error("Invalid Edge Controller: " + body);
+                    }
+                }),
+                catchError((err: any) => {
+                    throw "Edge Controller not Online: " + err?.message;
+                }),
+                map(body => body.data.apiVersions)));
     }
 
     private controllerSave(name: string, url: string) {
         url = url.split('#').join('').split('?').join('');
         if (url.endsWith('/')) url = url.substr(0, url.length - 1);
-        if(!url.startsWith('https://')) url = 'https://' + url;
+        if (!url.startsWith('https://')) url = 'https://' + url;
         const callUrl = url + "/edge/management/v1/version?rejectUnauthorized=" + this.rejectUnauthorized;
         firstValueFrom(this.httpClient.get(callUrl).pipe(catchError((err: any) => {
             throw "Edge Controller not Online: " + err?.message;
@@ -140,7 +139,7 @@ export class SettingsService {
                 } else {
                     if (body.data.apiVersions.edge.v1 != null) {
                         let found = false;
-                        if( this.settings.edgeControllers?.length > 0) {
+                        if (this.settings.edgeControllers?.length > 0) {
                             for (let i = 0; i < this.settings.edgeControllers.length; i++) {
                                 if (this.settings.edgeControllers[i].url == url) {
                                     found = true;
@@ -152,7 +151,7 @@ export class SettingsService {
                         }
                         if (!found) {
                             let isDefault = false;
-                            if(!this.settings.edgeControllers) this.settings.edgeControllers = [];
+                            if (!this.settings.edgeControllers) this.settings.edgeControllers = [];
                             if (this.settings.edgeControllers?.length === 0) isDefault = true;
                             this.settings.edgeControllers.push({
                                 name: name,

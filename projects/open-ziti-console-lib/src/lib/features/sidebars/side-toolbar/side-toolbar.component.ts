@@ -12,7 +12,6 @@ export class SideToolbarComponent {
   }
 
   ngOnInit() {
-    this.settingsService.init();
     this.settingsService.settingsChange.subscribe((results:any) => {
       this.hideNav = results.hideNav;
     });
