@@ -6,6 +6,7 @@ import moment from 'moment';
 import {SettingsService} from "../../services/settings.service";
 import {firstValueFrom} from "rxjs";
 import {catchError} from "rxjs/operators";
+import {DataService} from "../../services/data.service";
 
 @Injectable({
     providedIn: 'root'
@@ -24,7 +25,8 @@ export class IdentitiesService {
 
     constructor(
         private httpClient: HttpClient,
-        private settingsService: SettingsService
+        private settingsService: SettingsService,
+        private dataService: DataService
     ) {
     }
 
@@ -33,7 +35,8 @@ export class IdentitiesService {
             this.paging.filter = filter.value;
             this.paging.searchOn = filter.columnId;
         }
-        return this.getZitiEntities('identities', this.paging).then((results: any) => {
+        return this.dataService.get('identities', this.paging)
+            .then((results: any) => {
             if (!isEmpty(results?.data)) {
                 results.data = results.data.map((row) => {
                     row.actionList = ['update', 'override', 'delete'];
@@ -68,7 +71,6 @@ export class IdentitiesService {
     }
 
     async getZitiEntities(type: string, paging: any) {
-        const sessionId = this.settingsService.settings.session.id;
         const apiVersions = this.settingsService.apiVersions;
         const prefix = apiVersions["edge-management"].v1.path;
         const url = this.settingsService.settings.selectedEdgeController;

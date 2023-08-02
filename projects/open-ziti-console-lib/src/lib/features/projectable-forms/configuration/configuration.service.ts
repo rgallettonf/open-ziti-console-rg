@@ -3,46 +3,32 @@ import {HttpClient} from "@angular/common/http";
 import {firstValueFrom} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {SettingsService} from "../../../services/settings.service";
+import {DataService} from "../../../services/data.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class ConfigurationService {
+    private configTypes: any[] = [];
 
-    constructor(private httpClient: HttpClient,
+    constructor(private dataService: DataService,
                 private settingsService: SettingsService) {
     }
 
     async getSchema(schemaType: string): Promise<any> {
         if (!schemaType) return Promise.resolve();
-        const apiVersions = this.settingsService.apiVersions;
-        const prefix = apiVersions["edge-management"].v1.path;
-        const url = this.settingsService.settings.selectedEdgeController;
-        const serviceUrl = url + prefix + "/api/schema";
-        return firstValueFrom(this.httpClient.post(serviceUrl,
-            {schema: schemaType}, {
-                headers: {
-                    "content-type": "application/json",
-                }
-            })
-            .pipe(
-                catchError((err: any) => {
-                    const error = "Server Not Accessible";
-                    if (err.code != "ECONNREFUSED") throw({error: err.code});
-                    throw({error: error});
-                })
-            )
-        ).then((body: any) => {
-            if (body.error) throw body.error;
-            return this.parseSchema(body.schema);
-        });
+        for (let idx = 0; idx < this.configTypes.length; idx++) {
+            if(this.configTypes[idx].name === schemaType)
+                return this.configTypes[idx].schema;
+        }
     }
 
-    parseSchema(results: any): any {
-        return {
-            $id: results.$id,
-            type: results.type,
-            properties: results.properties
-        };
+    getConfigTypes() {
+        return this.dataService.get('config-types', {})
+        .then((body: any) => {
+            if (body.error) throw body.error;
+            this.configTypes = body.data;
+            return this.configTypes;
+        });
     }
 }

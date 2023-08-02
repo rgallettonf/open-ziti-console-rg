@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {ConfigurationService} from "./configuration.service";
 import {Subscription} from "rxjs";
 import {SchemaService} from "../../../services/schema.service";
@@ -10,18 +10,12 @@ import {ProjectableFormType} from "../projectableForm.type";
     templateUrl: './configuration-form.component.html',
     styleUrls: ['./configuration-form.component.scss']
 })
-export class ConfigurationFormComponent extends ExtendableComponent implements ProjectableFormType, OnDestroy {
+export class ConfigurationFormComponent extends ExtendableComponent implements OnInit, ProjectableFormType, OnDestroy {
     @ViewChild("dynamicform", {read: ViewContainerRef}) dynamicForm!: ViewContainerRef;
     @Input() formData: any = {};
     @Input() errors: string[] = [];
 
-    options: string[] = [
-        "host.v1",
-        "host.v2",
-        "intercept.v1",
-        "ziti-tunneler-client.v1",
-        "ziti-tunneler-server.v1",
-    ];
+    options: string[] = [];
 
     lColorArray = [
         'black',
@@ -35,7 +29,8 @@ export class ConfigurationFormComponent extends ExtendableComponent implements P
         '#33aaff',
     ]
 
-    config: string = '';
+    configType: string = '';
+    configTypes = [];
     editMode = false;
     items: any = [];
     subscription = new Subscription()
@@ -47,8 +42,8 @@ export class ConfigurationFormComponent extends ExtendableComponent implements P
 
     async createForm() {
         this.clear();
-        if (this.config && this.dynamicForm) {
-            const currentSchema = await this.svc.getSchema(this.config);
+        if (this.configType && this.dynamicForm) {
+            const currentSchema = await this.svc.getSchema(this.configType);
             if (currentSchema) {
                 this.render(currentSchema);
             }
@@ -86,5 +81,12 @@ export class ConfigurationFormComponent extends ExtendableComponent implements P
                 }
             }
         }
+    }
+
+    ngOnInit(): void {
+        this.svc.getConfigTypes()
+            .then(recs => {
+                this.options = recs.map(r => r.name).sort();
+            })
     }
 }

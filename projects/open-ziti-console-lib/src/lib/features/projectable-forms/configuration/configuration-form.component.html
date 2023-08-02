@@ -3,7 +3,7 @@
     <input id="Name" type="text" maxlength="500"
            placeholder="enter a name...">
     <label for="Types">Types</label>
-    <select id="Types" [(ngModel)]="config" (change)="createForm()">
+    <select id="Types" [(ngModel)]="configType" (change)="createForm()">
         <option value="">Select A Type...</option>
         <option *ngFor="let config of options"
                 [value]="config">{{config}}
