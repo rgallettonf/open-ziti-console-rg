@@ -1,17 +1,16 @@
 <div class="ziti-page-container ziti-identities-container">
     <lib-list-page-header [title]="title"
-                          [tabs]="tabs" (actionClicked)="headerActionClicked($event)"></lib-list-page-header>
-    <lib-header-search-bar
-            [filters]="filters"
-            [startCount]="startCount"
-            [endCount]="endCount"
-            [totalCount]="totalCount"
-    ></lib-header-search-bar>
-    <lib-data-table *ngIf="rowData?.length > 0;else nodata"
+                          [tabs]="tabs"
+                          (actionClicked)="headerActionClicked($event)"></lib-list-page-header>
+
+    <lib-data-table *ngIf="filterApplied || rowData?.length > 0;else nodata"
                     [rowData]="rowData"
                     [columnDefinitions]="columnDefs"
                     (actionRequested)="tableAction($event)"
                     [tableId]="'identities'"
+                    [startCount]="startCount"
+                    [endCount]="endCount"
+                    [totalCount]="totalCount"
     >
     </lib-data-table>
 

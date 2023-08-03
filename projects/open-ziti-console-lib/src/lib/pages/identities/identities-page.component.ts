@@ -1,10 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {SettingsService} from "../../services/settings.service";
 import {IdentitiesService} from "./identities.service";
-import {TableHeaderDefaultComponent} from "../../data-table/table-header-default/table-header-default.component";
-import {invoke, isEmpty, defer} from 'lodash';
+import {TableColumnDefaultComponent} from "../../features/data-table/column-headers/table-column-default/table-column-default.component";
 import moment from 'moment';
-import {TableFilterService} from "../../services/table-filter.service";
+import {DataTableFilterService} from "../../features/data-table/data-table-filter.service";
 
 @Component({
   selector: 'lib-identities',
@@ -23,51 +22,24 @@ export class IdentitiesPageComponent implements OnInit {
   startCount = '-';
   endCount = '-';
   totalCount = '-';
-  filters = [];
-  filterString = '';
   itemsSelected = false;
   columnDefs: any = [];
-  columnFilters: any = {
-    name: '',
-  }
-
   rowData = [];
+  filterApplied = false;
 
   constructor(
     private settings: SettingsService,
     private svc: IdentitiesService,
-    private filterService: TableFilterService,
+    private filterService: DataTableFilterService,
   ) {
     this.initTableColumns();
   }
 
   ngOnInit() {
-    this.svc.getZitiIdentities(event).then((data: any) => {
-      this.rowData = data.data
-      this.startCount = 1 + '';
-      this.endCount = data.meta.pagination.totalCount;
-      this.totalCount = data.meta.pagination.totalCount;
-    });
-    this.filterService.filterChanged.subscribe(event => {
-      let filterAdded = false;
-      this.filters = this.filters.map((filter) => {
-        if (filter.columnId === event.columnId) {
-          filter = event;
-          filterAdded = true;
-          this.filterString = event.value;
-          filter.value = event.value;
-          filter.label = event.label;
-        }
-        return filter;
-      });
-      this.filters = this.filters.filter((filter) => {
-        return !isEmpty(filter.value);
-      })
-      if (!filterAdded && !isEmpty(event.value)) {
-        this.filters.push(event);
-      }
-
-      this.svc.getZitiIdentities(event).then((data: any) => {
+    this.filterService.clearFilters();
+    this.filterService.filtersChanged.subscribe(filters => {
+      this.filterApplied = filters && filters.length > 0;
+      this.svc.getIdentities(filters).then((data: any) => {
         this.rowData = data.data
         this.startCount = 1 + '';
         this.endCount = data.meta.pagination.totalCount;
@@ -77,11 +49,9 @@ export class IdentitiesPageComponent implements OnInit {
   }
 
   initTableColumns() {
-    const columnFilters = this.columnFilters;
     const headerComponentParams = {
       filterType: 'TEXTINPUT',
-      enableSorting: true,
-      columnFilters,
+      enableSorting: true
     };
     const nameRenderer = (row) => {
       return `<div class="col" data-id="${row?.data?.id}">
@@ -165,12 +135,14 @@ export class IdentitiesPageComponent implements OnInit {
         colId: 'name',
         field: 'name',
         headerName: 'Name',
-        headerComponent: TableHeaderDefaultComponent,
+        headerComponent: TableColumnDefaultComponent,
         headerComponentParams,
         resizable: true,
         cellRenderer: nameRenderer,
         cellClass: 'nf-cell-vert-align tCol',
-        sortable: true
+        sortable: true,
+        filter: true,
+        sortColumn: this.sort.bind(this)
       },
       {
         colId: 'os',
@@ -178,7 +150,7 @@ export class IdentitiesPageComponent implements OnInit {
         headerName: 'O/S',
         width: 100,
         cellRenderer: osRenderer,
-        headerComponent: TableHeaderDefaultComponent,
+        headerComponent: TableColumnDefaultComponent,
         headerComponentParams,
         resizable: true,
         cellClass: 'nf-cell-vert-align tCol',
@@ -188,7 +160,7 @@ export class IdentitiesPageComponent implements OnInit {
         field: 'sdk',
         headerName: 'SDK',
         cellRenderer: sdkRenderer,
-        headerComponent: TableHeaderDefaultComponent,
+        headerComponent: TableColumnDefaultComponent,
         headerComponentParams,
         resizable: true,
         cellClass: 'nf-cell-vert-align tCol',
@@ -197,7 +169,7 @@ export class IdentitiesPageComponent implements OnInit {
         colId: 'type',
         field: 'type.name',
         headerName: 'Type',
-        headerComponent: TableHeaderDefaultComponent,
+        headerComponent: TableColumnDefaultComponent,
         headerComponentParams,
         resizable: true,
         cellClass: 'nf-cell-vert-align tCol',
@@ -206,7 +178,7 @@ export class IdentitiesPageComponent implements OnInit {
         colId: 'isAdmin',
         field: 'isAdmin',
         headerName: 'Is Admin',
-        headerComponent: TableHeaderDefaultComponent,
+        headerComponent: TableColumnDefaultComponent,
         headerComponentParams,
         resizable: true,
         cellClass: 'nf-cell-vert-align tCol',
@@ -215,7 +187,7 @@ export class IdentitiesPageComponent implements OnInit {
         colId: 'createdAt',
         field: 'createdAt',
         headerName: 'Created At',
-        headerComponent: TableHeaderDefaultComponent,
+        headerComponent: TableColumnDefaultComponent,
         headerComponentParams,
         valueFormatter: createdAtFormatter,
         resizable: true,
@@ -225,7 +197,7 @@ export class IdentitiesPageComponent implements OnInit {
         colId: 'token',
         field: 'token',
         headerName: 'Token',
-        headerComponent: TableHeaderDefaultComponent,
+        headerComponent: TableColumnDefaultComponent,
         headerComponentParams,
         cellRenderer: tokenRenderer,
         resizable: true,
@@ -290,17 +262,7 @@ export class IdentitiesPageComponent implements OnInit {
     window['page']['filterObject']['delete']([item.id]);
   }
 
-
-
-  removeFilter(filter) {
-    this.updateAppliedFilters();
-  }
-
-  updateAppliedFilters() {
-
-  }
   headerActionClicked(action: string) {
-
     switch(action) {
       case 'add':
         this.openUpdate();
@@ -323,5 +285,15 @@ export class IdentitiesPageComponent implements OnInit {
 
   private openBulkDelete(selectedItems: any[]) {
 
+  }
+
+  sort(sortBy, ordering= 'desc') {
+    this.svc.getIdentities(this.filterService.filters, {sortBy, ordering})
+        .then((data: any) => {
+      this.rowData = data.data
+      this.startCount = 1 + '';
+      this.endCount = data.meta.pagination.totalCount;
+      this.totalCount = data.meta.pagination.totalCount;
+    });
   }
 }

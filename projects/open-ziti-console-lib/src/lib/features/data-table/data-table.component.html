@@ -1,0 +1,85 @@
+<div class="data-table-container">
+    <lib-table-filter-bar
+            [startCount]="startCount"
+            [endCount]="endCount"
+            [totalCount]="totalCount"
+    ></lib-table-filter-bar>
+    <lib-table-hidden-columns-bar
+            *ngIf="gridRendered && showFilterBar"
+            [hiddenColumns]="hiddenColumns"
+            (columnVisibilityChanged)="columnVisibilityChanged($event)"
+    ></lib-table-hidden-columns-bar>
+    <div (resize)="resizeGridColumnsDebounced($event)" class="ziti-ag-grid" id="ItemTable">
+        <ag-grid-angular
+            #nfAgGrid
+            (gridReady)="onGridReady($event)"
+            [columnDefs]="mergedColumnDefinitions"
+            [components]="frameworkComponents"
+            [getDataPath]="svc.getDataPath"
+            [getRowId]="svc.getRowNodeId"
+            [gridOptions]="gridOptions"
+            [modules]="gridModules"
+            [rowData]="rowData"
+            class="ziti-ag-grid-table ag-theme-alpine rows"
+            id="ItemGrid"
+        >
+        </ag-grid-angular>
+    </div>
+    <div
+            [ngClass]="{ open: openHeaderMenu }"
+            [ngStyle]="{ left: menuLeft + 'px', top: menuTop + 'px' }"
+            class="tMenu action-menu header-menu"
+            id="HeaderActionMenu"
+    >
+        <div (click)="resetTableColumns()" class="tActionRow" id="ResetTableButton">Restore Default Table</div>
+    </div>
+    <div
+            [ngClass]="{ open: openMenu }"
+            [ngStyle]="{ left: menuLeft + 'px', top: menuTop + 'px' }"
+            class="tMenu action-menu item-menu"
+            id="RowActionMenu"
+    >
+        <div
+                (click)="actionRequested.emit({ action: 'update', item: selectedItem })"
+                *ngIf="selectedItem.actionList.includes('update')"
+                class="tActionRow"
+                id="EditSelectionButton"
+        >
+            Edit
+        </div>
+        <div
+                (click)="actionRequested.emit({ action: 'download-enrollment', item: $event })"
+                *ngIf="selectedItem.actionList.includes('download-enrollment')"
+                class="tActionRow"
+                id="DownloadJWTButton"
+                [attr.data-id]="selectedItem.id"
+        >
+            Download JWT
+        </div>
+        <div
+                (click)="actionRequested.emit({ action: 'qr-code', item: $event })"
+                *ngIf="selectedItem.actionList.includes('qr-code')"
+                class="tActionRow"
+                id="ViewQRButton"
+                [attr.data-id]="selectedItem.id"
+        >
+            View QR
+        </div>
+        <div
+                (click)="actionRequested.emit({ action: 'override', item: selectedItem })"
+                *ngIf="selectedItem.actionList.includes('override')"
+                class="tActionRow"
+                id="OverrideSelectionButton"
+        >
+            Override
+        </div>
+        <div
+                (click)="actionRequested.emit({ action: 'delete', item: selectedItem })"
+                *ngIf="selectedItem.actionList.includes('delete')"
+                class="tActionRow"
+                id="DeleteSelectionButton"
+        >
+            Delete
+        </div>
+    </div>
+</div>

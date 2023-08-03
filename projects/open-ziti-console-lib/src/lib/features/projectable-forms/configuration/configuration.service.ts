@@ -1,9 +1,6 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {firstValueFrom} from "rxjs";
-import {catchError} from "rxjs/operators";
 import {SettingsService} from "../../../services/settings.service";
-import {DataService} from "../../../services/data.service";
+import {ZitiDataService} from "../../../services/ziti-data.service";
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +8,7 @@ import {DataService} from "../../../services/data.service";
 export class ConfigurationService {
     private configTypes: any[] = [];
 
-    constructor(private dataService: DataService,
+    constructor(private dataService: ZitiDataService,
                 private settingsService: SettingsService) {
     }
 

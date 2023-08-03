@@ -16,6 +16,8 @@ export class ConfigurationsPageComponent {
     formSubtitle = '';
 
     showEditForm = false;
+    rowData: any;
+    columnDefs: any;
 
     constructor(
         ) {
@@ -50,5 +52,9 @@ export class ConfigurationsPageComponent {
 
     itemUpdate() {
 
+    }
+
+    tableAction($event: {action: string; item?: any}) {
+        
     }
 }

@@ -4,38 +4,49 @@ import {Injectable} from "@angular/core";
 import {isEmpty} from 'lodash';
 import moment from 'moment';
 import {SettingsService} from "../../services/settings.service";
-import {firstValueFrom} from "rxjs";
-import {catchError} from "rxjs/operators";
-import {DataService} from "../../services/data.service";
+import {ZitiDataService} from "../../services/ziti-data.service";
+import {FilterObj} from "../../features/data-table/data-table-filter.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class IdentitiesService {
 
-    private paging: any = {
+    private DEFAULT_PAGING: any = {
         filter: "",
-        noSearch: false,
-        order: "ASC",
+        noSearch: true,
+        order: "asc",
         page: 1,
         searchOn: "name",
         sort: "name",
         total: 100
     }
+    private paging = this.DEFAULT_PAGING;
 
     constructor(
         private httpClient: HttpClient,
         private settingsService: SettingsService,
-        private dataService: DataService
+        private dataService: ZitiDataService
     ) {
     }
 
-    async getZitiIdentities(filter?) {
-        if (filter) {
-            this.paging.filter = filter.value;
-            this.paging.searchOn = filter.columnId;
+    async getIdentities(filters?: FilterObj[], sort?: any) {
+        this.paging = {...this.DEFAULT_PAGING};
+        if(sort) {
+            this.paging.sort = sort.sortBy;
+            this.paging.order = sort.ordering;
         }
-        return this.dataService.get('identities', this.paging)
+        let nonNameFilters: FilterObj[] = [];
+        if(filters) {
+            for (let idx = 0; idx < filters.length; idx++) {
+                if (filters[idx].columnId === 'name' && filters[idx].value) {
+                    this.paging.noSearch = false;
+                    this.paging.searchOn = 'name'
+                    this.paging.filter = filters[idx].value;
+                } else nonNameFilters.push(filters[idx]);
+            }
+        }
+        return this.dataService.get('identities', this.paging, nonNameFilters)
             .then((results: any) => {
             if (!isEmpty(results?.data)) {
                 results.data = results.data.map((row) => {
@@ -68,51 +79,5 @@ export class IdentitiesService {
             }
             return results;
         });
-    }
-
-    async getZitiEntities(type: string, paging: any) {
-        const apiVersions = this.settingsService.apiVersions;
-        const prefix = apiVersions["edge-management"].v1.path;
-        const url = this.settingsService.settings.selectedEdgeController;
-        const urlFilter = this.getUrlFilter(paging);
-        const serviceUrl = url + prefix + "/" + type + urlFilter ;
-
-        return firstValueFrom(this.httpClient.get(serviceUrl,
-            {
-                headers: {
-                    "content-type": "application/json"
-                }
-            })
-            .pipe(
-                catchError((err: any) => {
-                    const error = "Server Not Accessible";
-                    if (err.code != "ECONNREFUSED") throw({error: err.code});
-                    throw({error: error});
-                })
-            )
-        );
-    }
-
-    private getUrlFilter(paging: any) {
-        let urlFilter = '';
-        let toSearchOn = "name";
-        let noSearch = false;
-        if (paging && paging.sort != null) {
-            if (paging.searchOn) toSearchOn = paging.searchOn;
-            if (paging.noSearch) noSearch = true;
-            if (!paging.filter) paging.filter = "";
-            paging.filter = paging.filter.split('#').join('');
-            if (noSearch) {
-                if (paging.page !== -1) urlFilter = "?limit=" + paging.total + "&offset=" + ((paging.page - 1) * paging.total);
-            } else {
-                if (paging.page !== -1) urlFilter = "?filter=(" + toSearchOn + " contains \"" + paging.filter + "\")&limit=" + paging.total + "&offset=" + ((paging.page - 1) * paging.total) + "&sort=" + paging.sort + " " + paging.order;
-                if (paging.params) {
-                    for (const key in paging.params) {
-                        urlFilter += ((urlFilter.length === 0) ? "?" : "&") + key + "=" + paging.params[key];
-                    }
-                }
-            }
-        }
-        return urlFilter;
     }
 }
