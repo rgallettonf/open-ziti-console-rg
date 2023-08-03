@@ -288,15 +288,6 @@ export class DataTableComponent implements OnChanges, OnInit {
     this.openHeaderMenu = false;
   }
 
-  // closeHeaderFilter(event): void {
-  //   this.showFilterOptions = false;
-  // }
-
-  sortChanged(event) {
-    event = undefined;
-    return false;
-  }
-
   anySelected() {
     return _.some(this.rowData, {selected: true});
   }

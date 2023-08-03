@@ -19,10 +19,8 @@ export class TableCellMenuComponent implements ICellRendererAngularComp {
   open = false;
 
   get enableCellMenu(): boolean {
-    if (!this.item || !this.item.actionList || this.item.actionList.length === 0) {
-      return false;
-    }
-    return true;
+    return !(!this.item || !this.item.actionList || this.item.actionList.length === 0);
+
   }
 
   agInit(cellParams: ICellRendererParams): void {
