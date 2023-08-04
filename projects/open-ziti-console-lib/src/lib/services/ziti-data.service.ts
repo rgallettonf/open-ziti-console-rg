@@ -6,7 +6,7 @@ import {firstValueFrom, map} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {HttpClient} from "@angular/common/http";
 import {FilterObj} from "../features/data-table/data-table-filter.service";
-import {isEmpty} from "lodash";
+import _ from "lodash";
 
 @Injectable({
   providedIn: 'root'
@@ -40,9 +40,9 @@ export class ZitiDataService {
               if(filters.length > 0) {
                 filters.forEach((filter:FilterObj) => {
                   let newData: any[] = [];
-                  if(filter.columnId !== 'name' && !isEmpty(filter.value )) {
+                  if(filter.columnId !== 'name' && !_.isEmpty(filter.value )) {
                       results.data.forEach(row => {
-                        if(row[filter.columnId] && row[filter.columnId].indexOf(filter.value) >= 0)
+                        if(_.get(row, filter.columnId)?.indexOf(filter.value) >= 0)
                           newData.push(row);
                       })
                     results.data = newData;
