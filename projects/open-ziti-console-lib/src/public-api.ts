@@ -10,6 +10,7 @@ export * from './lib/features/wrappers/zac-wrapper.service';
 export * from './lib/pages/identities/identities-page.component';
 export * from './lib/pages/identities/identities-page.service';
 export * from './lib/services/settings.service';
+export * from './lib/services/tab-name.service';
 export * from './lib/services/ziti-data.service';
 export * from './lib/services/ziti-domain-controller.service';
 export * from './lib/features/projectable-forms/configuration/configuration-form.component';

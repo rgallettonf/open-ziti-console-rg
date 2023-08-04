@@ -2,46 +2,36 @@ import {Component, OnInit} from '@angular/core';
 import {SettingsService} from "../../services/settings.service";
 import {DataTableFilterService} from "../../features/data-table/data-table-filter.service";
 import {ConfigurationsPageService} from "./configurations-page.service";
+import {TabNameService} from "../../services/tab-name.service";
+import {ListPageComponent} from "../../shared/list-page-component.class";
+import {IdentitiesPageService} from "../identities/identities-page.service";
 
 @Component({
     selector: 'lib-configurations',
     templateUrl: './configurations-page.component.html',
     styleUrls: ['./configurations-page.component.scss']
 })
-export class ConfigurationsPageComponent implements OnInit {
+export class ConfigurationsPageComponent extends ListPageComponent implements OnInit {
     title = 'Configuration Management'
-    tabs: { url: string, label: string }[] = [
-        {label: 'Services', url: '/services'},
-        {label: 'Configurations', url: '/configs'},
-        {label: 'Config Types', url: '/config-types'},
-    ];
+    tabs: { url: string, label: string }[] ;
     formTitle = '';
     formSubtitle = '';
 
     showEditForm = false;
-    startCount = '-';
-    endCount = '-';
-    totalCount = '-';
-    itemsSelected = false;
-    columnDefs: any = [];
-    rowData = [];
-    filterApplied = false;
 
     constructor(
-        private settings: SettingsService,
-        private svc: ConfigurationsPageService,
-        private filterService: DataTableFilterService,
+        svc: ConfigurationsPageService,
+        filterService: DataTableFilterService,
+        private tabNames: TabNameService,
+
     ) {
+        super(filterService, svc);
     }
 
-    ngOnInit() {
+    override ngOnInit() {
+        this.tabs = this.tabNames.getTabs('services');
         this.svc.refreshData = this.refreshData;
-        this.columnDefs = this.svc.initTableColumns();
-        this.filterService.clearFilters();
-        this.filterService.filtersChanged.subscribe(filters => {
-            this.filterApplied = filters && filters.length > 0;
-            this.refreshData();
-        });
+        super.ngOnInit();
     }
 
     headerActionClicked(action: string) {
@@ -62,16 +52,6 @@ export class ConfigurationsPageComponent implements OnInit {
 
     tableAction($event: { action: string; item?: any }) {
 
-    }
-
-    refreshData(sort?:{sortBy: string, ordering: string}) {
-        this.svc.getData(this.filterService.filters, sort)
-            .then((data: any) => {
-                this.rowData = data.data
-                this.startCount = 1 + '';
-                this.endCount = data.meta.pagination.totalCount;
-                this.totalCount = data.meta.pagination.totalCount;
-            });
     }
 
     private openUpdate(model?: any) {

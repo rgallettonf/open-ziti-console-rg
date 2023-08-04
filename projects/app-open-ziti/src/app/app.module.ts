@@ -1,16 +1,17 @@
-import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
-import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {LoginComponent} from './login/login.component';
 import {FormsModule} from "@angular/forms";
 import {
+    NoopTabInterceptorService,
     OpenZitiConsoleLibModule,
-    SettingsService,
     ZITI_DOMAIN_CONTROLLER,
     ZITI_NAVIGATOR,
+    ZITI_TAB_OVERRIDES,
     ZITI_URLS
 } from "open-ziti-console-lib";
 import {AppRoutingModule} from "./app-routing.module";
@@ -45,6 +46,7 @@ import {LoggingInterceptor} from "./interceptors/logging.interceptor";
         {provide: ZITI_DOMAIN_CONTROLLER, useClass: SimpleZitiDomainControllerServic},
         {provide: ZITI_URLS, useValue: URLS},
         {provide: ZITI_NAVIGATOR, useValue: OPEN_ZITI_NAVIGATOR},
+        {provide: ZITI_TAB_OVERRIDES, useClass: NoopTabInterceptorService},
         {provide: HTTP_INTERCEPTORS, useClass: ZitiApiInterceptor, multi: true},
         {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
         {provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptor, multi: true}

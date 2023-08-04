@@ -3,6 +3,7 @@ import {IdentitiesPageService} from "./identities-page.service";
 import {DataTableFilterService} from "../../features/data-table/data-table-filter.service";
 import {ListPageServiceClass} from "../../shared/list-page-service.class";
 import {ListPageComponent} from "../../shared/list-page-component.class";
+import {TabNameService} from "../../services/tab-name.service";
 
 
 
@@ -14,21 +15,19 @@ import {ListPageComponent} from "../../shared/list-page-component.class";
 export class IdentitiesPageComponent extends ListPageComponent implements OnInit {
 
   title = 'Identity Management'
-  tabs: { url: string, label: string }[] = [
-    {label: 'Identities', url: '/ziti-identities'},
-    {label: 'Recipes', url: '/recipes'},
-    {label: 'Terminators', url: '/config-terminators'},
-    {label: 'Posture Checks', url: '/config-posture-checks'},
-  ];
+  tabs: { url: string, label: string }[] ;
 
   constructor(
       svc: IdentitiesPageService,
       filterService: DataTableFilterService,
+      private tabNames: TabNameService,
+
   ) {
     super(filterService, svc);
   }
 
   override ngOnInit() {
+    this.tabs = this.tabNames.getTabs('identities');
     this.svc.refreshData = this.refreshData;
     super.ngOnInit();
   }
