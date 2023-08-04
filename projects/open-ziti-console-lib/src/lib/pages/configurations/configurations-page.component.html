@@ -3,22 +3,18 @@
                           [tabs]="tabs"
                           (actionClicked)="headerActionClicked($event)"></lib-list-page-header>
 
-    <lib-data-table *ngIf="filterApplied || rowData?.length > 0;else nodata"
+    <lib-data-table [tableId]="'configurations'"
                     [rowData]="rowData"
                     [columnDefinitions]="columnDefs"
                     (actionRequested)="tableAction($event)"
-                    [tableId]="'identities'"
                     [startCount]="startCount"
                     [endCount]="endCount"
                     [totalCount]="totalCount"
+                    [emptyMsg]="'No Configurations defined, Click the plus to add a Configuration.'"
+                    [filterApplied]="filterApplied"
     >
     </lib-data-table>
 
-    <ng-template #nodata>
-        <div class="flex-wrapper">
-            <div class="empty-table"><span>No Identities defined, Click the plus to add an Identity.</span></div>
-        </div>
-    </ng-template>
     <lib-list-page-form [(show)]="showEditForm"
                         [title]="formTitle"
                         [subTitle]="formSubtitle"

@@ -39,6 +39,8 @@ export class DataTableComponent implements OnChanges, OnInit {
   @Input() startCount: any;
   @Input() endCount: any;
   @Input() totalCount: any;
+  @Input() emptyMsg: any;
+  @Input() filterApplied = false;
 
   @Output() actionRequested = new EventEmitter<{ action: string; item?: any }>();
   // @Output() filterChanged = new EventEmitter();
@@ -237,34 +239,6 @@ export class DataTableComponent implements OnChanges, OnInit {
       this.svc.resizeGridColumns();
     });
   }
-
-  // applyFilter(event, filter) {
-  //   const filterExists = _.some(this.appliedFilters, {columnId: filter.columnId});
-  //   if (filterExists) {
-  //     if (_.isEmpty(_.toString(filter.value))) {
-  //       _.remove(this.appliedFilters, {columnId: filter.columnId});
-  //     } else {
-  //       this.appliedFilters = _.map(this.appliedFilters, (appliedFilter) => {
-  //         if (appliedFilter.columnId === filter.columnId) {
-  //           appliedFilter = filter;
-  //         }
-  //         return appliedFilter;
-  //       });
-  //     }
-  //   } else if (!_.isEmpty(_.toString(filter.value))) {
-  //     this.appliedFilters.push(filter);
-  //   }
-  //   _.set(this.columnFilters, filter.columnId, filter.value);
-  //   this.filterChanged.emit({columnId: filter.columnId, value:  filter.value});
-  //
-  //   this.closeHeaderFilter(event);
-  // }
-
-  // removeFilter(event) {
-  //   this.filterChanged.emit({columnId: event.columnId});
-  //   _.remove(this.appliedFilters, (filter) => filter.columnId === event.columnId);
-  // }
-
   openHeaderActionMenu(event): void {
     this.menuLeft = event.clientX - 150;
     this.menuTop = event.clientY + 5;
@@ -272,13 +246,6 @@ export class DataTableComponent implements OnChanges, OnInit {
       this.openHeaderMenu = true;
     }, 100);
   }
-
-  // openHeaderFilter(event, options): void {
-  //   this.filterOptions = options;
-  //   this.menuLeft = event.clientX;
-  //   this.menuTop = event.clientY + 10;
-  //   this.showFilterOptions = true;
-  // }
 
   closeActionMenu(): void {
     this.selectedItem = {
@@ -421,10 +388,6 @@ export class DataTableComponent implements OnChanges, OnInit {
       onGridReady: (grid) => {
         grid.api.zitiAllToggled = false;
         grid.api.zitiHideColumn = this.setColumnVisibilityColumn.bind(this);
-        // grid.api.zitiApplyFilter = this.applyFilter.bind(this);
-        // grid.api.columnFilters = this.columnFilters;
-        // grid.api.openHeaderFilter = this.openHeaderFilter.bind(this);
-        // grid.api.closeHeaderFilter = this.closeHeaderFilter.bind(this);
         grid.api.validateTable = this._validateTable.bind(this);
         grid.api.view = this._view;
         grid.api.zitiRowData = this.rowData;

@@ -1,4 +1,4 @@
-<div class="data-table-container">
+<div class="data-table-container" *ngIf="filterApplied || rowData?.length > 0;else nodata">
     <lib-table-filter-bar
             [startCount]="startCount"
             [endCount]="endCount"
@@ -83,3 +83,9 @@
         </div>
     </div>
 </div>
+
+<ng-template #nodata>
+    <div class="flex-wrapper">
+        <div class="empty-table"><span>{{emptyMsg}}</span></div>
+    </div>
+</ng-template>
