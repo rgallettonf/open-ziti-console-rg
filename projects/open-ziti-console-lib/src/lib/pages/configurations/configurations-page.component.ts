@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {SettingsService} from "../../services/settings.service";
 import {DataTableFilterService} from "../../features/data-table/data-table-filter.service";
 import {ConfigurationsPageService} from "./configurations-page.service";
 import {TabNameService} from "../../services/tab-name.service";
 import {ListPageComponent} from "../../shared/list-page-component.class";
-import {IdentitiesPageService} from "../identities/identities-page.service";
 
 @Component({
     selector: 'lib-configurations',

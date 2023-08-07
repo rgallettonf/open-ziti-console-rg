@@ -1,15 +1,17 @@
 import {
     AfterViewInit,
     Component,
-    ComponentRef, ContentChild,
-    EventEmitter, HostListener,
+    ComponentRef, ContentChild, ContentChildren,
+    EventEmitter, forwardRef, HostListener,
     Input,
     OnDestroy,
-    Output,
+    Output, QueryList,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
 import {ExtendableComponent} from "../../extendable/extendable.component";
+import {ProjectableForm} from "../../projectable-forms/projectable-form.component";
+import {ConfigurationFormComponent} from "../../projectable-forms/configuration/configuration-form.component";
 
 type CallbackResults = {passed: boolean, errors: { name: string, msg:string }[]}
 type ValidatorCallback = (data: any) => Promise<CallbackResults>;
@@ -31,8 +33,8 @@ type ValidatorCallback = (data: any) => Promise<CallbackResults>;
                 <ng-content></ng-content>
                 <ng-container #beforebuttonsext></ng-container>
                 <div class="buttons">
-                    <div class="linkButton closer">Oops, No get me out of here</div>
-                    <div id="SaveButton" class="button">Save</div>
+                    <div class="linkButton closer" (click)="closeThisForm()">Oops, No get me out of here</div>
+                    <div id="SaveButton" class="button" (click)="updateItem()">Save</div>
                 </div>
                 <ng-container #afterbuttonsext></ng-container>
             </div>
@@ -42,17 +44,19 @@ type ValidatorCallback = (data: any) => Promise<CallbackResults>;
 })
 export class ListPageFormComponent extends ExtendableComponent implements AfterViewInit {
 
-    @ContentChild("projectable", {read: ComponentRef, static: true}) public itemForm!: ComponentRef<any>;
+    @ContentChild('projectable') public contentChild!: ProjectableForm;
+    @ContentChildren(ConfigurationFormComponent) public contentChildren!: QueryList<any>;
     @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
         this.closeThisForm();
     }
 
     @Input() title = 'Form Title';
     @Input() subTitle = 'Form Subtitle';
+
     @Input() buttonLabel = 'Create';
     @Input() set data(d:any) {
-        if(this.itemForm)
-            this.itemForm.setInput('formData', d);
+        if(this.contentChild)
+            this.contentChild.formData = d;
     }
     @Input() formClass: any | undefined;
     @Input() validator: ValidatorCallback | undefined;
@@ -75,29 +79,30 @@ export class ListPageFormComponent extends ExtendableComponent implements AfterV
         super.ngAfterViewInit();
     }
 
-    async closeThisForm() {
+    closeThisForm() {
         this.close.emit();
+        this.contentChild?.clear();
         this._show = false;
         this.showChange.emit(false);
     }
 
-    async openThisForm() {
+    openThisForm() {
         this._show = true;
         this.afterOpen.emit();
     }
 
     updateItem() {
         if(this.validator) {
-            this.validator(this.itemForm.instance.formData)
+            this.validator(this.contentChild.formData)
                 .then((results: CallbackResults) => {
                 if (results.passed) this.updateAndClose();
-                else this.itemForm.setInput('errors', results.errors);
+                else this.contentChild.errors = results.errors;
             })
         } else this.updateAndClose();
     }
 
     updateAndClose() {
-        this.update.emit(this.itemForm.instance.formData);
+        this.update.emit(this.contentChild.formData);
         this.closeThisForm();
     }
 }
