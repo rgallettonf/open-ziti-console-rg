@@ -45,7 +45,6 @@ type ValidatorCallback = (data: any) => Promise<CallbackResults>;
 export class ListPageFormComponent extends ExtendableComponent implements AfterViewInit {
 
     @ContentChild('projectable') public contentChild!: ProjectableForm;
-    @ContentChildren(ConfigurationFormComponent) public contentChildren!: QueryList<any>;
     @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
         this.closeThisForm();
     }
