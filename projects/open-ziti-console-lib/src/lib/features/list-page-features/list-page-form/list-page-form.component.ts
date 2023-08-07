@@ -10,7 +10,7 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import {ExtendableComponent} from "../../extendable/extendable.component";
-import {ProjectableForm} from "../../projectable-forms/projectable-form.component";
+import {ProjectableForm} from "../../projectable-forms/projectable-form.class";
 import {ConfigurationFormComponent} from "../../projectable-forms/configuration/configuration-form.component";
 
 type CallbackResults = {passed: boolean, errors: { name: string, msg:string }[]}

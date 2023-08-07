@@ -2,7 +2,7 @@ import {Component, ComponentRef, Input, OnDestroy, OnInit, ViewChild, ViewContai
 import {ConfigurationService} from "./configuration.service";
 import {Subscription} from "rxjs";
 import {SchemaService} from "../../../services/schema.service";
-import {ProjectableForm} from "../projectable-form.component";
+import {ProjectableForm} from "../projectable-form.class";
 
 @Component({
     selector: 'lib-configuration',
