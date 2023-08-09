@@ -3,6 +3,7 @@ import { ColDef } from 'ag-grid-community';
 import {SettingsService} from "../../services/settings.service";
 import {IdentitiesService} from "./identities.service";
 import {TableHeaderDefaultComponent} from "../../data-table/table-header-default/table-header-default.component";
+
 import {invoke, isEmpty, defer} from 'lodash';
 import moment from 'moment';
 import {TableFilterService} from "../../services/table-filter.service";
@@ -13,7 +14,7 @@ import {TableFilterService} from "../../services/table-filter.service";
   styleUrls: ['./identities-page.component.scss']
 })
 export class IdentitiesPageComponent implements OnInit {
-  title = 'Identity Management'
+
   tabs: { url: string, label: string }[] = [
     {label: 'Identities', url:'/ziti-identities'},
     {label: 'Recipes', url:'/recipes'},
@@ -35,16 +36,19 @@ export class IdentitiesPageComponent implements OnInit {
   rowData = [];
 
   constructor(
-    private settings: SettingsService,
-    private svc: IdentitiesService,
-    private filterService: TableFilterService,
+      private settings: SettingsService,
+      private svc: IdentitiesService,
+      private filterService: TableFilterService,
   ) {
     this.initTableColumns();
   }
 
   ngOnInit() {
     this.svc.getZitiIdentities().then((data: any) => {
-
+      this.rowData = data.data;
+      this.startCount = 1 + '';
+      this.endCount = data.meta.pagination.totalCount + '';
+      this.totalCount = data.meta.pagination.totalCount + '';
     });
     this.filterService.filterChanged.subscribe(event => {
       let filterAdded = false;
@@ -70,7 +74,7 @@ export class IdentitiesPageComponent implements OnInit {
         this.startCount = 1 + '';
         this.endCount = data.meta.pagination.totalCount;
         this.totalCount = data.meta.pagination.totalCount;
-      });
+      });;
     });
   }
 
@@ -232,6 +236,32 @@ export class IdentitiesPageComponent implements OnInit {
     ];
   }
 
+  headerActionClicked(action: string) {
+
+    switch(action) {
+      case 'add':
+        this.openUpdate();
+        break;
+      case 'delete':
+        const selectedItems = this.rowData.filter((row) => {
+          return row.selected;
+        }).map((row) => {
+          return row.id;
+        });
+        this.openBulkDelete(selectedItems)
+        break;
+      default:
+    }
+  }
+
+  private openUpdate() {
+
+  }
+
+  private openBulkDelete(selectedItems: any[]) {
+
+  }
+
   tableAction(event) {
     switch(event?.action) {
       case 'toggleAll':
@@ -288,38 +318,25 @@ export class IdentitiesPageComponent implements OnInit {
     window['page']['filterObject']['delete']([item.id]);
   }
 
+  actionButtonClicked() {
+    const selectedItems = this.rowData.filter((row) => {
+      return row.selected;
+    }).map((row) => {
+      return row.id;
+    });
+    if (!this.itemsSelected) {
+      window['modal']['show']('AddModal');
+    } else {
 
+      window['page']['filterObject']['delete'](selectedItems);
+    }
+  }
 
   removeFilter(filter) {
     this.updateAppliedFilters();
   }
 
   updateAppliedFilters() {
-
-  }
-  headerActionClicked(action: string) {
-
-    switch(action) {
-      case 'add':
-        this.openUpdate();
-        break;
-      case 'delete':
-        const selectedItems = this.rowData.filter((row) => {
-          return row.selected;
-        }).map((row) => {
-          return row.id;
-        });
-        this.openBulkDelete(selectedItems)
-        break;
-      default:
-    }
-  }
-
-  private openUpdate() {
-
-  }
-
-  private openBulkDelete(selectedItems: any[]) {
 
   }
 }
