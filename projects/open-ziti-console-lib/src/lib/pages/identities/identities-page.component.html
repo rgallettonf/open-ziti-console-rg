@@ -11,11 +11,12 @@
         [rowData]="rowData"
         [columnDefinitions]="columnDefs"
         (actionRequested)="tableAction($event)"
-        [tableId]="'ziti-identities'"
+        [tableId]="'identities'"
     >
     </lib-data-table>
 
     <ng-template #nodata>
         <div class="nodata" data-defined="empty">No <span data-bind="pageTitle"></span> Defined, Click the plus to add A <span data-bind="singular"></span>.</div>
     </ng-template>
+    <app-zac-wrapper></app-zac-wrapper>
 </div>
