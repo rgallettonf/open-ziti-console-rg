@@ -74,8 +74,7 @@ export class IdentitiesService {
         const urlFilter = this.getUrlFilter(paging);
         const serviceUrl = url + prefix + "/" + type + urlFilter;
 
-        return firstValueFrom(this.httpClient.post(serviceUrl,
-            {}, {
+        return firstValueFrom(this.httpClient.get(serviceUrl, {
                 headers: {
                     "content-type": "application/json",
                     "zt-session": sessionId

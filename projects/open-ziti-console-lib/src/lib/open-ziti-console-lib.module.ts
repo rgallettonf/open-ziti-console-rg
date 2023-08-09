@@ -40,6 +40,7 @@ import {IdentityFormComponent} from "./features/projectable-forms/identity/ident
 import {HiddenColumnsBarComponent} from "./features/list-page-features/hidden-columns-bar/hidden-columns-bar.component";
 import {HeaderSearchBarComponent} from "./features/list-page-features/header-search-bar/header-search-bar.component";
 import {AgGridModule} from "ag-grid-angular";
+import {ClickOutsideModule} from 'ng-click-outside';
 import {IdentitiesPageComponent} from "./pages/identities/identities-page.component";
 
 export const ZITI_URLS = new InjectionToken<string>('ZITI_URLS');
@@ -89,7 +90,8 @@ export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
         ZacRoutingModule,
         ChipsModule,
         AgGridModule,
-        ChipsModule
+        ChipsModule,
+        ClickOutsideModule
     ],
     exports: [
         ZacWrapperComponent,
