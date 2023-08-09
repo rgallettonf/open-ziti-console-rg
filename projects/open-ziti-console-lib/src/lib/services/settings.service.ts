@@ -154,11 +154,11 @@ export class SettingsService {
                             let isDefault = false;
                             if(!this.settings.edgeControllers) this.settings.edgeControllers = [];
                             if (this.settings.edgeControllers?.length === 0) isDefault = true;
-                            this.settings.edgeControllers[this.settings.edgeControllers.length] = {
+                            this.settings.edgeControllers.push({
                                 name: name,
                                 url: url,
                                 default: isDefault
-                            };
+                            });
                         }
                         this.settings.selectedEdgeController = url;
                         this.set(this.settings);

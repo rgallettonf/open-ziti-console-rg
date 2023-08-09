@@ -18,9 +18,9 @@ import {ChipsModule} from "primeng/chips";
 import {
     ProtocolAddressPortInputComponent
 } from './features/dynamic-widgets/protocol-address-port/protocol-address-port-input.component';
-import {SideToolbarComponent} from './features/side-toolbar/side-toolbar.component';
-import {SideNavbarComponent} from './features/side-navbar/side-navbar.component';
-import {SideBannerComponent} from './features/side-banner/side-banner.component';
+import {SideToolbarComponent} from './features/sidebars/side-toolbar/side-toolbar.component';
+import {SideNavbarComponent} from './features/sidebars/side-navbar/side-navbar.component';
+import {SideBannerComponent} from './features/sidebars/side-banner/side-banner.component';
 import {PasswordInputComponent} from './features/dynamic-widgets/password/password-input.component';
 import {ConfigurationsPageComponent} from './pages/configurations/configurations-page.component';
 import {ListPageHeaderComponent} from './features/list-page-features/list-page-header/list-page-header.component';
@@ -29,7 +29,6 @@ import {ListPageTableComponent} from './features/list-page-features/list-page-ta
 import {MatDialogModule} from "@angular/material/dialog";
 import {ConfigurationFormComponent} from "./features/projectable-forms/configuration/configuration-form.component";
 import {ListPageFormComponent} from './features/list-page-features/list-page-form/list-page-form.component';
-import {ZitiIdentitiesComponent} from "./ziti-identities/ziti-identities.component";
 import {DataTableComponent} from "./data-table/data-table.component";
 import {TableCellSelectComponent} from "./data-table/table-cell-select/table-cell-select.component";
 import {TableHeaderSelectComponent} from "./data-table/table-header-select/table-header-select.component";
@@ -37,10 +36,11 @@ import {TableCellMenuComponent} from "./data-table/table-cell-menu/table-cell-me
 import {TableHeaderMenuComponent} from "./data-table/table-header-menu/table-header-menu.component";
 import {TableHeaderDefaultComponent} from "./data-table/table-header-default/table-header-default.component";
 import {TableHeaderFilterComponent} from "./data-table/table-header-filter/table-header-filter.component";
-import {ZitiIdentityFormComponent} from "./ziti-identity-form/ziti-identity-form.component";
-import {HiddenColumnsBarComponent} from "./features/hidden-columns-bar/hidden-columns-bar.component";
-import {HeaderSearchBarComponent} from "./features/header-search-bar/header-search-bar.component";
+import {IdentityFormComponent} from "./features/projectable-forms/identity/identity-form.component";
+import {HiddenColumnsBarComponent} from "./features/list-page-features/hidden-columns-bar/hidden-columns-bar.component";
+import {HeaderSearchBarComponent} from "./features/list-page-features/header-search-bar/header-search-bar.component";
 import {AgGridModule} from "ag-grid-angular";
+import {IdentitiesPageComponent} from "./pages/identities/identities-page.component";
 
 export const ZITI_URLS = new InjectionToken<string>('ZITI_URLS');
 export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
@@ -68,7 +68,7 @@ export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
         ListPageFilterComponent,
         ListPageTableComponent,
         ListPageFormComponent,
-        ZitiIdentitiesComponent,
+        IdentitiesPageComponent,
         DataTableComponent,
         TableCellSelectComponent,
         TableHeaderSelectComponent,
@@ -76,7 +76,7 @@ export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
         TableHeaderMenuComponent,
         TableHeaderDefaultComponent,
         TableHeaderFilterComponent,
-        ZitiIdentityFormComponent,
+        IdentityFormComponent,
         HiddenColumnsBarComponent,
         HeaderSearchBarComponent,
         ExtendableComponent,
@@ -108,7 +108,7 @@ export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
         ProtocolAddressPortInputComponent,
         ConfigurationsPageComponent,
         ConfigurationFormComponent,
-        ZitiIdentitiesComponent,
+        IdentitiesPageComponent,
         ZacRoutingModule,
     ],
     providers: [
