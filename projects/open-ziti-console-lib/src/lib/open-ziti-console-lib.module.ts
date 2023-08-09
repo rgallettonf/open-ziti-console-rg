@@ -38,8 +38,8 @@ import {TableHeaderMenuComponent} from "./data-table/table-header-menu/table-hea
 import {TableHeaderDefaultComponent} from "./data-table/table-header-default/table-header-default.component";
 import {TableHeaderFilterComponent} from "./data-table/table-header-filter/table-header-filter.component";
 import {ZitiIdentityFormComponent} from "./ziti-identity-form/ziti-identity-form.component";
-import {HiddenColumnsBarComponent} from "./hidden-columns-bar/hidden-columns-bar.component";
-import {HeaderSearchBarComponent} from "./header-search-bar/header-search-bar.component";
+import {HiddenColumnsBarComponent} from "./features/hidden-columns-bar/hidden-columns-bar.component";
+import {HeaderSearchBarComponent} from "./features/header-search-bar/header-search-bar.component";
 import {AgGridModule} from "ag-grid-angular";
 import {ClickOutsideModule} from 'ng-click-outside';
 

@@ -1,4 +1,19 @@
+:host {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
 .ziti-page-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  flex: 1 1 auto;
+
   .action {
     line-height: 60px;
     top: 25px;
@@ -10,7 +25,7 @@
 .ziti-identities-container {
   ::ng-deep {
     .zac-wrapper-container {
-      height: 0px;
+      height: 0;
       left: -999999px;
       position: fixed;
       .action {
