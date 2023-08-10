@@ -42,9 +42,9 @@ import {HeaderSearchBarComponent} from "./features/list-page-features/header-sea
 import {AgGridModule} from "ag-grid-angular";
 import {ClickOutsideModule} from 'ng-click-outside';
 import {IdentitiesPageComponent} from "./pages/identities/identities-page.component";
+import {ZITI_NAVIGATOR} from "./features/sidebars/side-navbar/side-navbar.component";
 
 export const ZITI_URLS = new InjectionToken<string>('ZITI_URLS');
-export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
 
 @NgModule({
     declarations: [
@@ -115,6 +115,7 @@ export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
     ],
     providers: [
         {provide: SHAREDZ_EXTENSION, useClass: ExtensionsNoopService},
+        {provide: ZITI_NAVIGATOR, useValue: {}},
     ],
 })
 export class OpenZitiConsoleLibModule {

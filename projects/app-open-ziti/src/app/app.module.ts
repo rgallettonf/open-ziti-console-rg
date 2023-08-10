@@ -33,7 +33,7 @@ import {OPEN_ZITI_NAVIGATOR} from "./app-nav.constants";
     providers: [SettingsService,
         {provide: ZITI_DOMAIN_CONTROLLER, useClass: SimpleZitiDomainControllerServic},
         {provide: ZITI_URLS, useValue: URLS },
-        {provide: ZITI_NAVIGATOR, useValue:OPEN_ZITI_NAVIGATOR}
+        {provide: ZITI_NAVIGATOR, useValue: OPEN_ZITI_NAVIGATOR}
     ],
     bootstrap: [AppComponent]
 })
