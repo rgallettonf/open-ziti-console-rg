@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {Inject, Injectable, InjectionToken} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Subject, Subscription} from "rxjs";
 import {NavigationEnd, Router} from "@angular/router";
@@ -7,6 +7,8 @@ import {Resolver} from "@stoplight/json-ref-resolver";
 import {get, isEmpty, set} from 'lodash';
 import $ from 'jquery';
 import {ZITI_DOMAIN_CONTROLLER, ZitiDomainControllerService} from "./services/ziti-domain-controller.service";
+
+export const ZAC_WRAPPER_SERVICE = new InjectionToken<any>('ZAC_WRAPPER_SERVICE');
 
 export const COMPONENTS: any = {
     api: `<label data-i18n="APICalls"></label>
@@ -83,14 +85,14 @@ export class ZacWrapperService {
         private http: HttpClient,
         private router: Router,
     ) {
+        this.initSubscriptions();
+        this.initRouteListener();
     }
 
     initZac() {
         const appInit = get(window, 'app.init');
         set(window, 'service.call', this.handleServiceCall.bind(this));
         this.initZacListeners();
-        this.initSubscriptions();
-        this.initRouteListener();
     }
 
     private initSubscriptions() {
@@ -208,9 +210,11 @@ export class ZacWrapperService {
             if ((event as any)['routerEvent'] instanceof NavigationEnd) {
                 const oldPage = this.page;
                 const page = (event as any)['routerEvent']['url'].split(';')[0].split('?')[0];
+                let doPageLoad = false;
                 switch (page) {
                     case URLS.ZITI_DASHBOARD:
                         this.page = 'index';
+                        doPageLoad = true;
                         break;
                     case URLS.ZITI_SERVICES:
                         this.page = 'services';
@@ -265,9 +269,10 @@ export class ZacWrapperService {
                         break;
                     default:
                         this.page = 'index';
+                        doPageLoad = true;
                         break;
                 }
-                if (oldPage !== this.page) {
+                if (oldPage !== this.page || doPageLoad) {
                     this.pageChange.next();
                 }
             }

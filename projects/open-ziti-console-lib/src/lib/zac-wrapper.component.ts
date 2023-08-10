@@ -1,7 +1,8 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ZacWrapperService} from "./zac-wrapper.service";
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ZAC_WRAPPER_SERVICE, ZacWrapperService} from "./zac-wrapper.service";
 import {invoke} from 'lodash';
 import {Subscription} from "rxjs";
+import {ZITI_DOMAIN_CONTROLLER} from "./services/ziti-domain-controller.service";
 
 @Component({
     selector: 'app-zac-wrapper',
@@ -16,7 +17,7 @@ export class ZacWrapperComponent implements OnInit, OnDestroy {
 
   @ViewChild('zacContainer') zacContainer: any;
 
-  constructor(private wrapperService: ZacWrapperService) {
+  constructor(@Inject(ZAC_WRAPPER_SERVICE) private wrapperService: ZacWrapperService) {
   }
 
   ngOnInit(): void {
