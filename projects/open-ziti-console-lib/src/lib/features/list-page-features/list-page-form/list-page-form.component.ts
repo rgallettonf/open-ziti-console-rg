@@ -21,7 +21,7 @@ type ValidatorCallback = (data: any) => Promise<CallbackResults>;
                 <ng-container #aftersubtitleext></ng-container>
                 <ng-content></ng-content>
                 <ng-container #beforebuttonsext></ng-container>
-                <div class="buttons">
+                <div class="buttons" *ngIf="showButtons">
                     <div class="linkButton closer" (click)="closeThisForm()">Oops, No get me out of here</div>
                     <div id="SaveButton" class="button" (click)="updateItem()">Save</div>
                 </div>
@@ -37,6 +37,7 @@ export class ListPageFormComponent extends ExtendableComponent implements AfterV
     @Input() title = 'Form Title';
     @Input() subTitle = 'Form Subtitle';
     @Input() buttonLabel = 'Create';
+    @Input() showButtons = true;
     @Input() formClass: any | undefined;
     @Input() validator: ValidatorCallback | undefined;
     @Output() close = new EventEmitter<void>();

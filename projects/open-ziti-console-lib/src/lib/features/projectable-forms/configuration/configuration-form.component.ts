@@ -1,4 +1,13 @@
-import {Component, ComponentRef, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+    Component,
+    ComponentRef,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit, Output,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import {ConfigurationService} from "./configuration.service";
 import {Subscription} from "rxjs";
 import {SchemaService} from "../../../services/schema.service";
@@ -13,6 +22,7 @@ export class ConfigurationFormComponent extends ProjectableForm implements OnIni
     @ViewChild("dynamicform", {read: ViewContainerRef}) dynamicForm!: ViewContainerRef;
     @Input() override formData: any = {};
     @Input() override errors: { name: string, msg: string }[] = [];
+    @Output() showButtons = new EventEmitter<boolean>();
 
     options: string[] = [];
 
@@ -58,6 +68,7 @@ export class ConfigurationFormComponent extends ProjectableForm implements OnIni
     }
 
     clearForm() {
+        this.showButtons.emit(false);
         this.items.forEach((item: any) => {
             if (item?.component) item.component.destroy();
         });
@@ -80,6 +91,8 @@ export class ConfigurationFormComponent extends ProjectableForm implements OnIni
                         }));
                 }
             }
+
+            this.showButtons.emit(this.items.length > 0);
         }
     }
 

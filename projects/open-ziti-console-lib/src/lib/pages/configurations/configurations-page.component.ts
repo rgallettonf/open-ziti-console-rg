@@ -16,6 +16,7 @@ export class ConfigurationsPageComponent extends ListPageComponent implements On
     formSubtitle = '';
 
     showEditForm = false;
+    showButtons = false;
 
     constructor(
         svc: ConfigurationsPageService,
@@ -65,5 +66,9 @@ export class ConfigurationsPageComponent extends ListPageComponent implements On
 
     private openBulkDelete() {
 
+    }
+
+    viewButtons(state: boolean) {
+        this.showButtons = state;
     }
 }
