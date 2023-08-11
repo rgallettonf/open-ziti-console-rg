@@ -1,5 +1,5 @@
-import {APP_INITIALIZER, InjectionToken, Injector, NgModule} from '@angular/core';
-import {ZacWrapperComponent} from "./features/wrappers/zac-wrapper.component";
+import {InjectionToken, NgModule} from '@angular/core';
+import {ZacWrapperComponent} from "./zac-wrapper.component";
 import {SafePipe} from "./safe.pipe";
 import {HttpClientModule} from "@angular/common/http";
 import {CommonModule} from "@angular/common";
@@ -24,24 +24,27 @@ import {SideBannerComponent} from './features/sidebars/side-banner/side-banner.c
 import {PasswordInputComponent} from './features/dynamic-widgets/password/password-input.component';
 import {ConfigurationsPageComponent} from './pages/configurations/configurations-page.component';
 import {ListPageHeaderComponent} from './features/list-page-features/list-page-header/list-page-header.component';
+import {ListPageFilterComponent} from './features/list-page-features/list-page-filter/list-page-filter.component';
+import {ListPageTableComponent} from './features/list-page-features/list-page-table/list-page-table.component';
 import {MatDialogModule} from "@angular/material/dialog";
 import {ConfigurationFormComponent} from "./features/projectable-forms/configuration/configuration-form.component";
 import {ListPageFormComponent} from './features/list-page-features/list-page-form/list-page-form.component';
-import {DataTableComponent} from "./features/data-table/data-table.component";
-import {TableCellSelectComponent} from "./features/data-table/cells/table-cell-select/table-cell-select.component";
-import {TableColumnSelectComponent} from "./features/data-table/column-headers/table-column-select/table-column-select.component";
-import {TableCellMenuComponent} from "./features/data-table/cells/table-cell-menu/table-cell-menu.component";
-import {TableColumnMenuComponent} from "./features/data-table/column-headers/table-column-menu/table-column-menu.component";
-import {TableColumnDefaultComponent} from "./features/data-table/column-headers/table-column-default/table-column-default.component";
-import {TableColumnFilterComponent} from "./features/data-table/column-headers/table-column-filter/table-column-filter.component";
+import {DataTableComponent} from "./data-table/data-table.component";
+import {TableCellSelectComponent} from "./data-table/table-cell-select/table-cell-select.component";
+import {TableHeaderSelectComponent} from "./data-table/table-header-select/table-header-select.component";
+import {TableCellMenuComponent} from "./data-table/table-cell-menu/table-cell-menu.component";
+import {TableHeaderMenuComponent} from "./data-table/table-header-menu/table-header-menu.component";
+import {TableHeaderDefaultComponent} from "./data-table/table-header-default/table-header-default.component";
+import {TableHeaderFilterComponent} from "./data-table/table-header-filter/table-header-filter.component";
 import {IdentityFormComponent} from "./features/projectable-forms/identity/identity-form.component";
-import {HiddenColumnsBarComponent} from "./features/data-table/table-hidden-columns-bar/hidden-columns-bar.component";
-import {FilterBarComponent} from "./features/data-table/table-filter-bar/filter-bar.component";
+import {HiddenColumnsBarComponent} from "./features/list-page-features/hidden-columns-bar/hidden-columns-bar.component";
+import {HeaderSearchBarComponent} from "./features/list-page-features/header-search-bar/header-search-bar.component";
 import {AgGridModule} from "ag-grid-angular";
+import {ClickOutsideModule} from 'ng-click-outside';
 import {IdentitiesPageComponent} from "./pages/identities/identities-page.component";
-import { GrowlerComponent } from './features/messaging/growler.component';
-import {onAppInit} from "./app.initializer";
-import {ClickOutsideModule} from "ng-click-outside";
+
+export const ZITI_URLS = new InjectionToken<string>('ZITI_URLS');
+export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
 
 @NgModule({
     declarations: [
@@ -63,21 +66,21 @@ import {ClickOutsideModule} from "ng-click-outside";
         ConfigurationFormComponent,
         ConfigurationsPageComponent,
         ListPageHeaderComponent,
-        FilterBarComponent,
+        ListPageFilterComponent,
+        ListPageTableComponent,
         ListPageFormComponent,
         IdentitiesPageComponent,
         DataTableComponent,
         TableCellSelectComponent,
-        TableColumnSelectComponent,
+        TableHeaderSelectComponent,
         TableCellMenuComponent,
-        TableColumnMenuComponent,
-        TableColumnDefaultComponent,
-        TableColumnFilterComponent,
+        TableHeaderMenuComponent,
+        TableHeaderDefaultComponent,
+        TableHeaderFilterComponent,
         IdentityFormComponent,
         HiddenColumnsBarComponent,
-        FilterBarComponent,
+        HeaderSearchBarComponent,
         ExtendableComponent,
-        GrowlerComponent,
     ],
     imports: [
         CommonModule,
@@ -88,7 +91,7 @@ import {ClickOutsideModule} from "ng-click-outside";
         ChipsModule,
         AgGridModule,
         ChipsModule,
-        ClickOutsideModule,
+        ClickOutsideModule
     ],
     exports: [
         ZacWrapperComponent,
@@ -109,18 +112,10 @@ import {ClickOutsideModule} from "ng-click-outside";
         ConfigurationFormComponent,
         IdentitiesPageComponent,
         ZacRoutingModule,
-        GrowlerComponent,
     ],
     providers: [
         {provide: SHAREDZ_EXTENSION, useClass: ExtensionsNoopService},
-        {
-            provide: APP_INITIALIZER,
-            useFactory: onAppInit,
-            deps: [Injector],
-            multi: true
-        },
-
-]
+    ],
 })
 export class OpenZitiConsoleLibModule {
 }
