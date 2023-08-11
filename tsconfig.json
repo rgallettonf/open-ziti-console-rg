@@ -30,6 +30,9 @@
       "open-ziti-console-lib": [
         "dist/open-ziti-console"
       ],
+      "json-schema-ref-resolver": [
+        "dist/json-schema-ref-resolver"
+      ],
       "app-open-ziti": [
         "dist/app-open-ziti"
       ]

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {SettingsService} from "../../../services/settings.service";
 import {ZitiDataService} from "../../../services/ziti-data.service";
+import {Resolver} from "@stoplight/json-ref-resolver";
 
 @Injectable({
     providedIn: 'root'
@@ -8,8 +8,7 @@ import {ZitiDataService} from "../../../services/ziti-data.service";
 export class ConfigurationService {
     private configTypes: any[] = [];
 
-    constructor(private dataService: ZitiDataService,
-                private settingsService: SettingsService) {
+    constructor(private dataService: ZitiDataService) {
     }
 
     async getSchema(schemaType: string): Promise<any> {
@@ -22,10 +21,18 @@ export class ConfigurationService {
 
     getConfigTypes() {
         return this.dataService.get('config-types', {})
-        .then((body: any) => {
+        .then(async (body: any) => {
             if (body.error) throw body.error;
-            this.configTypes = body.data;
-            return this.configTypes;
+            const promises: Promise<any>[] = [];
+            const resolver = new Resolver();
+            body.data.map( (row: any) => {
+                const schema = row.schema;
+                promises.push(resolver.resolve(schema, {}).then(s => {
+                    row.schema = s.result;
+                    this.configTypes.push(row);
+                }))
+            });
+            return Promise.all(promises).then(() => this.configTypes);
         });
     }
 }

@@ -43,7 +43,6 @@ import { GrowlerComponent } from './features/messaging/growler.component';
 import {onAppInit} from "./app.initializer";
 import {ClickOutsideModule} from "ng-click-outside";
 
-
 @NgModule({
     declarations: [
         ZacWrapperComponent,
@@ -89,7 +88,7 @@ import {ClickOutsideModule} from "ng-click-outside";
         ChipsModule,
         AgGridModule,
         ChipsModule,
-        ClickOutsideModule
+        ClickOutsideModule,
     ],
     exports: [
         ZacWrapperComponent,
@@ -120,7 +119,8 @@ import {ClickOutsideModule} from "ng-click-outside";
             deps: [Injector],
             multi: true
         },
-    ],
+
+]
 })
 export class OpenZitiConsoleLibModule {
 }

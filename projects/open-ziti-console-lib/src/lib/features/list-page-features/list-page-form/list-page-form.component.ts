@@ -1,19 +1,8 @@
-import {
-    AfterViewInit,
-    Component,
-    ComponentRef, ContentChild, ContentChildren,
-    EventEmitter, forwardRef, HostListener,
-    Input,
-    OnDestroy,
-    Output, QueryList,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
+import {AfterViewInit, Component, ContentChild, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import {ExtendableComponent} from "../../extendable/extendable.component";
 import {ProjectableForm} from "../../projectable-forms/projectable-form.class";
-import {ConfigurationFormComponent} from "../../projectable-forms/configuration/configuration-form.component";
 
-type CallbackResults = {passed: boolean, errors: { name: string, msg:string }[]}
+type CallbackResults = { passed: boolean, errors: { name: string, msg: string }[] }
 type ValidatorCallback = (data: any) => Promise<CallbackResults>;
 
 @Component({
@@ -45,26 +34,23 @@ type ValidatorCallback = (data: any) => Promise<CallbackResults>;
 export class ListPageFormComponent extends ExtendableComponent implements AfterViewInit {
 
     @ContentChild('projectable') public contentChild!: ProjectableForm;
-    @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-        this.closeThisForm();
-    }
-
     @Input() title = 'Form Title';
     @Input() subTitle = 'Form Subtitle';
-
     @Input() buttonLabel = 'Create';
-    @Input() set data(d:any) {
-        if(this.contentChild)
-            this.contentChild.formData = d;
-    }
     @Input() formClass: any | undefined;
     @Input() validator: ValidatorCallback | undefined;
     @Output() close = new EventEmitter<void>();
     @Output() afterOpen = new EventEmitter<void>();
     @Output() update = new EventEmitter<any>();
+    @Output() showChange = new EventEmitter<boolean>()
 
     constructor() {
         super();
+    }
+
+    @Input() set data(d: any) {
+        if (this.contentChild)
+            this.contentChild.formData = d;
     }
 
     _show = false;
@@ -72,7 +58,10 @@ export class ListPageFormComponent extends ExtendableComponent implements AfterV
     @Input() set show(val: boolean) {
         if (val && !this._show) this.openThisForm();
     }
-    @Output() showChange = new EventEmitter<boolean>()
+
+    @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+        this.closeThisForm();
+    }
 
     override ngAfterViewInit() {
         super.ngAfterViewInit();
@@ -91,12 +80,12 @@ export class ListPageFormComponent extends ExtendableComponent implements AfterV
     }
 
     updateItem() {
-        if(this.validator) {
+        if (this.validator) {
             this.validator(this.contentChild.formData)
                 .then((results: CallbackResults) => {
-                if (results.passed) this.updateAndClose();
-                else this.contentChild.errors = results.errors;
-            })
+                    if (results.passed) this.updateAndClose();
+                    else this.contentChild.errors = results.errors;
+                })
         } else this.updateAndClose();
     }
 
