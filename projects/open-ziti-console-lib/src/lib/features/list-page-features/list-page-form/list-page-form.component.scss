@@ -20,10 +20,12 @@
   .innerblock {
     max-width: 38rem;
     width: 38rem;
+    max-height: 100%;
+    overflow:auto;
+    padding-right: 2rem;
   }
 
   .buttonBall {
-    font-family: icomoon, serif !important;
     font-style: normal;
     font-weight: 600;
     font-variant: normal;

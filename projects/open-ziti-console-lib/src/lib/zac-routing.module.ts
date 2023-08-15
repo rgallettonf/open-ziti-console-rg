@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {ZacWrapperComponent} from "./zac-wrapper.component";
+import {ZacWrapperComponent} from "./features/wrappers/zac-wrapper.component";
 
 const routes: Routes = [
     {

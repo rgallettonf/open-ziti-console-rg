@@ -8,23 +8,31 @@ import {debounce} from "lodash";
   styleUrls: ['./protocol-address-port-input.component.scss']
 })
 export class ProtocolAddressPortInputComponent {
+  @Input() protocolList: any;
+  @Input() showProtocol = true;
+  @Input() showAddress = true;
+  @Input() showPort = true;
   @Input() protocolValue: any;
   @Input() addressValue: any;
   @Input() portValue: any;
   @Input() parentage: string[] = [];
   @Input() labelColor = '#000000';
+  @Input() labelPrefix = '';
   @Input() fieldClass = '';
   @Input() error = '';
   @Output() fieldValueChange = new EventEmitter<any>();
   valueChange = new Subject<any> ();
 
+  protocolFieldName = 'Protocol';
+  addressFieldName = 'Address';
+  portFieldName = 'Port';
+
   update() {
     debounce(() => {
-      const data = {
-        protocol: this.protocolValue,
-        address: this.addressValue,
-        port: this.portValue
-      }
+      const data: any = {};
+      if(this.showProtocol) data.protocol = this.protocolValue;
+      if(this.showAddress) data.protocol = this.addressValue;
+      if(this.showPort) data.protocol = this.portValue;
       this.fieldValueChange.emit(data);
       this.valueChange.next(data);
     }, 500)();

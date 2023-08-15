@@ -1,27 +1,31 @@
-import {Component, Input, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+    Component,
+    ComponentRef,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit, Output,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import {ConfigurationService} from "./configuration.service";
 import {Subscription} from "rxjs";
 import {SchemaService} from "../../../services/schema.service";
-import {ExtendableComponent} from "../../extendable/extendable.component";
-import {ProjectableFormType} from "../projectableForm.type";
+import {ProjectableForm} from "../projectable-form.class";
 
 @Component({
     selector: 'lib-configuration',
     templateUrl: './configuration-form.component.html',
     styleUrls: ['./configuration-form.component.scss']
 })
-export class ConfigurationFormComponent extends ExtendableComponent implements ProjectableFormType, OnDestroy {
+export class ConfigurationFormComponent extends ProjectableForm implements OnInit, OnDestroy {
     @ViewChild("dynamicform", {read: ViewContainerRef}) dynamicForm!: ViewContainerRef;
-    @Input() formData: any = {};
-    @Input() errors: string[] = [];
+    @Input() override formData: any = {};
+    @Input() override errors: any = {};
+    @Output() currentSchema = new EventEmitter<any>();
+    @Output() showButtons = new EventEmitter<boolean>();
 
-    options: string[] = [
-        "host.v1",
-        "host.v2",
-        "intercept.v1",
-        "ziti-tunneler-client.v1",
-        "ziti-tunneler-server.v1",
-    ];
+    options: string[] = [];
 
     lColorArray = [
         'black',
@@ -35,7 +39,7 @@ export class ConfigurationFormComponent extends ExtendableComponent implements P
         '#33aaff',
     ]
 
-    config: string = '';
+    configType: string = '';
     editMode = false;
     items: any = [];
     subscription = new Subscription()
@@ -46,23 +50,31 @@ export class ConfigurationFormComponent extends ExtendableComponent implements P
     }
 
     async createForm() {
-        this.clear();
-        if (this.config && this.dynamicForm) {
-            const currentSchema = await this.svc.getSchema(this.config);
+        this.clearForm();
+        if (this.configType && this.dynamicForm) {
+            const currentSchema = await this.svc.getSchema(this.configType);
             if (currentSchema) {
+                this.currentSchema.emit(currentSchema);
                 this.render(currentSchema);
             }
         }
     }
 
     ngOnDestroy(): void {
-        this.clear();
+        this.clearForm();
     }
 
-    clear() {
+     override clear() {
+        this.configType = '';
+        this.clearForm();
+    }
+
+    clearForm() {
+        this.showButtons.emit(false);
         this.items.forEach((item: any) => {
             if (item?.component) item.component.destroy();
         });
+        this.errors = {};
         this.items = [];
         this.formData = {};
         if (this.subscription) this.subscription.unsubscribe();
@@ -73,18 +85,58 @@ export class ConfigurationFormComponent extends ExtendableComponent implements P
             this.items = this.schemaSvc.render(schema, this.dynamicForm, this.lColorArray, this.bColorArray);
             for (let obj of this.items) {
                 const cRef = obj.component;
+                cRef.instance.errors = this.errors;
                 if (cRef?.instance.valueChange) {
-                    const pName = cRef.instance.parentage;
-                    if (pName && !this.formData[pName]) this.formData[pName] = {};
+                    const pName: string[]  = cRef.instance.parentage;
+                    let parentKey;
+                    if(pName) parentKey = pName.join('.');
+                    if (parentKey && !this.formData[parentKey]) this.formData[parentKey] = {};
                     this.subscription.add(
                         cRef.instance.valueChange.subscribe((val: any) => {
-                            const pName = cRef.instance.parentage;
-                            const fName = cRef.instance.fieldName;
-                            if (pName && !this.formData[pName]) this.formData[pName][fName];
-                            else this.formData[fName] = val;
+                            this.setFormValue(cRef, val);
                         }));
                 }
             }
+
+            this.showButtons.emit(this.items.length > 0);
+        }
+    }
+
+    ngOnInit(): void {
+        this.svc.getConfigTypes()
+            .then(recs => {
+                this.options = recs.map(r => r.name).sort();
+            })
+    }
+
+    private setFormValue(cRef: ComponentRef<any>, val: any) {
+        const pName = cRef.instance.parentage;
+        const fName = cRef.instance.fieldName;
+        if (pName && !this.formData[pName]) this.formData[pName] = {};
+        if(fName === 'pap') {
+            this.setSpecialFormValue(cRef, val, pName);
+        } else {
+            if (pName && !this.formData[pName]) this.formData[pName][fName] = val;
+            else this.formData[fName] = val;
+        }
+    }
+
+    private setSpecialFormValue(cRef: ComponentRef<any>, val: any, pName) {
+        const lPrefix = cRef.instance.labelPrefix
+        if (val.protocol) {
+            const fieldName = lPrefix ? lPrefix.trim().toLowerCase() + 'protocol' : 'protocol'
+            if (pName && !this.formData[pName]) this.formData[pName][fieldName] = val;
+            else this.formData[fieldName] = val;
+        }
+        if (val.address) {
+            const fieldName = lPrefix ? lPrefix.trim().toLowerCase() + 'address' : 'address'
+            if (pName && !this.formData[pName]) this.formData[pName][fieldName] = val;
+            else this.formData[fieldName] = val;
+        }
+        if (val.port) {
+            const fieldName = lPrefix ? lPrefix.trim().toLowerCase() + 'port' : 'port'
+            if (pName && !this.formData[pName]) this.formData[pName][fieldName] = val;
+            else this.formData[fieldName] = val;
         }
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "open-ziti-console-lib",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "repository": {
     "type": "git",
     "url": "https://github.com/edthompson-nf/open-ziti-console"
@@ -17,7 +17,8 @@
     "ag-grid-community": "^30.0.2",
     "primeng": "^16.0.2",
     "@angular/cdk": "^16.1.5",
-    "@angular/material": "^16.1.5"
+    "@angular/material": "^16.1.5",
+    "json-schema-ref-resolver": "file:dist/json-schema-ref-resolver"
   },
   "private": false,
   "dependencies": {

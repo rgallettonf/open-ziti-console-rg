@@ -1,28 +1,42 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {DataTableFilterService} from "../../features/data-table/data-table-filter.service";
+import {ConfigurationsPageService} from "./configurations-page.service";
+import {TabNameService} from "../../services/tab-name.service";
+import {ListPageComponent} from "../../shared/list-page-component.class";
+import {CallbackResults} from "../../features/list-page-features/list-page-form/list-page-form.component";
 
 @Component({
-  selector: 'lib-configurations',
-  templateUrl: './configurations-page.component.html',
-  styleUrls: ['./configurations-page.component.scss']
+    selector: 'lib-configurations',
+    templateUrl: './configurations-page.component.html',
+    styleUrls: ['./configurations-page.component.scss']
 })
-export class ConfigurationsPageComponent {
+export class ConfigurationsPageComponent extends ListPageComponent implements OnInit {
     title = 'Configuration Management'
-    tabs: { url: string, label: string }[] = [
-        {label: 'Services', url:'/services'},
-        {label: 'Configurations', url:'/configs'},
-        {label: 'Config Types', url:'/config-types'},
-    ];
+    tabs: { url: string, label: string }[] ;
     formTitle = '';
     formSubtitle = '';
 
     showEditForm = false;
+    showButtons = false;
+    private schema: any;
 
     constructor(
-        ) {
+        svc: ConfigurationsPageService,
+        filterService: DataTableFilterService,
+        private tabNames: TabNameService,
+
+    ) {
+        super(filterService, svc);
+    }
+
+    override ngOnInit() {
+        this.tabs = this.tabNames.getTabs('services');
+        this.svc.refreshData = this.refreshData;
+        super.ngOnInit();
     }
 
     headerActionClicked(action: string) {
-        switch(action) {
+        switch (action) {
             case 'add':
                 this.openUpdate();
                 break;
@@ -33,8 +47,16 @@ export class ConfigurationsPageComponent {
         }
     }
 
+    itemUpdate() {
+
+    }
+
+    tableAction($event: { action: string; item?: any }) {
+
+    }
+
     private openUpdate(model?: any) {
-        if(!model) {
+        if (!model) {
             this.formTitle = 'Create Configuration'
             this.formSubtitle = 'Add a New Configuration by completing this form';
         } else {
@@ -48,7 +70,15 @@ export class ConfigurationsPageComponent {
 
     }
 
-    itemUpdate() {
+    viewButtons(state: boolean) {
+        this.showButtons = state;
+    }
 
+    validate = (formData: any): Promise<CallbackResults> => {
+        return this.svc.validate(formData, this.schema);
+    }
+
+    onSchemaChange(schema: any) {
+        this.schema = schema;
     }
 }
