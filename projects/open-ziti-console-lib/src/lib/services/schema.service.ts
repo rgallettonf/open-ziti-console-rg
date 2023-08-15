@@ -29,14 +29,14 @@ export class SchemaService {
     suggesting = null;
     suggestId: any = null;
     suggestingField = "";
-    private items: any[] = [];
-    private bColorArray: string[] = [];
-    private lColorArray: string[] = [];
     propertyExcludes = [
         "portchecks", 'httpchecks',
         'protocol', 'address', 'port',
         'forwardprotocol', 'forwardaddress', 'forwardport'
     ]
+    private items: any[] = [];
+    private bColorArray: string[] = [];
+    private lColorArray: string[] = [];
 
     constructor() {
     }
@@ -196,6 +196,59 @@ export class SchemaService {
         return this.items;
     }
 
+    validate(schema: any, formData: any): any {
+        let errors = {};
+        errors = {...errors, ...this.validateFields(schema, formData)};
+        return errors
+    }
+
+    validateFields(schema, formData: any, parentage?: string): any {
+        let errors = {};
+        for (let key in schema.properties) {
+            const k = key.toLowerCase();
+            errors = {...errors, ...this.validateField(k, schema, formData, schema.properties[key], parentage)};
+        }
+        return errors;
+    }
+
+    validateField(key, schema, formData, property, parentage): any {
+        let errors = {}
+        var type = this.getType(property);
+
+        if (type == "object") {
+            let newParentage = key;
+            if (parentage) newParentage = `${parentage}.${key}`;
+            if (property.properties) {
+                errors = {...errors, ...this.validateFields(property, formData, newParentage)};
+            }
+        } else {
+            var theValue: string = _.get(formData, key)
+            if (schema.required && schema.required.includes(key) && theValue.length == 0) {
+                this.addError(errors, key, `${key} required`);
+
+            } else if (type == "integer") {
+                if (schema.required && schema.required.includes(key)) {
+                    var min = null;
+                    var max = null;
+                    if (property.minimum) min = Number(property.minimum);
+                    if (property.maximum) max = Number(property.maximum);
+                    if (isNaN(parseInt(theValue))) {
+                        this.addError(errors, key, `invalid number`);
+                    } else {
+                        var val = Number(theValue);
+                        if (min != null && val < min) {
+                            this.addError(errors, key, `minimum value ${min} expected`);
+                        }
+                        if (max != null && val > max) {
+                            this.addError(errors, key, `maximum value ${max} expected`);
+                        }
+                    }
+                }
+            }
+        }
+        return errors;
+    }
+
     setValue(schema: any, key: string, type: string, value: any, parentage: string[]) {
         if (value == null) {
             if (type == "array") {
@@ -346,13 +399,6 @@ export class SchemaService {
         return listItems;
     }
 
-    validate(schema: any) {
-        for (let key in schema.properties) {
-            let property = schema.properties[key];
-            this.validateProperty(schema, key, property, []);
-        }
-    }
-
     validateProperty(schema: any, key: string, property: any, parentage: string[]) {
         let type = this.getType(property);
         if (type == "object") {
@@ -485,18 +531,18 @@ export class SchemaService {
         let showProtocol = false;
         let showAddress = false;
         let showPort = false;
-        if(properties.protocol) {
+        if (properties.protocol) {
             showProtocol = true;
             protocolList = properties.protocol.items.enum.map(p => p.toUpperCase());
-            if(properties.protocol.key.startsWith('forward')) labelPrefix = 'Forward ';
+            if (properties.protocol.key.startsWith('forward')) labelPrefix = 'Forward ';
         }
-        if(properties.address) {
+        if (properties.address) {
             showAddress = true;
-            if(properties.address.key.startsWith('forward')) labelPrefix = 'Forward ';
+            if (properties.address.key.startsWith('forward')) labelPrefix = 'Forward ';
         }
-        if(properties.port) {
-            showPort= true;
-            if(properties.port.key.startsWith('forward')) labelPrefix = 'Forward ';
+        if (properties.port) {
+            showPort = true;
+            if (properties.port.key.startsWith('forward')) labelPrefix = 'Forward ';
         }
         let componentRef = view.createComponent(ProtocolAddressPortInputComponent);
         if (parentage && !_.isEmpty(parentage)) componentRef.setInput('parentage', parentage);
@@ -507,7 +553,7 @@ export class SchemaService {
         componentRef.setInput('addressValue', '');
         componentRef.setInput('portValue', '');
         componentRef.setInput('protocolList', protocolList);
-        if(labelPrefix) componentRef.setInput('labelPrefix', labelPrefix);
+        if (labelPrefix) componentRef.setInput('labelPrefix', labelPrefix);
         componentRef.setInput('labelColor', this.lColorArray[nestLevel]);
         return {
             key: 'pap',
@@ -524,10 +570,10 @@ export class SchemaService {
         for (let key in schema.properties) {
             const k = key.toLowerCase();
             // if (this.propertyExcludes.indexOf(k) < 0) {
-                this.items.push({
-                    key: k,
-                    component: this.addField(view, nestLevel, key, schema.properties[key], parentage)
-                });
+            this.items.push({
+                key: k,
+                component: this.addField(view, nestLevel, key, schema.properties[key], parentage)
+            });
             // }
         }
     }
@@ -740,4 +786,10 @@ export class SchemaService {
     //         return json;
     //     }
     // }
+
+    private addError(errors: any, key: string, msg: string) {
+        if (errors[key]) errors[key] = `${errors[key]}; ${msg}`;
+        else errors[key] = msg;
+        return errors;
+    }
 }

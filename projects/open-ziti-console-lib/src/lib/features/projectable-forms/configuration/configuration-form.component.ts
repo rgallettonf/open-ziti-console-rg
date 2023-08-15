@@ -21,7 +21,8 @@ import {ProjectableForm} from "../projectable-form.class";
 export class ConfigurationFormComponent extends ProjectableForm implements OnInit, OnDestroy {
     @ViewChild("dynamicform", {read: ViewContainerRef}) dynamicForm!: ViewContainerRef;
     @Input() override formData: any = {};
-    @Input() override errors: { name: string, msg: string }[] = [];
+    @Input() override errors: any = {};
+    @Output() currentSchema = new EventEmitter<any>();
     @Output() showButtons = new EventEmitter<boolean>();
 
     options: string[] = [];
@@ -53,6 +54,7 @@ export class ConfigurationFormComponent extends ProjectableForm implements OnIni
         if (this.configType && this.dynamicForm) {
             const currentSchema = await this.svc.getSchema(this.configType);
             if (currentSchema) {
+                this.currentSchema.emit(currentSchema);
                 this.render(currentSchema);
             }
         }
@@ -72,6 +74,7 @@ export class ConfigurationFormComponent extends ProjectableForm implements OnIni
         this.items.forEach((item: any) => {
             if (item?.component) item.component.destroy();
         });
+        this.errors = {};
         this.items = [];
         this.formData = {};
         if (this.subscription) this.subscription.unsubscribe();
@@ -82,9 +85,12 @@ export class ConfigurationFormComponent extends ProjectableForm implements OnIni
             this.items = this.schemaSvc.render(schema, this.dynamicForm, this.lColorArray, this.bColorArray);
             for (let obj of this.items) {
                 const cRef = obj.component;
+                cRef.instance.errors = this.errors;
                 if (cRef?.instance.valueChange) {
-                    const pName = cRef.instance.parentage;
-                    if (pName && !this.formData[pName]) this.formData[pName] = {};
+                    const pName: string[]  = cRef.instance.parentage;
+                    let parentKey;
+                    if(pName) parentKey = pName.join('.');
+                    if (parentKey && !this.formData[parentKey]) this.formData[parentKey] = {};
                     this.subscription.add(
                         cRef.instance.valueChange.subscribe((val: any) => {
                             this.setFormValue(cRef, val);

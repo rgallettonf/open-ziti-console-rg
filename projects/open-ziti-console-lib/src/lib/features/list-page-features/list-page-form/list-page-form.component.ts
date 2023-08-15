@@ -2,8 +2,8 @@ import {AfterViewInit, Component, ContentChild, EventEmitter, HostListener, Inpu
 import {ExtendableComponent} from "../../extendable/extendable.component";
 import {ProjectableForm} from "../../projectable-forms/projectable-form.class";
 
-type CallbackResults = { passed: boolean, errors: { name: string, msg: string }[] }
-type ValidatorCallback = (data: any) => Promise<CallbackResults>;
+export type CallbackResults = { passed: boolean, errors?: any }
+export type ValidatorCallback = (data: any, payload?:any) => Promise<CallbackResults>;
 
 @Component({
     selector: 'lib-list-page-form',

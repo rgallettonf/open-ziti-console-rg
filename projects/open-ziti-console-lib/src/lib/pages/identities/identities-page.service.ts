@@ -6,6 +6,7 @@ import {ListPageServiceClass} from "../../shared/list-page-service.class";
 import {
     TableColumnDefaultComponent
 } from "../../features/data-table/column-headers/table-column-default/table-column-default.component";
+import {CallbackResults} from "../../features/list-page-features/list-page-form/list-page-form.component";
 
 @Injectable({
     providedIn: 'root'
@@ -16,6 +17,10 @@ export class IdentitiesPageService extends ListPageServiceClass {
 
     constructor() {
         super();
+    }
+
+    validate = (formData): Promise<CallbackResults> => {
+        return Promise.resolve({ passed: true});
     }
 
     initTableColumns(): any {

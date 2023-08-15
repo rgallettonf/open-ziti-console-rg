@@ -3,6 +3,7 @@ import {DataTableFilterService} from "../../features/data-table/data-table-filte
 import {ConfigurationsPageService} from "./configurations-page.service";
 import {TabNameService} from "../../services/tab-name.service";
 import {ListPageComponent} from "../../shared/list-page-component.class";
+import {CallbackResults} from "../../features/list-page-features/list-page-form/list-page-form.component";
 
 @Component({
     selector: 'lib-configurations',
@@ -17,6 +18,7 @@ export class ConfigurationsPageComponent extends ListPageComponent implements On
 
     showEditForm = false;
     showButtons = false;
+    private schema: any;
 
     constructor(
         svc: ConfigurationsPageService,
@@ -70,5 +72,13 @@ export class ConfigurationsPageComponent extends ListPageComponent implements On
 
     viewButtons(state: boolean) {
         this.showButtons = state;
+    }
+
+    validate = (formData: any): Promise<CallbackResults> => {
+        return this.svc.validate(formData, this.schema);
+    }
+
+    onSchemaChange(schema: any) {
+        this.schema = schema;
     }
 }

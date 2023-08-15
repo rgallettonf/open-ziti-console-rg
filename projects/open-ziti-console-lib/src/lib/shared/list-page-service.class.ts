@@ -1,11 +1,13 @@
 import {inject} from '@angular/core';
 import {ZitiDataService} from "../services/ziti-data.service";
 import {FilterObj} from "../features/data-table/data-table-filter.service";
+import {ValidatorCallback} from "../features/list-page-features/list-page-form/list-page-form.component";
 
 export abstract class ListPageServiceClass {
 
     abstract initTableColumns(): any[];
     abstract getData(filters?: FilterObj[], sort?: any): Promise<any[]>
+    abstract validate: ValidatorCallback;
 
     headerComponentParams = {
         filterType: 'TEXTINPUT',
