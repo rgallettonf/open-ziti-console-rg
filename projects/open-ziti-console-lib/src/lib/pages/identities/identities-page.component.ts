@@ -6,6 +6,7 @@ import {TableHeaderDefaultComponent} from "../../data-table/table-header-default
 
 import {invoke, isEmpty, defer} from 'lodash';
 import moment from 'moment';
+import $ from 'jquery';
 import {TableFilterService} from "../../services/table-filter.service";
 
 @Component({
@@ -255,7 +256,9 @@ export class IdentitiesPageComponent implements OnInit {
   }
 
   private openUpdate() {
-
+    $(".adding").show();
+    $(".editing").hide();
+    window['modal'].show("AddModal");
   }
 
   private openBulkDelete(selectedItems: any[]) {

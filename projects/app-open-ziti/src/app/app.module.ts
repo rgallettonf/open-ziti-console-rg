@@ -6,7 +6,7 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {HttpClientModule} from "@angular/common/http";
 import {LoginComponent} from './login/login.component';
 import {FormsModule} from "@angular/forms";
-import {OpenZitiConsoleLibModule, SettingsService, ZITI_DOMAIN_CONTROLLER, ZITI_NAVIGATOR, ZITI_URLS} from "open-ziti-console-lib";
+import {OpenZitiConsoleLibModule, SettingsService, ZacWrapperService, ZAC_WRAPPER_SERVICE, ZITI_DOMAIN_CONTROLLER, ZITI_NAVIGATOR, ZITI_URLS} from "open-ziti-console-lib";
 import {AppRoutingModule} from "./app-routing.module";
 import {SimpleZitiDomainControllerServic} from "./services/simple-ziti-domain-controller.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -33,7 +33,8 @@ import {OPEN_ZITI_NAVIGATOR} from "./app-nav.constants";
     providers: [SettingsService,
         {provide: ZITI_DOMAIN_CONTROLLER, useClass: SimpleZitiDomainControllerServic},
         {provide: ZITI_URLS, useValue: URLS },
-        {provide: ZITI_NAVIGATOR, useValue: OPEN_ZITI_NAVIGATOR}
+        {provide: ZITI_NAVIGATOR, useValue: OPEN_ZITI_NAVIGATOR},
+        {provide: ZAC_WRAPPER_SERVICE, useClass: ZacWrapperService}
     ],
     bootstrap: [AppComponent]
 })
