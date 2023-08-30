@@ -1,8 +1,8 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ZAC_WRAPPER_SERVICE, ZacWrapperService} from "./zac-wrapper.service";
-import {invoke} from 'lodash';
+import {delay, invoke, isEmpty} from 'lodash';
 import {Subscription} from "rxjs";
-import {ZITI_DOMAIN_CONTROLLER} from "./services/ziti-domain-controller.service";
+import {SettingsService} from "../../services/settings.service";
 
 @Component({
     selector: 'app-zac-wrapper',
@@ -14,19 +14,34 @@ export class ZacWrapperComponent implements OnInit, OnDestroy {
   pageHtml: any = '';
   subscription = new Subscription();
   title = 'Ziti Console';
-
+  waitingForSession = true;
   @ViewChild('zacContainer') zacContainer: any;
 
-  constructor(@Inject(ZAC_WRAPPER_SERVICE) private wrapperService: ZacWrapperService) {
+  constructor(
+      @Inject(ZAC_WRAPPER_SERVICE) private wrapperService: ZacWrapperService,
+      private settingsService: SettingsService,
+  ) {
   }
 
   ngOnInit(): void {
     this.wrapperService.initZac();
     this.subscription.add(
     this.wrapperService.pageChange.subscribe(() => {
+      if (this.waitingForSession) {
+        return;
+      }
       this.loadPage();
     }));
-
+    this.settingsService.settingsChange.subscribe((results:any) => {
+        if (!isEmpty(this.settingsService?.settings?.session?.id)) {
+          if (this.waitingForSession) {
+              this.waitingForSession = false;
+              delay(() => {
+                this.loadPage();
+              }, 200)
+          }
+        }
+    });
   }
 
   ngOnDestroy() {

@@ -86,23 +86,6 @@ export class IdentitiesPageComponent extends ListPageComponent implements OnInit
     }
   }
 
-  headerActionClicked(action: string) {
-    switch (action) {
-      case 'add':
-        this.openUpdate();
-        break;
-      case 'delete':
-        const selectedItems = this.rowData.filter((row) => {
-          return row.selected;
-        }).map((row) => {
-          return row.id;
-        });
-        this.openBulkDelete(selectedItems)
-        break;
-      default:
-      }
-  }
-
   editItem(item: any) {
     window['page']['edit'](item.id);
   }
@@ -123,11 +106,4 @@ export class IdentitiesPageComponent extends ListPageComponent implements OnInit
     window['page']['filterObject']['delete']([item.id]);
   }
 
-  private openUpdate() {
-
-  }
-
-  private openBulkDelete(selectedItems: any[]) {
-
-  }
 }

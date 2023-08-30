@@ -32,3 +32,4 @@ export class SideNavbarComponent {
         this.isOpened = !this.isOpened;
     }
 }
+

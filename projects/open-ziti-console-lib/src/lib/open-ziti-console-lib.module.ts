@@ -39,12 +39,10 @@ import {HiddenColumnsBarComponent} from "./features/data-table/table-hidden-colu
 import {FilterBarComponent} from "./features/data-table/table-filter-bar/filter-bar.component";
 import {AgGridModule} from "ag-grid-angular";
 import {IdentitiesPageComponent} from "./pages/identities/identities-page.component";
-import {ZITI_NAVIGATOR} from "./features/sidebars/side-navbar/side-navbar.component";
+import {ZITI_NAVIGATOR} from "./open-ziti.constants";
 import { GrowlerComponent } from './features/messaging/growler.component';
 import {onAppInit} from "./app.initializer";
 import {ClickOutsideModule} from "ng-click-outside";
-
-export const ZITI_URLS = new InjectionToken<string>('ZITI_URLS');
 
 @NgModule({
     declarations: [

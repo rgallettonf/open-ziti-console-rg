@@ -49,7 +49,7 @@ import {LoggingInterceptor} from "./interceptors/logging.interceptor";
     exports: [],
     providers: [
         {provide: ZITI_DOMAIN_CONTROLLER, useClass: SimpleZitiDomainControllerServic},
-        {provide: ZAC_WRAPPER_SERVICE, useClass: ZacWrapperService}
+        {provide: ZAC_WRAPPER_SERVICE, useClass: ZacWrapperService},
         {provide: ZITI_URLS, useValue: URLS},
         {provide: ZITI_NAVIGATOR, useValue: OPEN_ZITI_NAVIGATOR},
         {provide: ZITI_TAB_OVERRIDES, useClass: NoopTabInterceptorService},
