@@ -1,7 +1,6 @@
 import {Component, Inject, InjectionToken, Input} from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
-
-export const ZITI_NAVIGATOR = new InjectionToken<string>('ZITI_NAVIGATOR');
+import {ZITI_NAVIGATOR} from "../../../open-ziti.constants";
 
 @Component({
     selector: 'lib-side-navbar',

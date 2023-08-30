@@ -1,48 +1,38 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {firstValueFrom} from "rxjs";
-import {catchError} from "rxjs/operators";
-import {SettingsService} from "../../../services/settings.service";
+import {ZitiDataService} from "../../../services/ziti-data.service";
+import {Resolver} from "@stoplight/json-ref-resolver";
 
 @Injectable({
     providedIn: 'root'
 })
 export class ConfigurationService {
+    private configTypes: any[] = [];
 
-    constructor(private httpClient: HttpClient,
-                private settingsService: SettingsService) {
+    constructor(private dataService: ZitiDataService) {
     }
 
-    getSchema(schemaType: string): Promise<any> {
+    async getSchema(schemaType: string): Promise<any> {
         if (!schemaType) return Promise.resolve();
-
-        const prefix = this.settingsService.apiVersions["edge-management"].v1.path;
-        const url = this.settingsService.settings.selectedEdgeController;
-        const serviceUrl = url + prefix + "/api/schema";
-        return firstValueFrom(this.httpClient.post(serviceUrl,
-            {schema: schemaType}, {
-                headers: {
-                    "content-type": "application/json",
-                }
-            })
-            .pipe(
-                catchError((err: any) => {
-                    const error = "Server Not Accessible";
-                    if (err.code != "ECONNREFUSED") throw({error: err.code});
-                    throw({error: error});
-                })
-            )
-        ).then((body: any) => {
-            if (body.error) throw body.error;
-            return this.parseSchema(body.schema);
-        });
+        for (let idx = 0; idx < this.configTypes.length; idx++) {
+            if(this.configTypes[idx].name === schemaType)
+                return this.configTypes[idx].schema;
+        }
     }
 
-    parseSchema(results: any): any {
-        return {
-            $id: results.$id,
-            type: results.type,
-            properties: results.properties
-        };
+    getConfigTypes() {
+        return this.dataService.get('config-types', {})
+        .then(async (body: any) => {
+            if (body.error) throw body.error;
+            const promises: Promise<any>[] = [];
+            const resolver = new Resolver();
+            body.data.map( (row: any) => {
+                const schema = row.schema;
+                promises.push(resolver.resolve(schema, {}).then(s => {
+                    row.schema = s.result;
+                    this.configTypes.push(row);
+                }))
+            });
+            return Promise.all(promises).then(() => this.configTypes);
+        });
     }
 }

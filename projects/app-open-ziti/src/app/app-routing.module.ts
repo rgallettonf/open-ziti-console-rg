@@ -60,6 +60,11 @@ const routes: Routes = [
     canActivate: [authenticationGuard],
   },
   {
+    path: 'ziti-configs',
+    redirectTo: 'configs',
+    pathMatch: 'full'
+  },
+  {
     path: 'recipes',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],

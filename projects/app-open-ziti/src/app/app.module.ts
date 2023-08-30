@@ -3,16 +3,32 @@ import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {LoginComponent} from './login/login.component';
 import {FormsModule} from "@angular/forms";
-import {OpenZitiConsoleLibModule, SettingsService, ZacWrapperService, ZAC_WRAPPER_SERVICE, ZITI_DOMAIN_CONTROLLER, ZITI_NAVIGATOR, ZITI_URLS} from "open-ziti-console-lib";
+
+import {
+    NoopTabInterceptorService,
+    OpenZitiConsoleLibModule,
+    SettingsService,
+    ZacWrapperService,
+    ZAC_WRAPPER_SERVICE,
+    ZITI_DOMAIN_CONTROLLER,
+    ZITI_NAVIGATOR,
+    ZITI_TAB_OVERRIDES,
+    ZITI_URLS
+} from "open-ziti-console-lib";
+
 import {AppRoutingModule} from "./app-routing.module";
 import {SimpleZitiDomainControllerServic} from "./services/simple-ziti-domain-controller.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MatDialogModule} from "@angular/material/dialog";
 import {URLS} from "./app-urls.constants";
 import {OPEN_ZITI_NAVIGATOR} from "./app-nav.constants";
+import {ZitiApiInterceptor} from "./interceptors/ziti-api.interceptor";
+import {LoggerModule, NgxLoggerLevel} from "ngx-logger";
+import {ErrorInterceptor} from "./interceptors/error-handler.interceptor";
+import {LoggingInterceptor} from "./interceptors/logging.interceptor";
 
 @NgModule({
     declarations: [
@@ -28,13 +44,18 @@ import {OPEN_ZITI_NAVIGATOR} from "./app-nav.constants";
         HttpClientModule,
         AppRoutingModule,
         OpenZitiConsoleLibModule,
+        LoggerModule.forRoot({level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.ERROR}),
     ],
     exports: [],
-    providers: [SettingsService,
+    providers: [
         {provide: ZITI_DOMAIN_CONTROLLER, useClass: SimpleZitiDomainControllerServic},
-        {provide: ZITI_URLS, useValue: URLS },
-        {provide: ZITI_NAVIGATOR, useValue: OPEN_ZITI_NAVIGATOR},
         {provide: ZAC_WRAPPER_SERVICE, useClass: ZacWrapperService}
+        {provide: ZITI_URLS, useValue: URLS},
+        {provide: ZITI_NAVIGATOR, useValue: OPEN_ZITI_NAVIGATOR},
+        {provide: ZITI_TAB_OVERRIDES, useClass: NoopTabInterceptorService},
+        {provide: HTTP_INTERCEPTORS, useClass: ZitiApiInterceptor, multi: true},
+        {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+        {provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptor, multi: true}
     ],
     bootstrap: [AppComponent]
 })
