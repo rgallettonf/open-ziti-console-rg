@@ -1,0 +1,16 @@
+#AddModal {
+  .open {
+    .box {
+      .full {
+        width: calc(100% - 380px)!important;
+        left: 380px!important;
+      }
+    }
+  }
+  .box {
+    .full {
+      width: calc(100% - 60px)!important;
+      left: 60px!important;
+    }
+  }
+}
