@@ -1,8 +1,10 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild} from '@angular/core';
 
 // Import the resized event model
 import $ from 'jquery';
 import _ from 'lodash';
+import moment from 'moment'
+
 import {TableColumnDefaultComponent} from "./column-headers/table-column-default/table-column-default.component";
 import {TableColumnSelectComponent} from "./column-headers/table-column-select/table-column-select.component";
 import {TableColumnMenuComponent} from "./column-headers/table-column-menu/table-column-menu.component";
@@ -41,6 +43,7 @@ export class DataTableComponent implements OnChanges, OnInit {
   @Input() totalCount: any;
   @Input() emptyMsg: any;
   @Input() filterApplied = false;
+  @Input() menuItems: any = [];
 
   @Output() actionRequested = new EventEmitter<{ action: string; item?: any }>();
   // @Output() filterChanged = new EventEmitter();
@@ -60,6 +63,12 @@ export class DataTableComponent implements OnChanges, OnInit {
   mergedColumnDefinitions;
   openMenu;
   openHeaderMenu;
+  filterOptions: any = [];
+  showFilterOptions;
+  showDateTimePicker;
+  dateTimeColumn = '';
+  selectedRange = '';
+  dateValue;
   menuLeft;
   menuTop;
   gridRendered;
@@ -67,8 +76,9 @@ export class DataTableComponent implements OnChanges, OnInit {
   selectedItem: any = {
     actionList: [],
   };
-  // showFilterOptions = false;
-  // filterOptions = [];
+
+  columnFilters:any = {};
+
   // appliedFilters = [];
   autoGroupColumnDef;
 
@@ -147,6 +157,8 @@ export class DataTableComponent implements OnChanges, OnInit {
       },
     },
   };
+
+  @ViewChild('calendar', { static: false }) calendar: any;
 
   constructor(public svc: DataTableService) {}
 
@@ -239,6 +251,7 @@ export class DataTableComponent implements OnChanges, OnInit {
       this.svc.resizeGridColumns();
     });
   }
+
   openHeaderActionMenu(event): void {
     this.menuLeft = event.clientX - 150;
     this.menuTop = event.clientY + 5;
@@ -253,6 +266,83 @@ export class DataTableComponent implements OnChanges, OnInit {
     };
     this.openMenu = false;
     this.openHeaderMenu = false;
+  }
+
+  openHeaderFilter(event, options, type, columnId): void {
+    this.filterOptions = options;
+    this.menuLeft = event.clientX;
+    this.menuTop = event.clientY + 10;
+    if (type === 'DATETIME') {
+      this.showDateTimePicker = true;
+      this.dateTimeColumn = columnId;
+      _.delay(() => {
+        this.calendar.toggle();
+      }, 100);
+    } else {
+      _.defer(() => {
+        this.showFilterOptions = true;
+      });
+    }
+  }
+
+  setDateRangeFilter(range) {
+    let startDate;
+    let label;
+    let endDate = moment();
+    let closeCalendar = true;
+    this.selectedRange = range;
+    switch (range) {
+      case 'hour':
+        startDate = moment().subtract(1, 'hours');
+        label = 'Last Hour';
+        break;
+      case 'day':
+        startDate = moment().subtract(24, 'hours');
+        label = 'Last Day';
+        break;
+      case 'week':
+        startDate = moment().subtract(7, 'days');
+        label = 'Last Week';
+        break;
+      case 'month':
+        startDate = moment().subtract(1, 'month');
+        label = 'Last Month';
+        break;
+      case 'custom':
+        if (!this.dateValue) {
+          return;
+        }
+        startDate = moment(this.dateValue[0]);
+        if (this.dateValue[1] !== undefined && this.dateValue[1] !== null) {
+          endDate = moment(this.dateValue[1]);
+        }
+        label = 'Custom';
+        closeCalendar = false;
+        break;
+      default:
+        startDate = moment().subtract(24, 'hours');
+        label = 'Last Day';
+        break;
+    }
+    const startDateRange = encodeURIComponent('>=' + startDate.toISOString());
+    const endDateRange = encodeURIComponent('<=' + endDate.toISOString());
+    this.columnFilters[this.dateTimeColumn] = [startDateRange, endDateRange];
+
+    if (closeCalendar) {
+      this.calendar.toggle();
+    }
+    if (range !== 'custom') {
+      this.dateValue = [startDate.toDate(), endDate.toDate()];
+    }
+    this.applyFilter({}, {columnId: this.dateTimeColumn, value: [startDateRange, endDateRange], label: label, filterName: 'Last Seen'})
+  }
+
+  applyFilter(temp1, temp2) {
+
+  }
+
+  closeHeaderFilter(event): void {
+    this.showFilterOptions = false;
   }
 
   anySelected() {
@@ -391,6 +481,8 @@ export class DataTableComponent implements OnChanges, OnInit {
         grid.api.validateTable = this._validateTable.bind(this);
         grid.api.view = this._view;
         grid.api.zitiRowData = this.rowData;
+        grid.api.openHeaderFilter = this.openHeaderFilter.bind(this);
+
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         grid.api.rowsToggled = this.rowsToggled ? this.rowsToggled.bind(this) : () => {};
         if (this.serverSideDataSource) {

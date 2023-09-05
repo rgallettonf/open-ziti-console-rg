@@ -38,6 +38,7 @@ export class GrowlerComponent  implements OnInit, OnDestroy {
   }
 
   private showGrowler(data: GrowlerModel) {
+    return;
     this.title = data.title;
     this.subtitle = data.subtitle;
     this.level = data.level;

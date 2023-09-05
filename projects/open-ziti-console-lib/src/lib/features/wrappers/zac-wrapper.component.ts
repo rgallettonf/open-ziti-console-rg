@@ -15,6 +15,7 @@ export class ZacWrapperComponent implements OnInit, OnDestroy {
   subscription = new Subscription();
   title = 'Ziti Console';
   waitingForSession = true;
+  pageLoading = false;
   @ViewChild('zacContainer') zacContainer: any;
 
   constructor(
@@ -34,10 +35,12 @@ export class ZacWrapperComponent implements OnInit, OnDestroy {
     }));
     this.settingsService.settingsChange.subscribe((results:any) => {
         if (!isEmpty(this.settingsService?.settings?.session?.id)) {
-          if (this.waitingForSession) {
-              this.waitingForSession = false;
-              delay(() => {
-                this.loadPage();
+          if (this.waitingForSession && !this.pageLoading) {
+              this.pageLoading = true;
+              delay(async () => {
+                await this.loadPage();
+                this.waitingForSession = false;
+                this.pageLoading = false;
               }, 200)
           }
         }

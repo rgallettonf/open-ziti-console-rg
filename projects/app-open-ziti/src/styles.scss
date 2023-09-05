@@ -22,18 +22,6 @@ body {
   overflow: hidden;
 }
 
-.modal.box.full {
-  bottom: unset !important;
-  left: 100% !important;
-  top: 0;
-}
-#AddModal.open.box.full {
-  width: calc(100% - 380px) !important;
-  left: 380px !important;
-}
-.modal.background.open {
-  display: none;
-}
 .ziti-page-container .filters {
   position: relative !important;
   width: 100% !important;

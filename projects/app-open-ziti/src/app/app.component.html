@@ -1,4 +1,4 @@
-<div class="main">
+<div class="main" [ngClass]="{sideNavClosed: !displayNav}">
     <div class="side">
         <ng-container *ngIf="isAuthorized; else login">
             <lib-side-toolbar *ngIf="displayTool" ></lib-side-toolbar>

@@ -1,6 +1,12 @@
 
 .main {
   display: flex;
+  .modals {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 999999;
+  }
 }
 
 .side {
@@ -24,6 +30,7 @@
   padding: 1.5rem;
   transition: var(--transition);
 }
+
 [class^="icon-"], [class*=" icon-"] {
   font-family: 'zac', serif !important;
   speak: never;

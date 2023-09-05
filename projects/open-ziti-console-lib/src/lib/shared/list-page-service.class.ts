@@ -26,6 +26,8 @@ export abstract class ListPageServiceClass {
     dataService: ZitiDataService;
     refreshData: (sort: {sortBy: string, ordering: string}) => void | undefined;
 
+    menuItems: any = [];
+
     constructor() {
         this.dataService = inject(ZitiDataService);
     }

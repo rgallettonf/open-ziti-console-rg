@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
     isAuthorized = false;
     displayNav = true;
     displayTool = true;
-
+    showModal = false;
     constructor(private settingsService: SettingsService) {
 
     }

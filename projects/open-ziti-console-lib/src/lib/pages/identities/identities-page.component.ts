@@ -54,6 +54,10 @@ export class IdentitiesPageComponent extends ListPageComponent implements OnInit
     $(".adding").show();
     $(".editing").hide();
     window['modal'].show("AddModal");
+    $("body").addClass('updateModalOpen');
+    $(".modal .close").click(() => {
+      $("body").removeClass('updateModalOpen');
+    });
   }
 
   private openBulkDelete(selectedItems: any[]) {
@@ -88,10 +92,18 @@ export class IdentitiesPageComponent extends ListPageComponent implements OnInit
 
   editItem(item: any) {
     window['page']['edit'](item.id);
+    $("body").addClass('updateModalOpen');
+    $(".modal .close").click(() => {
+      $("body").removeClass('updateModalOpen');
+    });
   }
 
   getOverrides(item: any) {
     window['page']['getOverrides'](item.id);
+    $("body").addClass('updateModalOpen');
+    $(".modal .close").click(() => {
+      $("body").removeClass('updateModalOpen');
+    });
   }
 
   downloadJWT(item: any) {

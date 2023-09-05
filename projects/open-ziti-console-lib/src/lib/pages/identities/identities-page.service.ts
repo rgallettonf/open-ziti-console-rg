@@ -15,6 +15,20 @@ export class IdentitiesPageService extends ListPageServiceClass {
 
     private paging = this.DEFAULT_PAGING;
 
+    columnFilters: any = {
+        name: '',
+        os: '',
+        createdAt: '',
+    };
+
+    override menuItems = [
+        {name: 'Edit', action: 'update'},
+        {name: 'Download JWT', action: 'download-enrollment'},
+        {name: 'View QR', action: 'qr-code'},
+        {name: 'Override', action: 'override'},
+        {name: 'Delete', action: 'delete'},
+    ]
+
     constructor() {
         super();
     }
@@ -101,6 +115,21 @@ export class IdentitiesPageService extends ListPageServiceClass {
             return moment(row?.data?.createdAt).local().format('M/D/YYYY H:MM A');
         }
 
+        const columnFilters = this.columnFilters;
+
+        const osParams = {
+            filterType: 'COMBO',
+            filterOptions: [
+                { label: 'All', value: '', icon: 'empty' },
+                { label: 'Apple', value: 'darwin', icon: 'apple' },
+                { label: 'Windows', value: 'mingw', icon: 'windows'  },
+                { label: 'Linux', value: 'linux', icon: 'linux'  },
+                { label: 'Android', value: 'android', icon: 'android'  },
+                { label: 'Other (text search)', value: '', icon: 'other', useTextInput: true  },
+            ],
+            columnFilters,
+        };
+
         return [
             {
                 colId: 'name',
@@ -113,7 +142,8 @@ export class IdentitiesPageService extends ListPageServiceClass {
                 cellClass: 'nf-cell-vert-align tCol',
                 sortable: true,
                 filter: true,
-                sortColumn: this.sort.bind(this)
+                sortColumn: this.sort.bind(this),
+                sortDir: 'asc'
             },
             {
                 colId: 'os',
@@ -122,7 +152,7 @@ export class IdentitiesPageService extends ListPageServiceClass {
                 width: 100,
                 cellRenderer: osRenderer,
                 headerComponent: TableColumnDefaultComponent,
-                headerComponentParams: this.headerComponentParams,
+                headerComponentParams: osParams,
                 resizable: true,
                 cellClass: 'nf-cell-vert-align tCol',
             },
@@ -143,7 +173,9 @@ export class IdentitiesPageService extends ListPageServiceClass {
                 headerComponent: TableColumnDefaultComponent,
                 headerComponentParams: this.headerComponentParams,
                 resizable: true,
+                sortable: true,
                 cellClass: 'nf-cell-vert-align tCol',
+                sortColumn: this.sort.bind(this),
             },
             {
                 colId: 'isAdmin',
@@ -169,7 +201,6 @@ export class IdentitiesPageService extends ListPageServiceClass {
                 field: 'token',
                 headerName: 'Token',
                 headerComponent: TableColumnDefaultComponent,
-                headerComponentParams: this.headerComponentParams,
                 cellRenderer: tokenRenderer,
                 resizable: true,
                 cellClass: 'nf-cell-vert-align tCol',

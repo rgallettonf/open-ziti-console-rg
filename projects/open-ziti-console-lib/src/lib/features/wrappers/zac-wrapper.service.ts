@@ -7,6 +7,7 @@ import {get, isEmpty, set} from 'lodash';
 import $ from 'jquery';
 import {ZITI_DOMAIN_CONTROLLER, ZitiDomainControllerService} from "../../services/ziti-domain-controller.service";
 import {ZITI_URLS} from "../../open-ziti.constants";
+import {SettingsService} from "../../services/settings.service";
 
 export const ZAC_WRAPPER_SERVICE = new InjectionToken<any>('ZAC_WRAPPER_SERVICE');
 
@@ -77,16 +78,14 @@ export class ZacWrapperService {
     subscription: Subscription = new Subscription();
     page = '';
     scriptsAdded = false;
-    private zitiControllerDomain: any;
-    private zitiSessionId: any;
 
     constructor(
         @Inject(ZITI_DOMAIN_CONTROLLER) private zitiDomainController: ZitiDomainControllerService,
         @Inject(ZITI_URLS) private URLS:any,
+        private settingsService: SettingsService,
         private http: HttpClient,
         private router: Router,
     ) {
-        this.initSubscriptions();
         this.initRouteListener();
     }
 
@@ -94,13 +93,6 @@ export class ZacWrapperService {
         const appInit = get(window, 'app.init');
         set(window, 'service.call', this.handleServiceCall.bind(this));
         this.initZacListeners();
-    }
-
-    private initSubscriptions() {
-        this.zitiDomainController.zitiSettings.subscribe(results => {
-            this.zitiControllerDomain  = results.zitiDomain;
-            this.zitiSessionId = results.zitiSessionId;
-        })
     }
 
     private initZacListeners() {
@@ -294,6 +286,7 @@ export class ZacWrapperService {
     }
 
     handleServiceCall(name: string, params: any, returnTo: any, type: any) {
+        const controllerDomain = this.settingsService?.settings?.selectedEdgeController || '';
         switch (name) {
             case 'data':
                 this.getZitiEntities(params.type, params.paging).then((result) => {
@@ -312,7 +305,7 @@ export class ZacWrapperService {
                 this.saveZitiSubData(params, returnTo);
                 break;
             case 'call':
-                this.callZitiEdge(`${this.zitiControllerDomain}/edge/management/v1/${params.url}`, {}).then((result) => {
+                this.callZitiEdge(`${controllerDomain}/edge/management/v1/${params.url}`, {}).then((result) => {
                     returnTo(result);
                 });
                 break;
@@ -365,7 +358,8 @@ export class ZacWrapperService {
     }
 
     getZitiEntities(type: string, paging: any) {
-        const serviceUrl = `${this.zitiControllerDomain}/edge/management/v1`;
+        const controllerDomain = this.settingsService?.settings?.selectedEdgeController || '';
+        const serviceUrl = `${controllerDomain}/edge/management/v1`;
         let urlFilter = "";
         let toSearchOn = "name";
         let noSearch = false;
@@ -389,7 +383,8 @@ export class ZacWrapperService {
     }
 
     getZitiEntity(params: any) {
-        const serviceUrl = `${this.zitiControllerDomain}/edge/management/v1`;
+        const controllerDomain = this.settingsService?.settings?.selectedEdgeController || '';
+        const serviceUrl = `${controllerDomain}/edge/management/v1`;
         const url = params.url.split("./").join("");
         const id = params.id;
         const type = params.type;
@@ -405,7 +400,8 @@ export class ZacWrapperService {
     }
 
     saveZitiEntity(params: any, returnTo: any) {
-        const serviceUrl = `${this.zitiControllerDomain}/edge/management/v1`;
+        const controllerDomain = this.settingsService?.settings?.selectedEdgeController || '';
+        const serviceUrl = `${controllerDomain}/edge/management/v1`;
         const saveParams = params.save;
         const additional = params.additional;
         const removal = params.removal;
@@ -474,7 +470,8 @@ export class ZacWrapperService {
     }
 
     saveZitiSubData(params: any, returnTo: any) {
-        const serviceUrl = `${this.zitiControllerDomain}/edge/management/v1`;
+        const controllerDomain = this.settingsService?.settings?.selectedEdgeController || '';
+        const serviceUrl = `${controllerDomain}/edge/management/v1`;
 
         const id = params.id;
         const type = params.type;
@@ -523,7 +520,6 @@ export class ZacWrapperService {
         const options: any = {
             headers: {
                 accept: 'application/json',
-                'zt-session': this.zitiSessionId
             },
             params: {},
             responseType: 'json' as const,
