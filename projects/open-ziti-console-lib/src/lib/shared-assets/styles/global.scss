@@ -11,6 +11,7 @@
   }
 }
 
+#AddMessageModal,
 #QRModal,
 #ResetModal,
 #OverrideModal,
@@ -26,6 +27,7 @@
 }
 
 .sideNavClosed {
+  #AddMessageModal,
   #QRModal,
   #ResetModal,
   #OverrideModal,
@@ -47,6 +49,14 @@
       background-color: rgba(12, 12, 29, 0.90) !important;
       backdrop-filter: blur(3px) !important;
       opacity: 1 !important;
+    }
+  }
+}
+
+.mat-mdc-dialog-container {
+  .mat-mdc-dialog-surface {
+    &.mdc-dialog__surface {
+      background: transparent;
     }
   }
 }

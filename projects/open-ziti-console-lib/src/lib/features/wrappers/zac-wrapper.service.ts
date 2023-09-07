@@ -1,4 +1,4 @@
-import {Inject, Injectable, InjectionToken} from '@angular/core';
+import {EventEmitter, Inject, Injectable, InjectionToken} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Subject, Subscription} from "rxjs";
 import {NavigationEnd, Router} from "@angular/router";
@@ -69,12 +69,18 @@ export const COMPONENTS: any = {
                     <div class="tab" data-go="/sessions" data-i18n="Sessions"></div>
                     <div class="tab" data-go="/api-sessions" data-i18n="APISessions"></div>
                 </div>`,
+    customtags: `<label data-i18n="Tags"></label>
+                <div class="configBox">
+                    <div id="TagExtended"></div>
+                </div>`
 }
 
 
 @Injectable({providedIn: 'root'})
 export class ZacWrapperService {
-    pageChange = new Subject<void>();
+
+    zitiUpdated = new EventEmitter<void>();
+    pageChanged = new EventEmitter<void>();
     subscription: Subscription = new Subscription();
     page = '';
     scriptsAdded = false;
@@ -108,6 +114,11 @@ export class ZacWrapperService {
                 case 'identities':
                     this.page = 'identities';
                     route = this.URLS.ZITI_IDENTITIES;
+                    break;
+                case '/attributes':
+                case 'attributes':
+                    this.page = 'attributes';
+                    route = this.URLS.ZITI_ATTRIBUTES;
                     break;
                 case '/jwt-signers':
                 case 'jwt-signers':
@@ -149,6 +160,11 @@ export class ZacWrapperService {
                     this.page = 'terminators';
                     route = this.URLS.ZITI_TERMINATORS;
                     break;
+                case '/config-terminators':
+                case 'config-terminators':
+                    this.page = 'config-terminators';
+                    route = this.URLS.ZITI_CONFIG_TERMINATORS;
+                    break;
                 case '/auth-policies':
                 case 'auth-policies':
                     this.page = 'auth-policies';
@@ -183,6 +199,11 @@ export class ZacWrapperService {
                 case 'sessions':
                     this.page = 'sessions';
                     route = this.URLS.ZITI_SESSIONS;
+                    break;
+                case '/servers':
+                case 'servers':
+                    this.page = 'servers';
+                    route = this.URLS.ZITI_SERVERS;
                     break;
                 case '/login':
                 case 'login':
@@ -237,7 +258,7 @@ export class ZacWrapperService {
                         this.page = 'terminators';
                         break;
                     case this.URLS.ZITI_AUTH_POLICIES:
-                        this.page = 'service-policies';
+                        this.page = 'auth-policies';
                         break;
                     case this.URLS.ZITI_SERVICE_POLICIES:
                         this.page = 'service-policies';
@@ -257,8 +278,14 @@ export class ZacWrapperService {
                     case this.URLS.ZITI_SESSIONS:
                         this.page = 'sessions';
                         break;
+                    case this.URLS.ZITI_ATTRIBUTES:
+                        this.page = 'attributes';
+                        break;
                     case this.URLS.ZAC_LOGIN:
                         this.page = 'login';
+                        break;
+                    case this.URLS.ZITI_SERVERS:
+                        this.page = 'servers';
                         break;
                     default:
                         this.page = 'index';
@@ -266,7 +293,7 @@ export class ZacWrapperService {
                         break;
                 }
                 if (oldPage !== this.page || doPageLoad) {
-                    this.pageChange.next();
+                    this.pageChanged.emit();
                 }
             }
         });
@@ -299,10 +326,15 @@ export class ZacWrapperService {
                 });
                 break;
             case 'dataSave':
-                this.saveZitiEntity(params, returnTo);
+                this.saveZitiEntity(params, returnTo).then(() => {
+                    this.zitiUpdated.emit();
+                });
                 break;
             case 'subSave':
                 this.saveZitiSubData(params, returnTo);
+                break;
+            case 'delete':
+                this.deleteZitiEntities(params, returnTo);
                 break;
             case 'call':
                 this.callZitiEdge(`${controllerDomain}/edge/management/v1/${params.url}`, {}).then((result) => {
@@ -321,14 +353,16 @@ export class ZacWrapperService {
                 });
                 break;
             case 'settings':
-                this.callZitiEdge("/api/settings", {}).then((result) => {
+                this.http.get("/assets/data/settings.json", {}).toPromise().then((result) => {
                     returnTo(result);
                 });
                 break;
             case 'version':
-                this.callZitiEdge("/api/version", {}).then((result) => {
-                    returnTo(result);
-                });
+                const versionData = {
+                    baseUrl: this.settingsService?.settings?.selectedEdgeController,
+                    serviceUrl: '/edge/management/v1'
+                };
+                returnTo(versionData);
                 break;
             case 'controllerSave':
                 this.callZitiEdge("/api/controllerSave", {}).then((result) => {
@@ -399,6 +433,27 @@ export class ZacWrapperService {
         });
     }
 
+    deleteZitiEntities(params, returnTo) {
+        const controllerDomain = this.settingsService?.settings?.selectedEdgeController || '';
+        const serviceUrl = `${controllerDomain}/edge/management/v1`;
+        const promises = [];
+        params.ids.forEach((id) => {
+            const type = params.type;
+            const parentType = params.name;
+            promises.push(this.callZitiEdge(serviceUrl + "/" + type + "/" + id.trim() + "/", {}, 'DELETE').then((result: any) => {
+                return {
+                    id: id,
+                    parent: parentType,
+                    type: type,
+                    data: result.data
+                }
+            }));
+        })
+        Promise.all(promises).then(() => {
+            returnTo({});
+        });
+    }
+
     saveZitiEntity(params: any, returnTo: any) {
         const controllerDomain = this.settingsService?.settings?.selectedEdgeController || '';
         const serviceUrl = `${controllerDomain}/edge/management/v1`;
@@ -434,7 +489,7 @@ export class ZacWrapperService {
             }
         }
 
-        this.callZitiEdge(url, saveParams, method).then((result: any) => {
+        return this.callZitiEdge(url, saveParams, method).then((result: any) => {
             if (result?.error) this.handleError(result.error);
             else if (result?.data) {
                 if (additional) {

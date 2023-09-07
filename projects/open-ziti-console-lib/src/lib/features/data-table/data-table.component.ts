@@ -160,7 +160,12 @@ export class DataTableComponent implements OnChanges, OnInit {
 
   @ViewChild('calendar', { static: false }) calendar: any;
 
-  constructor(public svc: DataTableService) {}
+  constructor(public svc: DataTableService) {
+    this.resizeGridColumnsDebounced = _.debounce(this.svc.resizeGridColumns.bind(this.svc), 20, {leading: true});
+    this._refreshCellsDebounced = _.debounce(this.svc.refreshCells.bind(this.svc), 50);
+    this._onColumnsResizedDebounced = _.debounce(this.svc.onColumnsResized.bind(this.svc), 400);
+    this._saveColumnStateDebounced = _.debounce(this.svc.saveColumnState.bind(this.svc), 400);
+  }
 
   private _columnDefinitions;
 
@@ -191,11 +196,6 @@ export class DataTableComponent implements OnChanges, OnInit {
       headerHeaderMenuComponent: TableColumnMenuComponent,
       headerDefaultComponent: TableColumnDefaultComponent,
     };
-    this.resizeGridColumnsDebounced = _.debounce(this.svc.resizeGridColumns.bind(this.svc), 20, {leading: true});
-    this._refreshCellsDebounced = _.debounce(this.svc.refreshCells.bind(this.svc), 50);
-    this._onColumnsResizedDebounced = _.debounce(this.svc.onColumnsResized.bind(this.svc), 400);
-    this._saveColumnStateDebounced = _.debounce(this.svc.saveColumnState.bind(this.svc), 400);
-
 
     this.autoGroupColumnDef = {
       field: 'processTree',

@@ -43,6 +43,7 @@ import {ZITI_NAVIGATOR} from "./open-ziti.constants";
 import { GrowlerComponent } from './features/messaging/growler.component';
 import {onAppInit} from "./app.initializer";
 import {ClickOutsideModule} from "ng-click-outside";
+import { ConfirmComponent } from './features/confirm/confirm.component';
 
 @NgModule({
     declarations: [
@@ -79,6 +80,7 @@ import {ClickOutsideModule} from "ng-click-outside";
         FilterBarComponent,
         ExtendableComponent,
         GrowlerComponent,
+        ConfirmComponent,
     ],
     imports: [
         CommonModule,

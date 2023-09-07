@@ -32,6 +32,10 @@
     z-index: 24;
     box-shadow: var(--shadow);
     transition: var(--transition);
+
+    &.icon-delete {
+      background-color: var(--red);
+    }
   }
   .line {
     width: 100%;

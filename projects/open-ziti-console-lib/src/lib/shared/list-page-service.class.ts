@@ -2,6 +2,9 @@ import {inject} from '@angular/core';
 import {ZitiDataService} from "../services/ziti-data.service";
 import {FilterObj} from "../features/data-table/data-table-filter.service";
 import {ValidatorCallback} from "../features/list-page-features/list-page-form/list-page-form.component";
+import {DialogRef} from "@angular/cdk/dialog";
+import {MatDialog} from "@angular/material/dialog";
+import {ConfirmComponent} from "../features/confirm/confirm.component";
 
 export abstract class ListPageServiceClass {
 
@@ -28,6 +31,8 @@ export abstract class ListPageServiceClass {
 
     menuItems: any = [];
 
+    dialogRef: any;
+
     constructor() {
         this.dataService = inject(ZitiDataService);
     }
@@ -49,6 +54,15 @@ export abstract class ListPageServiceClass {
             }
         }
         return this.dataService.get(resourceType, paging, nonNameFilters);
+    }
+
+    removeItems(resourceType: string, ids: string[]) {
+        const promises = [];
+        ids.forEach((id) => {
+            const prom = this.dataService.delete('identities', id);
+            promises.push(prom);
+        });
+        return Promise.all(promises);
     }
 
     sort(sortBy, ordering= 'desc') {

@@ -13,7 +13,7 @@ limitations under the License.
 var page;
 
 $(document).ready(function(e) {
-	if (window.isCloudZiti) {
+	if (window.isSPA) {
 		return;
 	}
 	app.init();

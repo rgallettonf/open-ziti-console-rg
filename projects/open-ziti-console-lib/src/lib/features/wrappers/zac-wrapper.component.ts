@@ -1,8 +1,10 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ZAC_WRAPPER_SERVICE, ZacWrapperService} from "./zac-wrapper.service";
-import {delay, invoke, isEmpty} from 'lodash';
+import {delay, invoke, isEmpty, defer, set} from 'lodash';
 import {Subscription} from "rxjs";
 import {SettingsService} from "../../services/settings.service";
+
+import $ from 'jquery';
 
 @Component({
     selector: 'app-zac-wrapper',
@@ -27,7 +29,7 @@ export class ZacWrapperComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.wrapperService.initZac();
     this.subscription.add(
-    this.wrapperService.pageChange.subscribe(() => {
+    this.wrapperService.pageChanged.subscribe(() => {
       if (this.waitingForSession) {
         return;
       }
@@ -45,6 +47,7 @@ export class ZacWrapperComponent implements OnInit, OnDestroy {
           }
         }
     });
+    this.initZACButtonListener();
   }
 
   ngOnDestroy() {
@@ -54,27 +57,46 @@ export class ZacWrapperComponent implements OnInit, OnDestroy {
 
   async loadPage() {
     this.pageHtml = await this.wrapperService.loadCurrentPage();
-    this.executePageScripts();
+    defer(() => {
+      this.executePageScripts();
+    });
   }
 
   executePageScripts() {
-    setTimeout(() => {
-      const scripts = this.zacContainer.nativeElement.getElementsByTagName('script');
-      for (const script of scripts) {
-        const scriptCopy = <HTMLScriptElement>document.createElement('script');
-        scriptCopy.type = script.type ? script.type : 'text/javascript';
-        if (script.innerHTML) {
-          scriptCopy.innerHTML = script.innerHTML;
-        } else if (script.src) {
-          scriptCopy.src = script.src;
-        }
-        scriptCopy.async = false;
-        script.parentNode.replaceChild(scriptCopy, script);
+    const scripts = this.zacContainer.nativeElement.getElementsByTagName('script');
+    for (const script of scripts) {
+      const scriptCopy = <HTMLScriptElement>document.createElement('script');
+      scriptCopy.type = script.type ? script.type : 'text/javascript';
+      if (script.innerHTML) {
+        scriptCopy.innerHTML = script.innerHTML;
+      } else if (script.src) {
+        scriptCopy.src = script.src;
       }
-      setTimeout(() => {
-        invoke(window, 'app.init');
+      scriptCopy.async = false;
+      script.parentNode.replaceChild(scriptCopy, script);
+    }
+    setTimeout(() => {
+      set(window, 'context.items', []);
+      set(window, 'context.watchers', []);
+      set(window, 'context.eventWatchers', []);
+      invoke(window, 'app.init');
+    }, 50);
+  }
 
-      }, 30);
+  initZACButtonListener() {
+    $('.action.icon-plus.icon-add, #HelpButton').off('click.zacAddButtonClicked');
+    $('.action.icon-plus.icon-add, #HelpButton').on('click.zacAddButtonClicked', (event) => {
+      if ($(event.currentTarget).hasClass('icon-minus')) {
+        return;
+      }
+      $('body').addClass('updateModalOpen');
     });
+    $('.modal .close, .modal .closer').off('click.zacCloseButtonClicked');
+    $('.modal .close, .modal .closer').on('click.zacCloseButtonClicked', () => {
+      $('body').removeClass('updateModalOpen');
+    });
+    delay(() => {
+      this.initZACButtonListener();
+    }, 50);
   }
 }
