@@ -41,9 +41,10 @@ import {AgGridModule} from "ag-grid-angular";
 import {IdentitiesPageComponent} from "./pages/identities/identities-page.component";
 import {ZITI_NAVIGATOR} from "./open-ziti.constants";
 import { GrowlerComponent } from './features/messaging/growler.component';
+import { ConfirmComponent } from './features/confirm/confirm.component';
 import {onAppInit} from "./app.initializer";
 import {ClickOutsideModule} from "ng-click-outside";
-import { ConfirmComponent } from './features/confirm/confirm.component';
+import {NgJsonEditorModule} from "ang-jsoneditor";
 
 @NgModule({
     declarations: [
@@ -92,6 +93,7 @@ import { ConfirmComponent } from './features/confirm/confirm.component';
         AgGridModule,
         ChipsModule,
         ClickOutsideModule,
+        NgJsonEditorModule,
     ],
     exports: [
         ZacWrapperComponent,

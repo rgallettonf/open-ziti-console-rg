@@ -64,6 +64,7 @@ var header = fs.readFileSync(headerFile, 'utf8');
 var footer = fs.readFileSync(footerFile, 'utf8');
 var onlyDeleteSelfController = true;
 var isDebugging = false;
+var tlsServer;
 
 /**
  * Watch for header and footer file changes and load them
@@ -99,7 +100,7 @@ var helmetOptions = {
       directives: {
         defaultSrc: ["'self'", 'www.googletagmanager.com', 'openstreetmap.org'],
         styleSrc: ["'self'", 'www.googletagmanager.com', 'www.google-analytics.com', 'openstreetmap.org', "'unsafe-inline'"],
-        scriptSrc: ["'self'", 'www.googletagmanager.com', 'www.google-analytics.com', 'openstreetmap.org', "'unsafe-inline'", "'unsafe-eval'"],
+        scriptSrc: ["'self'", 'www.googletagmanager.com', 'www.google-analytics.com', 'openstreetmap.org', "'unsafe-inline'"],
         imgSrc: ["'self'", 'www.googletagmanager.com', 'www.google-analytics.com', 'openstreetmap.org', 'b.tile.opernstreetmap.org', 'data:', 'blob:', 'https:'],
         connectSrc: ["'self'", 'www.googletagmanager.com', 'www.google-analytics.com', 'openstreetmap.org', 'ws:', 'wss:'],
         frameSrc: ["'self'", 'www.googletagmanager.com', 'openstreetmap.org'],
@@ -112,7 +113,7 @@ var helmetOptions = {
 };
 
 app.use("/assets", express.static('../open-ziti-console-lib/src/lib/assets', {
-  maxAge: '31536000000'
+	maxAge: '31536000000' 
 }));
 app.use(cors(corsOptions));
 app.use(helmet(helmetOptions));
@@ -122,15 +123,19 @@ app.use(function(req, res, next) {
 });
 app.use(bodyParser.json());
 app.use(fileUpload());
-app.use(session({
-	store: new sessionStore({}),
-	secret: 'NetFoundryZiti',
-	retries: 0,
-	resave: true,
-	saveUninitialized: true,
-	ttl: 60000,
+app.use(session({ 
+	store: new sessionStore({}), 
+	secret: 'NetFoundryZiti', 
+	retries: 0, 
+	resave: true, 
+	saveUninitialized: true, 
+	ttl: 60000, 
 	logFn: () => {}
 }));
+app.use(function (req, res, next) {
+	res.setHeader('X-XSS-Protection', '1; mode=block');
+	next();
+});
 
 /**
  * Load configurable settings, or create the settings in place if they have never been defined
@@ -138,6 +143,7 @@ app.use(session({
 var initial = JSON.parse(fs.readFileSync(path.join(__dirname,__assets,"data","settings.json")));
 
 var port = initial.port;
+var bindIP = initial.bindIP;
 var portTLS = initial.portTLS;
 var updateSettings = initial.update;
 var settingsPath = initial.location;
@@ -161,7 +167,7 @@ for (var i=0; i<process.argv.length; i++) {
 				else if (options[0].toLowerCase()=="location") settingsPath=true;
 			}
 		}
-	}
+	} 
 }
 
 if (settingsPath.indexOf("/")!=0) settingsPath = "/"+settingsPath;
@@ -198,6 +204,7 @@ if (settings.port && !isNaN(settings.port)) port = settings.port;
 if (settings.portTLS && !isNaN(settings.portTLS)) portTLS = settings.portTLS;
 if (settings.rejectUnauthorized && !isNaN(settings.rejectUnauthorized)) rejectUnauthorized = settings.rejectUnauthorized;
 
+
 if (process.env.PORT) port = process.env.PORT;
 if (process.env.PORTTLS) portTLS = process.env.PORTTLS;
 
@@ -206,7 +213,7 @@ for (var i=0; i<process.argv.length; i++) {
 	if (options.length==2) {
 		if (options[0].toLowerCase()=="port"&&!isNaN(options[1])) port = options[1];
 		else if (options[0].toLowerCase()=="porttls"&&!isNaN(options[1])) portTLS = options[1];
-
+		
 		if (options[0].toLowerCase()=="editable") {
 			if (options[1]=="true") settings.editable = true;
 			else settings.editable = false;
@@ -220,6 +227,18 @@ for (let i=0; i<comFiles.length; i++) {
 	var name = path.parse(comFiles[i]).name;
 	components[name] = fs.readFileSync(__dirname+__assets + "/components/"+comFiles[i], 'utf8');
 }
+components["canStyle"] = true;
+if (settings.allowPersonal != null) components["canStyle"] = settings.allowPersonal;
+components["style"] = ":root {\n";
+if (settings.primary && settings.primary!="") components["style"] += "\t\t--primary: "+settings.primary+";\n";
+else components["style"] += "\t\t--primary: #0027ab;\n";
+if (settings.secondary && settings.secondary!="") components["style"] += "\t\t--secondary: "+settings.secondary+";\n";
+else components["style"] += "\t\t--secondary: #fe0029;\n";
+components["style"] += "\n\t}";
+if (settings.logo && settings.logo!="") {
+	components["style"] += "\n\n\t#CustomLogo {\n\t\tbackground-image: url("+settings.logo+");\n\t\tdisplay: inline-block;\n\t}";
+}
+console.log(settings);
 
 for (var i=0; i<settings.edgeControllers.length; i++) {
 	if (settings.edgeControllers[i].default) {
@@ -250,7 +269,7 @@ for (var i=0; i<pages.length; i++) {
 			}
 		}
 		if (page.access=="") {
-			if (page.url=="/login") request.session.zitiSessionId = null;
+			if (page.url=="/login") request.session.user = null;
 			var headerNow = header.split("{{title}}").join(page.title);
 			headerNow = headerNow.split("{{auth}}").join("");
 			fs.readFile(__dirname+__html+page.page, 'utf8', function(err, data) {
@@ -287,7 +306,7 @@ app.get("/sso", (request, response) => {
 	GetPath().then((prefix) => {
 		serviceUrl = baseUrl+prefix;
 		request.session.serviceUrl = serviceUrl;
-		request.session.zitiSessionId = session
+		request.session.user = session
 		request.session.authorization = 100;
 		console.log(baseUrl, request.session.user);
 		response.redirect("/");
@@ -298,9 +317,9 @@ app.get("/sso", (request, response) => {
 });
 
 /**
- * Just tests if the user exists as a session or not, would add on to validate roles, etc if the system is expanded to
+ * Just tests if the user exists as a session or not, would add on to validate roles, etc if the system is expanded to 
  * include more well defined authentication structures
- * @param {The current user session} user
+ * @param {The current user session} user 
  */
 function hasAccess(user) {
 	return (user!=null);
@@ -318,10 +337,10 @@ app.post("/api/login", function(request, response) {
 		GetPath().then((prefix) => {
 			serviceUrl = urlToSet+prefix;
 			request.session.serviceUrl = serviceUrl;
-			request.session.creds = {
-				username: request.body.username,
-				password: request.body.password
-			};
+			//request.session.creds = {
+			//	username: request.body.username,
+			//	password: request.body.password
+			//};
 			Authenticate(request).then((results) => {
 				response.json(results);
 			});
@@ -335,9 +354,13 @@ function Authenticate(request) {
 	return new Promise(function(resolve, reject) {
 		if (!baseUrl||baseUrl.trim().length==0&&request.session.baseUrl) baseUrl = request.session.baseUrl;
 		if (!serviceUrl||serviceUrl.trim().length==0&&request.session.serviceUrl) serviceUrl = request.session.serviceUrl;
+		let params = {
+			username: request.body.username,
+			password: request.body.password
+		};
 		log("Connecting to: "+serviceUrl+"/authenticate?method=password");
-		if (request.session.creds != null) {
-			external.post(serviceUrl+"/authenticate?method=password", {json: request.session.creds , rejectUnauthorized: rejectUnauthorized }, function(err, res, body) {
+		//if (request.session.creds != null) {
+			external.post(serviceUrl+"/authenticate?method=password", {json: params , rejectUnauthorized: rejectUnauthorized }, function(err, res, body) {
 				if (err) {
 					log(err);
 					var error = "Server Not Accessible";
@@ -352,15 +375,15 @@ function Authenticate(request) {
 							resolve( {success: "Logged In"} );
 						} else resolve( {error: "Invalid Account"} );
 					}
-				}
+				}				
 			});
-		}
+		//}
 	});
 }
 
 /**
  * Return the server path to the services
- *
+ * 
  * @returns The path to the services
  */
 function GetPath() {
@@ -389,8 +412,10 @@ app.post('/api/version', function(request, response) {
 				try {
 					var data = JSON.parse(body);
 					log("Version: "+body);
-					if (data&&data.data) response.json( {data: data.data, zac: zacVersion, requireAuth: onlyDeleteSelfController, baseUrl: baseUrl} );
-					else response.json({});
+					GetPath().then((fullPath) => {
+						if (data&&data.data) response.json( {data: data.data, serviceUrl: fullPath, zac: zacVersion, requireAuth: onlyDeleteSelfController, baseUrl: baseUrl} );
+						else response.json({});
+					});
 				} catch (e) {
 					log("Invalid Json Result on Version: "+e);
 					response.json({});
@@ -460,8 +485,8 @@ app.post("/api/reset", function(request, response) {
 
 /**
  * Tests whether the service url exists in the system to prevent hitting unknown server sources
- *
- * @param {The Url to check if it exists in the configuration} url
+ * 
+ * @param {The Url to check if it exists in the configuration} url 
  */
 function IsServerDefined(url) {
 	for (var i=0; i<settings.edgeControllers.length; i++) {
@@ -486,7 +511,16 @@ app.post("/api/language", (request, response) => {
  * Returns the current system settings
  */
 app.post("/api/settings", function(rewwquest, response) {
-	response.json(settings);
+	var toReturn = settings;
+	delete toReturn.mail;
+	delete toReturn.to;
+	delete toReturn.from;
+	delete toReturn.location;
+	delete toReturn.update;
+	delete toReturn.rejectUnauthorized;
+	delete toReturn.port;
+	delete toReturn.portTLS;
+	response.json(toReturn);
 });
 
 /**
@@ -503,7 +537,7 @@ app.post("/api/controllerSave", function(request, response) {
 	if (errors.length>0) {
 		response.json({ errors: errors });
 	} else {
-		var callUrl = url+ "/edge/management/v1/version";
+		var callUrl = url+"/edge/management/v1/version";
 		log("Calling Controller: "+callUrl);
 		external.get(callUrl, {rejectUnauthorized: rejectUnauthorized, timeout: 5000}, function(err, res, body) {
 			if (err) {
@@ -515,7 +549,7 @@ app.post("/api/controllerSave", function(request, response) {
 					var results = JSON.parse(body);
 					if (body.error) {
 						log("Add Controller Error");
-						log(body.error);
+						log(JSON.stringify(body.error));
 						response.json( {error: "Invalid Edge Controller", errorObj: err} );
 					} else {
 						if (results.data.apiVersions.edge.v1 != null) {
@@ -539,7 +573,7 @@ app.post("/api/controllerSave", function(request, response) {
 								};
 							}
 							fs.writeFileSync(__dirname+settingsPath+'/settings.json', JSON.stringify(settings));
-							response.json(settings);
+							response.json({edgeControllers: settings.edgeControllers});
 						} else {
 							log("Controller: "+url+" Returned: "+JSON.stringify(results));
 							response.json( {error: "Invalid Edge Controller", errorObj: results} );
@@ -550,7 +584,7 @@ app.post("/api/controllerSave", function(request, response) {
 					response.json( {error: "Invalid Edge Controller", errorObj: body} );
 				}
 			}
-		});
+		});		
 	}
 });
 
@@ -600,7 +634,7 @@ app.delete("/api/mfa", function(request, response) {
 	var user = request.session.user;
 	if (hasAccess(user)) {
 		var id = request.body.id;
-		Authenticate(request).then((result) => {
+		///Authenticate(request).then((result) => {
 			external.delete(serviceUrl+"/identities/"+id.trim()+"/mfa", {rejectUnauthorized: rejectUnauthorized, headers: { "zt-session": request.session.user } }, function(err, res, body) {
 				if (err) {
 					log("Error: "+JSON.stringify(body.err));
@@ -610,6 +644,28 @@ app.delete("/api/mfa", function(request, response) {
 					response.json({success: "MFA Removed"});
 				}
 			});
+		//});
+	}
+});
+
+/**
+ * Reset the identity bound authenticators enrollment status
+ */
+app.post("/api/resetEnroll", function(request, response) {
+	var user = request.session.user;
+	if (hasAccess(user)) {
+		var id = request.body.id;
+		var date = moment(request.body.date).utc().toISOString();
+		var url = serviceUrl+"/authenticators/"+id.trim()+"/re-enroll";
+		var params = { expiresAt: date };
+		log("Calling "+url);
+		log(JSON.stringify(params));
+		external.post(url, { json: params, rejectUnauthorized: rejectUnauthorized, headers: { "zt-session": request.session.user } }, function(err, res, body) {
+			if (body.error) HandleError(response, body.error);
+			else {
+				log("Success: "+JSON.stringify(body));
+				response.json({success: "Enrollment Reset"});
+			}
 		});
 	}
 });
@@ -624,7 +680,7 @@ app.delete("/api/mfa", function(request, response) {
  */
 app.post("/api/call", function(request, response) {
 	log("Calling: "+serviceUrl+"/"+request.body.url);
-	Authenticate(request).then((results) => {
+	//Authenticate(request).then((results) => {
 		external.get(serviceUrl+"/"+request.body.url, {json: {}, rejectUnauthorized: rejectUnauthorized, headers: { "zt-session": request.session.user } }, function(err, res, body) {
 			if (err) {
 				log("Error: "+JSON.stringify(err));
@@ -639,11 +695,11 @@ app.post("/api/call", function(request, response) {
 				}
 			}
 		});
-	});
+	//});
 });
 
 /**
- * Get the data from the edge controller based on the type of object and the
+ * Get the data from the edge controller based on the type of object and the 
  * defined search parameters
  */
 app.post("/api/data", function(request, response) {
@@ -652,6 +708,15 @@ app.post("/api/data", function(request, response) {
 	GetItems(type, paging, request, response);
 });
 
+/**
+ * Call a service if expired, try to reauthenticate and try again.
+ * 
+ * @param {The url of the service to call} url 
+ * @param {The Json object to send} json 
+ * @param {The Server Request Object} request 
+ * @param {True if this is the first callattempt} isFirst 
+ * @returns 
+ */
 function DoCall(url, json, request, isFirst=true) {
 	return new Promise(function(resolve, reject) {
 		log("Calling: "+url+" "+isFirst+" "+request.session.user);
@@ -663,11 +728,11 @@ function DoCall(url, json, request, isFirst=true) {
 				if (body.error) {
 					if (isFirst) {
 						log("Re-authenticate User");
-						Authenticate(request).then((results) => {
+						//Authenticate(request).then((results) => {
 							DoCall(url, json, request, false).then((results) => {
 								resolve(results);
 							});
-						});
+						//});
 					} else resolve(body);
 				} else if (body.data) {
 					log("Items Returned: "+body.data.length);
@@ -692,13 +757,13 @@ function DoCall(url, json, request, isFirst=true) {
 
 /**
  * Get the data from the edge controller
- *
- * @param {The type of object to search for (identity, router, gateway, etc)} type
- * @param {Paging request parameters (see edge controller API docs)} paging
- * @param {The server request object} request
- * @param {The server response object} response
+ * 
+ * @param {The type of object to search for (identity, router, gateway, etc)} type 
+ * @param {Paging request parameters (see edge controller API docs)} paging 
+ * @param {The server request object} request 
+ * @param {The server response object} response 
  */
-function GetItems(type, paging, request, response) {
+function GetItems(type, paging, request, response, cli, serviceCall) {
 	if (request.body.url) {
 		GetSubs(request.body.url.split("./").join(""), request.body.type, "", "", request, response);
 	} else {
@@ -764,12 +829,12 @@ app.post("/api/subdata", function(request, response) {
 
 function GetSubs(url, type, id, parentType, request, response) {
 	log("Calling: "+serviceUrl+"/"+url);
-	Authenticate(request).then((results) => {
+	//Authenticate(request).then((results) => {
 		external.get(serviceUrl+"/"+url, {json: {}, rejectUnauthorized: rejectUnauthorized, headers: { "zt-session": request.session.user } }, function(err, res, body) {
 			if (err) response.json({ error: err });
 			else {
 				log("Returned: "+JSON.stringify(body));
-				response.json({
+				response.json({ 
 					id: id,
 					parent: parentType,
 					type: type,
@@ -777,19 +842,19 @@ function GetSubs(url, type, id, parentType, request, response) {
 				});
 			}
 		});
-	});
+	//});
 }
 
 app.post("/api/jwt", function(request, response) {
 	var id = request.body.id;
 	var type = request.body.type;
-	Authenticate(request).then((results) => {
+	//Authenticate(request).then((results) => {
 		var url = serviceUrl+"/"+type+"/"+id+"/jwt";
 		log("Calling: "+url);
 		external.get(url, {json: {}, rejectUnauthorized: rejectUnauthorized, headers: { "zt-session": request.session.user } }, function(err, res, body) {
 			response.json({id: id, jwt: body});
 		});
-	});
+	//});
 });
 
 
@@ -805,9 +870,303 @@ function HandleError(response, error) {
 	else response.json({ error: error, errorObj: error });
 }
 
+/**
+ * Quick create a simple service and return what occurred
+ */
+app.post("/api/service", async function(request, response) {
+	if (serviceUrl==null||serviceUrl.length==0) response.json({error:"loggedout"});
+	else {
+		var name = request.body.name;
+		var protocol = request.body.protocol;
+		var host = request.body.host;
+		var port = Number(request.body.port);
+		var encrypt = request.body.encrypt;
+		var zitiHost = request.body.zitiHost;
+		var zitiPort = Number(request.body.zitiPort);
+		var hosted = request.body.hosted;
+		var access = request.body.access;
+
+		var user = request.session.user;
+
+		var rootName = name.trim().replace(/[^a-z0-9 ]/gi, '').split(' ').join('-');
+		var clientName = rootName+"-Client";
+		var serverName = rootName+"-Server";
+		var dialPolicyName = rootName+"-DialPolicy";
+		var bindPolicyName = rootName+"-BindPolicy";
+
+		var serverConfig = {
+			hostname: host,
+			port: port,
+			protocol: protocol
+		};
+		var clientConfig = {
+			hostname: zitiHost,
+			port: zitiPort
+		};
+
+		var clientConfigId = await GetConfigId(request, response, serviceUrl, user, "ziti-tunneler-client.v1");
+		var serverConfigId = await GetConfigId(request, response, serviceUrl, user, "ziti-tunneler-server.v1");
+		
+		var serverData = await CreateConfig(request, response, user, serviceUrl, serverConfigId, serverName, serverConfig);
+		var clientData = await CreateConfig(request, response, user, serviceUrl, clientConfigId, clientName, clientConfig);
+		var serverId = serverData.id;
+		var clientId = clientData.id;
+
+		var serviceData = await CreateService(request, response, serviceUrl, user, name, encrypt, serverId, clientId);		
+		var serviceId = serviceData.id;
+		
+		var bindData = await CreateServerPolicy(request, response, serviceUrl, user, bindPolicyName, "@"+serviceId, hosted);
+		var dialData = await CreateClientPolicy(request, response, serviceUrl, user, dialPolicyName, "@"+serviceId, access);
+		
+		var bindId = bindData.id;
+		var dialId = dialData.id;
+
+		var toReturn = {
+			data: [],
+			cli: [],
+			services: []
+		};
+		console.log(clientId+" "+serverId+" "+serverConfigId+" "+clientConfigId+" "+bindId+" "+dialId);
+	
+		var logs = [];
+		logs.push({name: serverName, id: serverId, type: "Config"});
+		logs.push({name: clientName, id: clientId, type: "Config"});
+		logs.push({name: name, id: serviceId, type: "Service"});
+		logs.push({name: bindPolicyName, id: bindId, type: "Policy"});
+		logs.push({name: dialPolicyName, id: dialId, type: "Policy"});
+		toReturn.data = logs;
+		toReturn.cli.push(serverData.cli);
+		toReturn.cli.push(clientData.cli);
+		toReturn.cli.push(serviceData.cli);
+		toReturn.cli.push(bindData.cli);
+		toReturn.cli.push(dialData.cli);
+
+		toReturn.services.push(serverData.service);
+		toReturn.services.push(clientData.service);
+		toReturn.services.push(serviceData.service);
+		toReturn.services.push(bindData.service);
+		toReturn.services.push(dialData.service);
+		response.json(toReturn);
+	}
+});
+
+async function CreateClientPolicy(request, respone, url, user, name, serviceId, access) {
+	return new Promise(function(resolve, reject) {
+		if (hasAccess(user)) {
+			//Authenticate(request).then((results) => {
+				if (hasAccess(user)) {
+					var params = {
+						name: name,
+						type: "Dial",
+						semantic: "AnyOf",
+						serviceRoles: [serviceId],
+						identityRoles: access
+					};
+					log("Saving As: POST "+JSON.stringify(params));
+					external(url+"/service-policies", {method: "POST", json: params, rejectUnauthorized: rejectUnauthorized, headers: { "zt-session": request.session.user } }, function(err, res, body) {
+						log(JSON.stringify(body));
+						let cli = "ziti edge create service-policy '"+name+"' Dial --service-roles '"+serviceId+"' --identity-roles '"+access.toString()+"'";
+						let serviceCall = {
+							url: url+"/service-policies",
+							params: params
+						};
+						var item = {
+							id: "",
+							cli: cli,
+							service: serviceCall
+						}
+						if (body.data) item.id = body.data.id;
+						resolve(item);
+					});
+				}
+			//});
+		}
+	});
+}
+
+async function CreateServerPolicy(request, respone, url, user, name, serviceId, hosted) {
+	return new Promise(function(resolve, reject) {
+		if (hasAccess(user)) {
+			//Authenticate(request).then((results) => {
+				if (hasAccess(user)) {
+					var params = {
+						name: name,
+						type: "Bind",
+						semantic: "AnyOf",
+						serviceRoles: [serviceId],
+						identityRoles: hosted
+					};
+					log("Saving As: POST "+JSON.stringify(params));
+					external(url+"/service-policies", {method: "POST", json: params, rejectUnauthorized: rejectUnauthorized, headers: { "zt-session": request.session.user } }, function(err, res, body) {
+						log(JSON.stringify(body));
+						let cli = "ziti edge create service-policy '"+name+"' Bind --semantic AnyOf --service-roles '"+serviceId+"' --identity-roles '"+hosted.toString()+"'";
+						let serviceCall = {
+							url: url+"/service-policies",
+							params: params
+						};
+						var item = {
+							id: "",
+							cli: cli,
+							service: serviceCall
+						}
+						if (body.data) item.id = body.data.id;
+						resolve(item);
+					});
+				}
+			//});
+		}
+	});
+}
+
+async function CreateService(request, respone, url, user, name, encrypt, serverId, clientId) {
+	return new Promise(function(resolve, reject) {
+		//Authenticate(request).then((results) => {
+			if (hasAccess(user)) {
+				var params = {
+					name: name,
+					configs: [serverId, clientId],
+					encryptionRequired: encrypt
+				};
+				log("Saving As: POST "+JSON.stringify(params));
+				external(url+"/services", {method: "POST", json: params, rejectUnauthorized: rejectUnauthorized, headers: { "zt-session": request.session.user } }, function(err, res, body) {
+					log(JSON.stringify(body));
+					let cli = "ziti edge create service '"+name+"' --configs '"+serverId+","+clientId+"'";
+					let serviceCall = {
+						url: url+"/services",
+						params: params
+					};
+					var item = {
+						id: "",
+						cli: cli,
+						service: serviceCall
+					}
+					if (body.data) item.id = body.data.id;
+					resolve(item);
+				});
+			}
+		//});
+	});
+}
+
+async function GetConfigId(request, response, url, user, type) {
+	return new Promise(function(resolve, reject) {
+		//Authenticate(request).then((results) => {
+			if (hasAccess(user)) {
+				DoCall(url+"/config-types?filter=(name = \""+type+"\")&limit=1", {}, request, true).then((results) => {
+					console.log("Config Returned");
+					console.log(JSON.stringify(results));
+					resolve(results.data[0].id);
+				});
+			}
+		//});
+	});
+}
 
 /**
- * Save the object to the edge controller based on the provided type and passed in JSON
+ * 
+ * Create a new config given a config type and variables necaassary, iterate an index and append if the name already exists
+ * 
+ * @param {The Server Request object} request 
+ * @param {The Server Response object} response 
+ * @param {The user creating the config} user 
+ * @param {The url to the edge controller} url 
+ * @param {The config identifier} configId 
+ * @param {The name to create} name 
+ * @param {The data associated with the config} data 
+ * @param {The index of attempts that the call is on} index 
+ * @returns The new id, cli command, and service vall info
+ */
+async function CreateConfig(request, response, user, url, configId, name, data, index) {
+	return new Promise(function(resolve, reject) {
+		if (!index) index = 0;
+		//Authenticate(request).then((results) => {
+			if (hasAccess(user)) {
+				var params = {
+					name: name+((index>0)?"-"+index:""),
+					configTypeId: configId,
+					data: data
+				};
+				log("Saving As: POST "+JSON.stringify(params));
+				external(url+"/configs", {method: "POST", json: params, rejectUnauthorized: rejectUnauthorized, headers: { "zt-session": request.session.user } }, function(err, res, body) {
+					log(JSON.stringify(body));
+					index++;
+					if (body.error) resolve(CreateConfig(request, response, user, url, configId, name, data, index));
+					else if (body.data) {
+						let cli = "ziti edge create config '"+params.name+"' '"+configId+"' '"+JSON.stringify(data).split('"').join('\\"')+"'";
+						let serviceCall = {
+							url: url+"/configs",
+							params: params
+						};
+						var item = {
+							id: "",
+							cli: cli,
+							service: serviceCall
+						}
+						if (body.data) item.id = body.data.id;
+						resolve(item);						
+					} else resolve(CreateConfig(request, response, user, url, configId, name, data, index));
+				});
+			}
+		//});
+	});
+}
+
+/**
+ * Quick create a simple identity and return the new identity
+ */
+app.post("/api/identity", function(request, response) {
+	if (serviceUrl==null||serviceUrl.length==0) response.json({error:"loggedout"});
+	else {
+		log("Simple Identity Creation");
+		var name = request.body.name;
+		var user = request.session.user;
+		var url = serviceUrl+"/identities";
+		var params = {
+			enrollment: {
+				ott: true
+			},
+			isAdmin: false,
+			name: name,
+			type: "Device"
+		}
+		if (request.body.roles) params.roleAttributes = request.body.roles
+		//Authenticate(request).then((results) => {
+			if (hasAccess(user)) {
+				log("Saving As: POST "+JSON.stringify(params));
+				external(url, {method: "POST", json: params, rejectUnauthorized: rejectUnauthorized, headers: { "zt-session": request.session.user } }, function(err, res, body) {
+					log(JSON.stringify(body));
+					if (body.error) HandleError(response, body.error);
+					else if (body.data) {
+						var id = body.data.id;
+						DoCall(serviceUrl+"/identities/"+id, {}, request, true).then((results) => {
+							if (results.error) HandleError(response, results.error);
+							else {
+								results.cli = [];
+								results.services = [];
+								
+								let cli = "ziti edge create identity device \'"+name+"\'";
+								if (request.body.roles) cli += " -a \'"+request.body.roles.toString()+"\'";
+								results.cli.push(cli);
+
+								let serviceCall = {
+									url: url,
+									params: params
+								};
+								results.services.push(serviceCall);
+
+								response.json(results);
+							}
+						});
+					} else response.json( {error: "Unable to save data"} );
+				});
+			}
+		//});
+	}
+});
+
+
+/**
+ * Save the object to the edge controller based on the provided type and passed in JSON 
  * parameters. If it exists, do an update, if not do a create operation.
  */
 app.post("/api/dataSave", function(request, response) {
@@ -824,7 +1183,7 @@ app.post("/api/dataSave", function(request, response) {
 		var user = request.session.user;
 		var chained = false;
 		if (request.body.chained) chained = request.body.chained;
-		Authenticate(request).then((results) => {
+		//Authenticate(request).then((results) => {
 			if (hasAccess(user)) {
 				if (id&&id.trim().length>0) {
 					method = "PATCH";
@@ -884,10 +1243,10 @@ app.post("/api/dataSave", function(request, response) {
 								else GetItems(type, paging, request, response);
 							}
 						} else response.json( {error: "Unable to save data"} );
-					}
+					}	
 				});
 			}
-		});
+		//});
 	}
 });
 
@@ -905,7 +1264,7 @@ app.post("/api/subSave", function(request, response) {
 		var url = serviceUrl+"/"+fullType;
 		var saveParams = request.body.save;
 		var user = request.session.user;
-		Authenticate(request).then((results) => {
+		//Authenticate(request).then((results) => {
 			if (hasAccess(user)) {
 				log(url);
 				log("Sub Saving As: "+doing+" "+JSON.stringify(saveParams));
@@ -919,7 +1278,7 @@ app.post("/api/subSave", function(request, response) {
 					}
 				});
 			} else response.json({error:"loggedout"});
-		});
+		//});
 	}
 });
 
@@ -951,13 +1310,13 @@ app.post("/api/verify", function(request, response) {
 
 /*
  * Schema Dereference Tool
- */
+ */ 
 app.post("/api/schema", function(request, response) {
 	var data = request.body.schema;
 	$RefParser.dereference(data, (err, schema) => {
 		if (err) response.json({error:err});
 		else response.json({data:schema});
-	})
+	})	
 });
 
 
@@ -967,7 +1326,7 @@ app.post("/api/schema", function(request, response) {
 
 
 /**
- * Delete the specified list of objects from edge controller, and return the remaining
+ * Delete the specified list of objects from edge controller, and return the remaining 
  * list while retaining the last search filter properties.
  */
 app.post("/api/delete", function(request, response) {
@@ -990,8 +1349,8 @@ app.post("/api/delete", function(request, response) {
 	ids.forEach(function(id) {
 		promises.push(ProcessDelete(type, id, user, request));
 	});
-
-	Promise.all(promises).catch((error) => {
+	
+	Promise.all(promises).catch((error) => { 
 		log("Catch: "+JSON.stringify(error));
 		response.json({error: error.causeMessage});
 	}).then(function(e) {
@@ -1018,10 +1377,10 @@ function DoDelete(type, ids, user, request, index) {
 
 /**
  * Create the promise required to delete a specific object from the edge controller
- *
- * @param {The type of object being deleted} type
- * @param {The id of the object to delete} id
- * @param {The specified user token deleting the object} user
+ * 
+ * @param {The type of object being deleted} type 
+ * @param {The id of the object to delete} id 
+ * @param {The specified user token deleting the object} user 
  */
 function ProcessDelete(type, id, user, request, isFirst=true) {
 	return new Promise(function(resolve, reject) {
@@ -1036,14 +1395,14 @@ function ProcessDelete(type, id, user, request, isFirst=true) {
 					if (body.error) {
 						if (isFirst) {
 							log("Re-authenticate User");
-							Authenticate(request).then((results) => {
+							//Authenticate(request).then((results) => {
 								ProcessDelete(type, id, user, request, false).then((results) => {
 									resolve(results);
 								}).catch((error) => {
 									log("Reject After Auth: "+JSON.stringify(error));
 									reject(error);
 								});
-							});
+							//});
 						} else reject(body.error);
 					} else resolve(body.data);
 				} else {
@@ -1082,7 +1441,7 @@ app.post('/api/upload', function(request, response) {
 	var resource = request.body.resource;
 	var saveTo = __dirname+settingsPath+'/resources/'+resource+'/'+image.name;
 	var fullUrl = '/resource/'+resource+'/'+image.name;
-
+	
 	image.mv(saveTo, function(error) {
 		if (error) return response.status(500).send(error);
 		else return response.send(fullUrl);
@@ -1099,9 +1458,9 @@ app.post("/api/resources", function(request, response) {
 
 /**
  * Returns the list of all resources defined for a specific type
- *
- * @param {The Type of Resource (e.g. image, icon, etc)} type
- * @param {*} response
+ * 
+ * @param {The Type of Resource (e.g. image, icon, etc)} type 
+ * @param {*} response 
  */
 function GetResources(type, response) {
 	var toReturn = [];
@@ -1113,7 +1472,7 @@ function GetResources(type, response) {
 			});
 			response.json({ type: type, data: toReturn });
 		}
-	});
+	});	
 }
 
 
@@ -1137,7 +1496,7 @@ app.post("/api/tagSave", function(request, response) {
 	var user = request.session.user;
 	tags = request.body.tags;
 	if (hasAccess(user)) {
-		let data = JSON.stringify(tags);
+		let data = JSON.stringify(tags);  
 		fs.writeFileSync(__dirname+settingsPath+'/tags.json', data);
 	}
 	response.json(tags);
@@ -1163,7 +1522,7 @@ app.delete("/api/templates", function(request, response) {
 	var ids = request.body.ids;
 
 	var user = request.session.user;
-	Authenticate(request).then((results) => {
+	//Authenticate(request).then((results) => {
 		if (hasAccess(user)) {
 
 			var newTemplates = [];
@@ -1173,13 +1532,13 @@ app.delete("/api/templates", function(request, response) {
 			}
 
 			templates = newTemplates;
-
-			let data = JSON.stringify(templates);
+			
+			let data = JSON.stringify(templates);  
 			fs.writeFileSync(__dirname+settingsPath+'/templates.json', data);
 
 			response.json(templates);
 		} else response.json(templates);
-	});
+	//});
 });
 
 /**
@@ -1187,7 +1546,7 @@ app.delete("/api/templates", function(request, response) {
  */
 app.post("/api/template", function(request, response) {
 	var user = request.session.user;
-	Authenticate(request).then((results) => {
+	//Authenticate(request).then((results) => {
 		if (hasAccess(user)) {
 			if (serviceUrl==null||serviceUrl.length==0) response.json({error:"loggedout"});
 			else {
@@ -1203,7 +1562,7 @@ app.post("/api/template", function(request, response) {
 						}
 					}
 					if (!found) templates.push(template);
-					let data = JSON.stringify(templates);
+					let data = JSON.stringify(templates);  
 					fs.writeFileSync(__dirname+settingsPath+'/templates.json', data);
 				} else {
 					growler.error("Please update your version of Node JS.")
@@ -1211,7 +1570,7 @@ app.post("/api/template", function(request, response) {
 			}
 			response.json(templates);
 		}
-	});
+	//});
 });
 
 function GetTemplate(id) {
@@ -1224,7 +1583,7 @@ function GetTemplate(id) {
 }
 
 app.post("/api/execute", function(request, response) {
-	Authenticate(request).then((results) => {
+	//Authenticate(request).then((results) => {
 		var template = GetTemplate(request.body.id);
 		if (template) {
 			var name = request.body.name.trim();
@@ -1248,7 +1607,7 @@ app.post("/api/execute", function(request, response) {
 							semantic: "AnyOf",
 							tags: {}
 						};
-
+	
 						for (var i=0; i<identities.length; i++) param.identityRoles.push("@"+identities[i].id);
 						for (var i=0; i<template.services.length; i++) param.serviceRoles.push(template.services[i].id);
 
@@ -1265,7 +1624,7 @@ app.post("/api/execute", function(request, response) {
 				});
 			});
 		} else response.json({ error: "Template Not Found" });
-	});
+	//});
 });
 
 function DoPatch(url, params, request) {
@@ -1325,7 +1684,7 @@ function CreateProfile(template, name, index, request) {
 				name: name+"-"+profile,
 				type: "Device",
 				isAdmin: false,
-				enrollment: {
+				enrollment: { 
 					"ott": true
 				}
 			};
@@ -1334,7 +1693,7 @@ function CreateProfile(template, name, index, request) {
 				resolve(CreateProfile(template, name, index, request));
 
 			});
-
+			
 		} else resolve(true);
 	});
 }
@@ -1358,7 +1717,7 @@ app.post("/api/average", function(request, response) {
 	source +="."+type;
 	var url = new URL(request.body.url);
 	domain = url.hostname;
-
+	
 	const influx = new Influx.InfluxDB({
 		host: domain,
 		port: 8086,
@@ -1394,7 +1753,7 @@ app.post("/api/series", function(request, response) {
 	source +="."+type;
 	var url = new URL(request.body.url);
 	domain = url.hostname;
-
+	
 	const influx = new Influx.InfluxDB({
 		host: domain,
 		port: 8086,
@@ -1434,7 +1793,7 @@ app.post("/api/message", function(request, response) {
 		body: "A "+type+" message was set to you by "+from+" at "+(new Date())+" with email "+email+": "+message,
 		subject: "NetFoundry Ziti - Message"
 	};
-
+	
 	if (transporter) {
 		var body = params.body;
 		var subject = params.subject;
@@ -1537,7 +1896,7 @@ app.post("/api/send", function(request, response) {
 
 /**
  * If debugging is turned on show the log on the console.
- * @param {The text of the message} message
+ * @param {The text of the message} message 
  */
 function log(message) {
 	if (isDebugging) console.log(message);
@@ -1550,59 +1909,119 @@ function log(message) {
 
 /**
  * Serve the current app on the defined port
- *
+ * 
  * NOTE: if running Zitified, the 'port' is ignored. Instead, we
- * 		 we will be listening on the Ziti service name specified
+ * 		 we will be listening on the Ziti service name specified 
  * 		 by the ZITI_SERVICE_NAME env var.
  */
 StartServer(port);
 let maxAttempts = 100;
+var server;
 app.use((err, request, response, next) => {
 	if (err) {
 		if (err.toString().indexOf("Error: EPERM: operation not permitted, rename")==0) {
 			// Ignoring chatty session-file warnings
 		} else console.err(err);
 		next();
-	} else {
+	} else {  
 		next();
-	}
+	} 
 });
 
 function StartServer(startupPort) {
-	if (zitified) {
-		app.listen(undefined, function() {
-			console.log("Ziti Admin Console is now listening for incoming Ziti Connections");
-		});
+	if (bindIP=="" || bindIP==null) {
+		if (zitified) {
+			server = app.listen(undefined, function() {
+				console.log("Ziti Admin Console is now listening for incoming Ziti Connections");
+			});
+		} else {
+			server = app.listen(startupPort, function() {
+				console.log("Ziti Admin Console is now listening on port "+startupPort);
+			}).on('error', function(err) {
+				if (err.code=="EADDRINUSE") {
+					maxAttempts--;
+					console.log("Port "+startupPort+" In Use, Attempting new port "+(startupPort+1));
+					startupPort++;
+					if (maxAttempts>0) StartServer(startupPort);
+				} else {
+					console.log("All Ports in use "+port+" to "+startupPort);
+				}
+			});
+		}
 	} else {
-		app.listen(startupPort, function() {
-			console.log("Ziti Admin Console is now listening on port "+startupPort);
-		}).on('error', function(err) {
-			if (err.code=="EADDRINUSE") {
-				maxAttempts--;
-				console.log("Port "+startupPort+" In Use, Attempting new port "+(startupPort+1));
-				startupPort++;
-				if (maxAttempts>0) StartServer(startupPort);
+		if (zitified) {
+			server = app.listen(undefined, bindIP, function() {
+				console.log("Ziti Admin Console is now listening for incoming Ziti Connections");
+			});
+		} else {
+			server = app.listen(startupPort, bindIP, function() {
+				console.log("Ziti Admin Console is now listening on port "+startupPort);
+			}).on('error', function(err) {
+				if (err.code=="EADDRINUSE") {
+					maxAttempts--;
+					console.log("Port "+startupPort+" In Use, Attempting new port "+(startupPort+1));
+					startupPort++;
+					if (maxAttempts>0) StartServer(startupPort);
+				} else {
+					console.log("All Ports in use "+port+" to "+startupPort);
+				}
+			});
+		}
+	}
+
+	/**
+	 * If certificates are defined, setup an https redirection service
+	 */
+	if (fs.existsSync("./server.key")&&fs.existsSync("./server.chain.pem")) {
+		log("Initializing TLS");
+		try {
+			const options = {
+				key: fs.readFileSync("./server.key"),
+				cert: fs.readFileSync("./server.chain.pem")
+			};
+			console.log("TLS initialized on port: " + portTLS);
+			if (bindIP=="" || bindIP==null) {
+				tlsServer = https.createServer(options, app);
+				tlsServer.listen(portTLS);
 			} else {
-				console.log("All Ports in use "+port+" to "+startupPort);
+				tlsServer = https.createServer(options, app);
+				tlsServer.listen(portTLS, bindIP);
+			}
+		} catch(err) {
+			log("ERROR: Could not initialize TLS!");
+			throw err;
+		}
+	}
+
+	var signals = {
+		'SIGHUP': 1,
+		'SIGINT': 2,
+		'SIGTERM': 15
+	};
+	
+	const shutdown = (signal, value) => {
+		console.log("shutdown!");
+		server.close(() => {
+			console.log(`server stopped by ${signal} with value ${value}`);
+			if (tlsServer) {
+				tlsServer.close(() => {
+					process.exit(128 + value);
+				});
+			} else {
+				process.exit(128 + value);
 			}
 		});
-	}
+	};
+	
+	Object.keys(signals).forEach((signal) => {
+		process.on(signal, () => {
+			console.log(`process received a ${signal} signal`);
+			shutdown(signal, signals[signal]);
+		});
+	});
 }
 
-/**
- * If certificates are defined, setup an https redirection service
- */
-if (fs.existsSync("./server.key")&&fs.existsSync("./server.chain.pem")) {
-    log("Initializing TLS");
-	try {
-		const options = {
-			key: fs.readFileSync("./server.key"),
-			cert: fs.readFileSync("./server.chain.pem")
-		};
-		console.log("TLS initialized on port: " + portTLS);
-		https.createServer(options, app).listen(portTLS);
-	} catch(err) {
-		log("ERROR: Could not initialize TLS!");
-		throw err;
-	}
-}
+process.on('SIGINT', () => {
+	console.log(`process received a SIGINT signal`);
+	process.exit();
+});

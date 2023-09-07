@@ -1,6 +1,7 @@
 ## Running Legacy App (vanilla javascript)
 ```
 cd projects/ziti-console
+npm install
 node server.js
 ```
 

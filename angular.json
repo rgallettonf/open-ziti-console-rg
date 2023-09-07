@@ -65,7 +65,6 @@
                 }
               ],
               "outputHashing": "all",
-
               "sourceMap": {
                 "scripts": true,
                 "styles": true,

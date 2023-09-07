@@ -12,6 +12,9 @@ import {ConfigurationService} from "./configuration.service";
 import {Subscription} from "rxjs";
 import {SchemaService} from "../../../services/schema.service";
 import {ProjectableForm} from "../projectable-form.class";
+import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
+import _ from "lodash";
+
 
 @Component({
     selector: 'lib-configuration',
@@ -20,6 +23,8 @@ import {ProjectableForm} from "../projectable-form.class";
 })
 export class ConfigurationFormComponent extends ProjectableForm implements OnInit, OnDestroy {
     @ViewChild("dynamicform", {read: ViewContainerRef}) dynamicForm!: ViewContainerRef;
+    @ViewChild(JsonEditorComponent, {static: false}) editor!: JsonEditorComponent;
+
     @Input() override formData: any = {};
     @Input() override errors: any = {};
     @Output() currentSchema = new EventEmitter<any>();
@@ -43,6 +48,11 @@ export class ConfigurationFormComponent extends ProjectableForm implements OnIni
     editMode = false;
     items: any = [];
     subscription = new Subscription()
+    editorOptions: JsonEditorOptions;
+    jsonData: any;
+    onChangeDebounced = _.debounce(this.onJsonChange.bind(this), 400);
+    private schema: any;
+    private readOnly: false;
 
     constructor(private svc: ConfigurationService,
                 private schemaSvc: SchemaService) {
@@ -52,10 +62,10 @@ export class ConfigurationFormComponent extends ProjectableForm implements OnIni
     async createForm() {
         this.clearForm();
         if (this.configType && this.dynamicForm) {
-            const currentSchema = await this.svc.getSchema(this.configType);
-            if (currentSchema) {
-                this.currentSchema.emit(currentSchema);
-                this.render(currentSchema);
+           this.schema = await this.svc.getSchema(this.configType);
+            if (this.schema) {
+                this.currentSchema.emit(this.schema);
+                this.render(this.schema);
             }
         }
     }
@@ -103,11 +113,17 @@ export class ConfigurationFormComponent extends ProjectableForm implements OnIni
     }
 
     ngOnInit(): void {
+        this.editorOptions = this.svc.initJsonEditorOptions();
+        this.editorOptions.schema = this.schema;
+        this.editorOptions.onEditable = () => !this.readOnly;
+        (<any>this.editorOptions).onBlur = this.onJsonChange.bind(this);
         this.svc.getConfigTypes()
             .then(recs => {
                 this.options = recs.map(r => r.name).sort();
             })
     }
+
+
 
     private setFormValue(cRef: ComponentRef<any>, val: any) {
         const pName = cRef.instance.parentage;
@@ -138,5 +154,13 @@ export class ConfigurationFormComponent extends ProjectableForm implements OnIni
             if (pName && !this.formData[pName]) this.formData[pName][fieldName] = val;
             else this.formData[fieldName] = val;
         }
+    }
+
+    onJsonChange() {
+
+    }
+
+    onJsonChangeDebounced() {
+
     }
 }
