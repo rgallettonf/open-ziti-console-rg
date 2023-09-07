@@ -10,4 +10,13 @@
         </option>
     </select>
     <ng-container #dynamicform></ng-container>
+    <json-editor
+        #editor
+        (blur)="onJsonChange()"
+        (mouseout)="onJsonChange()"
+        (paste)="onJsonChangeDebounced()"
+        [data]="jsonData"
+        [options]="editorOptions"
+    >
+    </json-editor>
 </div>

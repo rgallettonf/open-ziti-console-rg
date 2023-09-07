@@ -43,7 +43,7 @@
         <div class="col notitle">
             <div class="selector" data-id="{{id}}"></div>
         </div>
-        <div class="col" data-id="{{id}}"><strong>{{name}}</strong></div>
+        <div class="col" data-id="{{id}}"><a href="javascript:page.edit('{{id}}');">{{name}}</a></div>
         <div class="col desktop" data-id="{{id}}">{{selector.serviceRoles}}</div>
         <div class="col desktop" data-id="{{id}}">{{selector.identityRoles}}</div>
         <div class="col desktop" data-id="{{id}}">{{selector.postureCheckRoles}}</div>
@@ -64,34 +64,40 @@
 
 	<!-- Modification Modals -->
     <div id="AddModal" class="modal box full">
-        <div class="sized">
+        <div class="sized large">
             <div class="close icon-close"></div>
             <div class="title adding">Create <span data-bind="singular"></span></div>
             <div class="subtitle adding">Add a New <span data-bind="singular"></span> by completing the following form</div>
             <div class="title editing">Edit <span data-bind="singular"></span></div>
             <div class="subtitle editing">Change the <span data-bind="singular"></span> Details</div>
-            <label for="Name">Name</label>
-            <input id="Name" type="text" data-bind="data.name" maxlength="500" placeholder="Enter a name" data-enter="SaveButton" />
-            <label for="Type">Type</label>
-            <select id="Type" data-bind="data.type" data-default="Bind" data-enter="SaveButton">
-                <option value="Bind" selected>Bind</option>
-                <option value="Dial">Dial</option>
-            </select>
-            <label for="Roles">Service Role Attributes</label>
-            <div id="Roles"></div>
-            <label for="IDRoles">Identity Role Attributes</label>
-            <div id="IDRoles"></div>
-            <label for="PCRoles">Posture Check Role Attributes</label>
-            <div id="PCRoles"></div>
-            <label for="Semantics">Semantics</label>
-            <select id="Semantics" data-bind="data.semantic" data-default="AnyOf" data-enter="SaveButton">
-                <option value="AnyOf">Has Any Role</option>
-                <option value="AllOf">Must Have All Roles</option>
-            </select>
-            <div id="TagArea" data-tagarea="policies"></div>
-            <div id="TagExtended"></div>
-            {{html.api}}
-            {{html.save}}
+            <div class="grid split">
+                <div>
+                    <label for="Name">Name</label>
+                    <input id="Name" type="text" data-bind="data.name" maxlength="500" placeholder="Enter a name" data-enter="SaveButton" />
+                    <label for="Type">Type</label>
+                    <select id="Type" data-bind="data.type" data-default="Bind" data-enter="SaveButton">
+                        <option value="Bind" selected>Bind</option>
+                        <option value="Dial">Dial</option>
+                    </select>
+                    <label for="Roles">Service Role Attributes</label>
+                    <div id="Roles"></div>
+                    <label for="IDRoles">Identity Role Attributes</label>
+                    <div id="IDRoles"></div>
+                    <label for="PCRoles">Posture Check Role Attributes</label>
+                    <div id="PCRoles"></div>
+                    <label for="Semantics">Semantics</label>
+                    <select id="Semantics" data-bind="data.semantic" data-default="AnyOf" data-enter="SaveButton">
+                        <option value="AnyOf">Has Any Role</option>
+                        <option value="AllOf">Must Have All Roles</option>
+                    </select>
+                </div>
+                <div>
+                    <div id="TagArea" data-tagarea="policies"></div>
+                    {{html.customtags}}
+                    {{html.api}}
+                    {{html.save}}
+                </div>
+            </div>
         </div>
 	</div>
 
@@ -171,9 +177,11 @@
                     var url = settings.versionData.baseUrl+settings.versionData.serviceUrl+"/"+page.filterObject.name;
                     if (page.filterObject.isEditing()) url += "/"+page.filterObject.editId;
                     $("#ApiUrl").val(url);  
+                    var stayAt = $("#AddModal").scrollTop();
                     page.apiParams.setValue(JSON.stringify(obj));
                     page.apiParams.autoFormatRange({line:0, ch:0}, {line:page.apiParams.lineCount()});
                     page.apiParams.scrollTo(null, 0);
+                    $("#AddModal").scrollTop(stayAt);
 
                     return obj
                 } catch (e) {

@@ -42,6 +42,7 @@ import {IdentitiesPageComponent} from "./pages/identities/identities-page.compon
 import { GrowlerComponent } from './features/messaging/growler.component';
 import {onAppInit} from "./app.initializer";
 import {ClickOutsideModule} from "ng-click-outside";
+import {NgJsonEditorModule} from "ang-jsoneditor";
 
 @NgModule({
     declarations: [
@@ -89,6 +90,7 @@ import {ClickOutsideModule} from "ng-click-outside";
         AgGridModule,
         ChipsModule,
         ClickOutsideModule,
+        NgJsonEditorModule,
     ],
     exports: [
         ZacWrapperComponent,
