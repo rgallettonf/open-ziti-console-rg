@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ZitiDataService} from "../../../services/ziti-data.service";
 import {Resolver} from "@stoplight/json-ref-resolver";
+import {JsonEditorOptions} from "ang-jsoneditor";
 
 @Injectable({
     providedIn: 'root'
@@ -34,5 +35,12 @@ export class ConfigurationService {
             });
             return Promise.all(promises).then(() => this.configTypes);
         });
+    }
+    initJsonEditorOptions() {
+        const editorOptions = new JsonEditorOptions();
+        editorOptions.modes = ['code', 'tree'];
+        editorOptions.mode = 'code';
+        editorOptions.enableTransform = false;
+        return editorOptions
     }
 }
