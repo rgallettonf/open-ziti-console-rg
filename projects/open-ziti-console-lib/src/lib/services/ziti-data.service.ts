@@ -55,6 +55,27 @@ export class ZitiDataService {
     );
   }
 
+  delete(type: string, id: string) {
+    const apiVersions = this.settingsService.apiVersions;
+    const prefix = apiVersions["edge-management"].v1.path;
+    const url = this.settingsService.settings.selectedEdgeController;
+    const serviceUrl = url + prefix + "/" + type + '/' + id;
+
+    return firstValueFrom(this.httpClient.delete(serviceUrl,
+        {})
+        .pipe(
+            catchError((err: any) => {
+              const error = "Server Not Accessible";
+              if (err.code != "ECONNREFUSED") throw({error: err.code});
+              throw({error: error});
+            }),
+            map((results: any) => {
+              return results;
+            })
+        )
+    );
+  }
+
   private getUrlFilter(paging: any) {
     let urlFilter = '';
     let toSearchOn = "name";

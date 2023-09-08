@@ -137,7 +137,8 @@ export class SettingsService {
                 if (body.error) {
                     growler.error("Invalid Edge Controller: " + body.error);
                 } else {
-                    if (body.data.apiVersions.edge.v1 != null) {
+                    if (body?.data?.apiVersions?.edge?.v1 != null) {
+                        this.apiVersions = body.data.apiVersions;
                         let found = false;
                         if (this.settings.edgeControllers?.length > 0) {
                             for (let i = 0; i < this.settings.edgeControllers.length; i++) {

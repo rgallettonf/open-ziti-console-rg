@@ -39,7 +39,9 @@ import {HiddenColumnsBarComponent} from "./features/data-table/table-hidden-colu
 import {FilterBarComponent} from "./features/data-table/table-filter-bar/filter-bar.component";
 import {AgGridModule} from "ag-grid-angular";
 import {IdentitiesPageComponent} from "./pages/identities/identities-page.component";
+import {ZITI_NAVIGATOR} from "./open-ziti.constants";
 import { GrowlerComponent } from './features/messaging/growler.component';
+import { ConfirmComponent } from './features/confirm/confirm.component';
 import {onAppInit} from "./app.initializer";
 import {ClickOutsideModule} from "ng-click-outside";
 import {NgJsonEditorModule} from "ang-jsoneditor";
@@ -79,6 +81,7 @@ import {NgJsonEditorModule} from "ang-jsoneditor";
         FilterBarComponent,
         ExtendableComponent,
         GrowlerComponent,
+        ConfirmComponent,
     ],
     imports: [
         CommonModule,
@@ -115,14 +118,14 @@ import {NgJsonEditorModule} from "ang-jsoneditor";
     ],
     providers: [
         {provide: SHAREDZ_EXTENSION, useClass: ExtensionsNoopService},
+        {provide: ZITI_NAVIGATOR, useValue: {}},
         {
             provide: APP_INITIALIZER,
             useFactory: onAppInit,
             deps: [Injector],
             multi: true
         },
-
-]
+    ],
 })
 export class OpenZitiConsoleLibModule {
 }

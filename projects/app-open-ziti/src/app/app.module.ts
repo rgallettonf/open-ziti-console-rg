@@ -6,14 +6,19 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {LoginComponent} from './login/login.component';
 import {FormsModule} from "@angular/forms";
+
 import {
     NoopTabInterceptorService,
     OpenZitiConsoleLibModule,
+    SettingsService,
+    ZacWrapperService,
+    ZAC_WRAPPER_SERVICE,
     ZITI_DOMAIN_CONTROLLER,
     ZITI_NAVIGATOR,
     ZITI_TAB_OVERRIDES,
     ZITI_URLS
 } from "open-ziti-console-lib";
+
 import {AppRoutingModule} from "./app-routing.module";
 import {SimpleZitiDomainControllerServic} from "./services/simple-ziti-domain-controller.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -44,6 +49,7 @@ import {LoggingInterceptor} from "./interceptors/logging.interceptor";
     exports: [],
     providers: [
         {provide: ZITI_DOMAIN_CONTROLLER, useClass: SimpleZitiDomainControllerServic},
+        {provide: ZAC_WRAPPER_SERVICE, useClass: ZacWrapperService},
         {provide: ZITI_URLS, useValue: URLS},
         {provide: ZITI_NAVIGATOR, useValue: OPEN_ZITI_NAVIGATOR},
         {provide: ZITI_TAB_OVERRIDES, useClass: NoopTabInterceptorService},

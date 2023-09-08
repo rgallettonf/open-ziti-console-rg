@@ -1,4 +1,4 @@
-import {Component, Inject, Input} from '@angular/core';
+import {Component, Inject, InjectionToken, Input} from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
 import {ZITI_NAVIGATOR} from "../../../open-ziti.constants";
 
@@ -32,3 +32,4 @@ export class SideNavbarComponent {
         this.isOpened = !this.isOpened;
     }
 }
+

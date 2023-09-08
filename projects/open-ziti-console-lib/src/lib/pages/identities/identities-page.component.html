@@ -1,6 +1,7 @@
 <div class="ziti-page-container ziti-identities-container">
     <lib-list-page-header [title]="title"
                           [tabs]="tabs"
+                          [showAdd]="!itemsSelected"
                           (actionClicked)="headerActionClicked($event)"></lib-list-page-header>
 
     <lib-data-table [tableId]="'identities'"
@@ -12,6 +13,8 @@
                     [totalCount]="totalCount"
                     [emptyMsg]="'No Identities defined, Click the plus to add an Identity.'"
                     [filterApplied]="filterApplied"
+                    [menuItems]="svc.menuItems"
     >
     </lib-data-table>
+    <app-zac-wrapper></app-zac-wrapper>
 </div>

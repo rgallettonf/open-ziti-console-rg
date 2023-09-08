@@ -14,7 +14,7 @@ export class DataTableService {
     if (!gridObj) {
       return;
     }
-    const dataChanged = !_.isEqual(rowData.previousValue, rowData.currentValue);
+    const dataChanged = !_.isEqual(rowData?.previousValue, rowData?.currentValue);
     if (dataChanged) {
       gridObj.api.zitiAllToggled = !_.isEmpty(rowData) && _.every(rowData, {selected: true});
       gridObj.api.refreshCells({force: true});

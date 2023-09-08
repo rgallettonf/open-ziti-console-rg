@@ -24,7 +24,7 @@
         <div class="subtitle">Select the fabric server to use with the current session</div>
         <select id="FabricServicesList"></select>
     </div>
-    
+
     <!-- Row Template -->
     <div id="RowTemplate" class="row grid floor template">
         <div class="col padCol" data-id="{{id}}"><a href="javascript:page.edit('{{id}}');">{{name}}</a></div>
@@ -39,8 +39,8 @@
             </div>
         </div>
     </div>
-    
-    
+
+
     <!-- Modification Modals -->
     <div id="AddModal" class="modal box full">
         <div class="sized">
@@ -87,7 +87,7 @@
             events: function() {
                 context.addListener(settings.name, page.getLoaded);
                 $(".action").click(page.handleAction);
-                $("#SaveButton").click(page.save);        
+                $("#SaveButton").click(page.save);
                 $("#FabricServicesList").change(page.setFabric);
             },
             setFabric: function(e) {
@@ -97,6 +97,7 @@
                 $(".selector.selected").removeClass("selected");
                 app.setAction();
                 page.data = settings.data;
+                console.log('HELLO');
                 $(".rows").html("");
                 if (settings.data.edgeControllers.length>0||settings.data.fabricControllers.length>0) {
                     var index = 0;
@@ -112,13 +113,13 @@
                         index++;
                     }
                     $("#FabricServicesList").html("");
-                    page.pageLoaded();     
+                    page.pageLoaded();
                     $(".data").show();
-                    $(".nodata").hide();       
+                    $(".nodata").hide();
                 } else {
                     $(".data").hide();
                     $(".nodata").show();
-                }       
+                }
             },
             pageLoaded: function() {
                 $(".gridAction").click(page.gridAction);
@@ -162,7 +163,7 @@
 
                 var name = "";
                 var url = "";
-                var type = ""; 
+                var type = "";
 
                 var found = false;
 
@@ -193,7 +194,7 @@
 
                     $(".adding").hide();
                     $(".editing").show();
-        
+
                     page.editId = url;
                     modal.show("AddModal");
                 }
@@ -203,7 +204,7 @@
                 if ($("#ServerName").val().trim().length==0) $("#ServerName").addClass("errors");
                 if ($("#ServerUrl").val().trim().length==0) $("#ServerUrl").addClass("errors");
                 return $(".errors").length==0;
-            },        
+            },
             reset: function() {
                 app.isDirty = false;
                 page.editId = "";

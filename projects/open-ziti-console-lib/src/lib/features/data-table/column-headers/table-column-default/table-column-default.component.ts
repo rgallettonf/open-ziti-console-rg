@@ -114,7 +114,7 @@ export class TableColumnDefaultComponent implements IHeaderAngularComp, AfterVie
     this.columnFilters = headerParams.columnFilters;
     this.columnDef = this.columnObj.colDef;
     this.pinned = this.columnObj.pinned === 'left';
-    this.sortDir = this.columnDef.sortDir || 'asc';
+    this.sortDir = this.columnDef.sortDir || 'none';
     this.onlineStatusFilter = _.has(this.columnFilters, 'hasApiSession') ? 'hasApiSession' : 'online';
     this.showBubble =
       this.columnDef.colId === 'name' &&
@@ -136,7 +136,7 @@ export class TableColumnDefaultComponent implements IHeaderAngularComp, AfterVie
     headerParams.api.addEventListener('columnEverythingChanged', (event) => {
       _.forEach(event.columnApi.columnModel.columnDefs, colDef => {
         if (this.columnDef.colId === colDef.colId && colDef.headerComponentParams?.filterOptions) {
-          this.filterOptions = _.map(colDef.this.headerComponentParams?.filterOptions, (option) => {
+          this.filterOptions = _.map(colDef.headerComponentParams?.filterOptions, (option) => {
             option.columnId = this.columnDef.colId;
             option.filterName = this.headerName;
             return option;
@@ -162,6 +162,9 @@ export class TableColumnDefaultComponent implements IHeaderAngularComp, AfterVie
   }
 
   sort(event): void {
+    if (!this.columnDef.sortable) {
+      return;
+    }
     const targetId = _.get(event, 'target.id');
     if (
       _.includes(
@@ -200,9 +203,9 @@ export class TableColumnDefaultComponent implements IHeaderAngularComp, AfterVie
       }
     } else if (this.filterType === 'CUSTOM') {
       if (this.showFilter) {
-        _.invoke(this.headerParams, 'column.colDef.this.headerComponentParams.openHeaderFilter', event, this.filterOptions);
+        _.invoke(this.headerParams, 'column.colDef.headerComponentParams.openHeaderFilter', event, this.filterOptions);
       } else {
-        _.invoke(this.headerParams, 'column.colDef.this.headerComponentParams.closeHeaderFilter', event);
+        _.invoke(this.headerParams, 'column.colDef.headerComponentParams.closeHeaderFilter', event);
       }
     }
   }

@@ -17,9 +17,10 @@ export abstract class ListPageComponent {
     rowData = [];
     filterApplied = false;
 
-    constructor(protected filterService: DataTableFilterService,
-                protected svc: ListPageServiceClass) {
-    }
+    constructor(
+        protected filterService: DataTableFilterService,
+        protected svc: ListPageServiceClass
+    ) {}
 
     ngOnInit() {
         this.svc.refreshData = this.refreshData.bind(this);
@@ -32,6 +33,10 @@ export abstract class ListPageComponent {
     }
 
     itemToggled(item: any): void {
+        this.updateSelectedItems();
+    }
+
+    updateSelectedItems() {
         let itemSelected = false;
         this.rowData.forEach((item) => {
             if (item.selected) {
@@ -48,6 +53,7 @@ export abstract class ListPageComponent {
                 this.startCount = 1 + '';
                 this.endCount = data.meta.pagination.totalCount;
                 this.totalCount = data.meta.pagination.totalCount;
+                this.updateSelectedItems();
             });
     }
 }

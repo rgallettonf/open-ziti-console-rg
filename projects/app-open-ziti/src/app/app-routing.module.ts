@@ -8,11 +8,12 @@ import {
   ZacWrapperComponent,
   IdentitiesPageComponent
 } from "open-ziti-console-lib";
+import {URLS} from "./app-urls.constants";
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'ziti-dashboard',
+    redirectTo: 'dashboard',
     pathMatch: 'full'
   },
   {
@@ -20,12 +21,17 @@ const routes: Routes = [
     component: LoginComponent
   },
   {
-    path: 'ziti-login',
+    path: 'login',
     redirectTo: 'login',
     pathMatch: 'full'
   },
   {
-    path: 'ziti-dashboard',
+    path: 'dashboard',
+    component: ZacWrapperComponent,
+    canActivate: [authenticationGuard],
+  },
+  {
+    path: 'attributes',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
@@ -35,17 +41,17 @@ const routes: Routes = [
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-jwt-signers',
+    path: 'jwt-signers',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-services',
+    path: 'services',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-routers',
+    path: 'routers',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
@@ -55,17 +61,17 @@ const routes: Routes = [
     canActivate: [authenticationGuard],
   },
   {
-    path: 'configs',
-    component: ConfigurationsPageComponent,
+    path: 'config-types',
+    component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'ziti-configs',
-    redirectTo: 'configs',
-    pathMatch: 'full'
+    path: 'configs',
+    component: ZacWrapperComponent,
+    canActivate: [authenticationGuard],
   },
   {
-    path: 'recipes',
+    path: 'recipies',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
@@ -84,7 +90,7 @@ const routes: Routes = [
     canActivate: [authenticationGuard],
   },
   {
-    path: 'service-router-policies',
+    path: 'service-policies',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
@@ -94,12 +100,22 @@ const routes: Routes = [
     canActivate: [authenticationGuard],
   },
   {
+    path: 'certificate-authorities',
+    component: ZacWrapperComponent,
+    canActivate: [authenticationGuard],
+  },
+  {
+    path: 'service-router-policies',
+    component: ZacWrapperComponent,
+    canActivate: [authenticationGuard],
+  },
+  {
     path: 'posture-checks',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
   {
-    path: 'certificate-authorities',
+    path: 'recipes',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },
@@ -125,11 +141,6 @@ const routes: Routes = [
   },
   {
     path: 'settings',
-    component: ZacWrapperComponent,
-    canActivate: [authenticationGuard],
-  },
-  {
-    path: 'config-types',
     component: ZacWrapperComponent,
     canActivate: [authenticationGuard],
   },

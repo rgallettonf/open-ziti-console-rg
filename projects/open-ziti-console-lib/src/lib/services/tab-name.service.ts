@@ -20,9 +20,9 @@ export class TabNameService {
     pageToTabsMap = new Map<string, any[]>(
         [
             ["identities", [
-                {label: 'Identities', url: '/ziti-identities'},
+                {label: 'Identities', url: '/identities'},
                 {label: 'Recipes', url: '/recipes'},
-                {label: 'Terminators', url: '/config-terminators'},
+                {label: 'Terminators', url: '/terminators'},
                 {label: 'Posture Checks', url: '/config-posture-checks'},
             ]
             ],

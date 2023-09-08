@@ -28,6 +28,10 @@
         height: unset;
         width: 200px;
         transition-property: opacity;
+
+        .tActionRow {
+          display: flex;
+        }
       }
     }
   }
@@ -851,5 +855,34 @@
       padding-left: 5px;
       padding-right: 15px;
     }
+  }
+}
+
+.os-icon {
+  width: 23px;
+  height: 23px;
+  background-size: 23px 23px;
+  display: inline-flex;
+  margin-right: 8px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+  &.empty {
+    background: transparent;
+  }
+  &.apple {
+    background-image: url(/assets/images/apple.png);
+  }
+  &.windows {
+    background-image: url(/assets/images/windows.png);
+  }
+  &.linux {
+    background-image: url(/assets/images/linux.png);
+  }
+  &.android {
+    background-image: url(/assets/images/android.png);
+  }
+  &.other {
+    background-image: url(/assets/images/other.png);
   }
 }
