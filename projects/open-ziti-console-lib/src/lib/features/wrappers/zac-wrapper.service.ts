@@ -97,7 +97,13 @@ export class ZacWrapperService {
 
     initZac() {
         const appInit = get(window, 'app.init');
-        set(window, 'service.call', this.handleServiceCall.bind(this));
+        this.settingsService.settingsChange.subscribe(() => {
+            if (!this.settingsService.useNodeServer) {
+                set(window, 'service.call', this.handleServiceCall.bind(this));
+            } else {
+                set(window, 'service.host', this.settingsService.protocol+"://"+this.settingsService.host+":"+this.settingsService.port);
+            }
+        });
         this.initZacListeners();
     }
 
