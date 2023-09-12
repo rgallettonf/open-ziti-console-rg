@@ -1,5 +1,6 @@
 {
     "edgeControllers":[], 
+    "bindIP": "",
     "editable": true, 
     "update": false, 
     "location": "../ziti", 
@@ -20,5 +21,6 @@
         }
     },
     "from": "",
-    "to": ""
+    "to": "",
+    "useNodeServer": true
 }

@@ -39,14 +39,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     async login() {
         if(this.selectedEdgeController) {
             context.set("serviceUrl", this.selectedEdgeController);
-            await this.settingsService.initApiVersions(this.selectedEdgeController);
-            const prefix = this.settingsService.apiVersions["edge-management"].v1.path;
+            const apiVersions = this.settingsService.apiVersions;
+            const prefix = apiVersions["edge-management"].v1.path;
             this.svc.login(
                 prefix,
                 this.selectedEdgeController,
                 this.username.trim(),
-                this.password,
-                this.settingsService.rejectUnauthorized
+                this.password
             );
         }
     }

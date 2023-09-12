@@ -13,7 +13,7 @@ limitations under the License.
 var page;
 
 $(document).ready(function(e) {
-	if (window.isCloudZiti) {
+	if (window.isSPA) {
 		return;
 	}
 	app.init();
@@ -92,8 +92,12 @@ var app = {
 			navigator.clipboard.writeText(copied);
 			growler.info(copied+" - copied to clipboard")
 		} else {
-			if (copyField.attr("id")=="ApiJson" || copyField.attr("id")=="ApiParams") {
+			if (copyField.attr("id")=="ApiJson") {
 				var copied = commands.params.getValue();
+				navigator.clipboard.writeText(copied);
+				growler.info("JSON copied to clipboard");
+			} else if (copyField.attr("id")=="ApiParams") {
+				var copied = page.apiParams.getValue();
 				navigator.clipboard.writeText(copied);
 				growler.info("JSON copied to clipboard");
 			}

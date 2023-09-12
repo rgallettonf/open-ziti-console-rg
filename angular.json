@@ -2,6 +2,7 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
+
   "projects": {
     "open-ziti": {
       "projectType": "application",
@@ -40,6 +41,7 @@
               }
             ],
             "styles": [
+              "projects/open-ziti-console-lib/src/lib/shared-assets/styles/global.scss",
               "projects/app-open-ziti/src/styles.scss",
               "node_modules/primeng/resources/themes/saga-blue/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
@@ -63,7 +65,6 @@
                 }
               ],
               "outputHashing": "all",
-
               "sourceMap": {
                 "scripts": true,
                 "styles": true,

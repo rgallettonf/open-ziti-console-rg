@@ -10,7 +10,7 @@
             <div class="icon"></div>
             <div id="AddHover" class="hover">Add New</div>
         </div>
-        <a href="/attributes">
+        <a [routerLink]="'/attributes'">
             <div id="AttributesButton" class="clickable" data-hover="AttributeHover">
                 <div class="circle"></div>
                 <div class="icon icon-hash"></div>
@@ -35,7 +35,7 @@
             <div class="circle"></div>
             <div class="icon"></div>
         </div>
-        <div id="OrgButton" class="clickable AreaOrganization" data-open="AreaOrganization">
+        <div id="OrgButton" class="clickable AreaOrganization" data-open="AreaOrganization" [routerLink]="'/servers'">
             <div class="clicked"></div>
             <div class="circle"></div>
             <div class="icon"></div>
@@ -55,3 +55,4 @@
         </div>
     </div>
 </div>
+

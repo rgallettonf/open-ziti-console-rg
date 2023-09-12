@@ -2,6 +2,7 @@
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-alpine.css';
 @import './assets/styles/tables.scss';
+@import 'node_modules/@angular/material/prebuilt-themes/indigo-pink.css';
 
 body {
   --navigation: #ffffff;
@@ -18,6 +19,8 @@ body {
   --shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.08);
   --shadowLarge: 0 12px 23px 0 rgba(0, 0, 0, .07);
   --shadowColor: rgba(0, 0, 0, 0.08);
+
+  overflow: hidden;
 }
 
 .ziti-page-container .filters {
@@ -49,6 +52,7 @@ body {
     display: flex;
     height: 100%;
     width: 100%;
+    flex: 1 0 auto;
   }
 }
 
@@ -110,4 +114,24 @@ app-zac-wrapper {
   width: 100%;
   height: 100%;
   position: relative;
+}
+
+.main {
+  .page {
+    .zac-wrapper-container {
+      width: calc(100% + 3rem);
+      height: calc(100% + 3rem);
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      top: -1.5rem;
+      left: -1.5rem;
+      flex: 1 0 auto;
+      padding: 1.5rem;
+    }
+  }
+}
+
+html {
+  overflow-x: hidden;
 }

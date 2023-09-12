@@ -1,19 +1,4 @@
-:host {
-  display: flex;
-  flex: 1 1 auto;
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
 .ziti-page-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  flex: 1 1 auto;
-
   .action {
     line-height: 60px;
     top: 25px;
@@ -25,7 +10,7 @@
 .ziti-identities-container {
   ::ng-deep {
     .zac-wrapper-container {
-      height: 0;
+      height: 0px;
       left: -999999px;
       position: fixed;
       .action {
@@ -322,9 +307,9 @@
 
 #TimeSearch #TimeSearchList {
   width: 44px;
-  height: 0px;
+  height: 0;
   position: absolute;
-  top: 0px;
+  top: 0;
   left: -2px;
   overflow: hidden;
   transition: var(--transition);
@@ -381,13 +366,13 @@
 ::ng-deep p-togglebutton {
   .p-togglebutton.p-button {
     border-radius: 7px !important;
-    box-shadow: 0px 5px 20px 0px rgb(0 0 0 / 5%) !important;
+    box-shadow: 0 5px 20px 0 rgb(0 0 0 / 5%) !important;
     margin-top: -2px !important;
   }
 
   .p-togglebutton.p-button:hover {
     filter: brightness(99%) !important;
-    box-shadow: 0px 5px 20px 0px rgb(0 0 0 / 5%) !important;
+    box-shadow: 0 5px 20px 0 rgb(0 0 0 / 5%) !important;
     transition: all 0.3s ease;
   }
 
@@ -422,7 +407,7 @@
 ::ng-deep .p-datepicker:not(.p-datepicker-inline) {
   background: var(--table);
   border: 0 none;
-  box-shadow: rgb(9 30 66 / 15%) 0px 20px 32px -8px;
+  box-shadow: rgb(9 30 66 / 15%) 0 20px 32px -8px;
   border-radius: 12px;
 }
 
@@ -449,7 +434,7 @@
 
 ::ng-deep .p-datepicker {
   padding: 0.5rem;
-  padding-bottom: 0px;
+  padding-bottom: 0;
   background: var(--table);
   color: var(--tableText);
   border: 1px solid var(--inputBorder);
